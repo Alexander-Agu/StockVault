@@ -8,6 +8,7 @@ This document defines **system‑wide user stories** that serve as **functional 
 
 ---
 
+
 ## 1. Actors
 
 - **Guest** – Unauthenticated user  
