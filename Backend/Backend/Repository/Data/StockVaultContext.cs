@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Backend.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repository.Data
 {
@@ -12,5 +13,6 @@ namespace Backend.Repository.Data
         // Add your DbSets here
         // public DbSet<JointAccount> JointAccounts { get; set; }
         // public DbSet<Payment> Payments { get; set; }
+        public DbSet<User> Users => Set<User>();
     }
 }
