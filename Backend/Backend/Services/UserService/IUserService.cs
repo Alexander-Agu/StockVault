@@ -19,5 +19,17 @@ namespace Backend.Services.UserService
          * TODO: Uses OTP to verify user's email
          */
         public Task<bool> VerifyEmailAsync(string email, string otp);
+
+
+        /*
+         * TODO: Logs user into their account
+         */
+        public Task<bool> LoginAsync(LoginDto login);
+
+
+        /*
+         * TODO: Logs user out of their account
+         */
+        public Task<bool> LogoutAsync(int id);
     }
 }

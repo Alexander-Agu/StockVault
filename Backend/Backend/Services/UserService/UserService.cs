@@ -44,5 +44,28 @@ namespace Backend.Services.UserService
 
             return true;
         }
+
+
+        // Login user
+        public async Task<bool> LoginAsync(LoginDto login)
+        {
+            User? user = await userRepository.GetUserByEmailAsync(login.Email);
+            if (user == null) return false;
+
+            // Check if user's email has been varified
+            if (!user.Active) return false;
+
+            return true;
+        }
+
+        // Logout user
+        public async Task<bool> LogoutAsync(int id)
+        {
+            User? User = await userRepository.GetUserByIdAsync(id);
+            if (User == null) return false;
+
+            // Later just remove the access token
+            return true;
+        }
     }
 }
