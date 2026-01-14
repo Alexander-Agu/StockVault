@@ -38,6 +38,10 @@ namespace Backend.Repository.UserRepository
             return await context.Users.FindAsync(id);
         }
 
-
+        // Fetch user by password token
+        public async Task<User> GetUserByPasswordToken(string passwordToken)
+        {
+            return await context.Users.Where(user => user.PasswordToken == passwordToken).FirstOrDefaultAsync();
+        }
     }
 }

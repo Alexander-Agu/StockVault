@@ -32,5 +32,11 @@ namespace Backend.Repository.UserRepository
          * TODO: Fetches user by id
          */
         public Task<User> GetUserByIdAsync(int id);
+
+
+        /*
+         * TODO: Find user by password token
+         */
+        public Task<User> GetUserByPasswordToken(string passwordToken);
     }
 }

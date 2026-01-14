@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using Backend.Dtos.UserDtos;
 using Backend.Entities;
 using Backend.Mapping;
@@ -27,6 +28,7 @@ namespace Backend.Services.UserService
 
             return Response("Success", "Registration successful. Please verify your email.");
         }
+
 
         // Allows user to verify their email using an OTP
         public async Task<Dictionary<string, object>> VerifyEmailAsync(string email, string otp)
@@ -62,6 +64,7 @@ namespace Backend.Services.UserService
             return Response("Success", "Logged in");
         }
 
+
         // Logout user
         public async Task<Dictionary<string, object>> LogoutAsync(int id)
         {
@@ -71,6 +74,72 @@ namespace Backend.Services.UserService
             // Later just remove the access token
             return Response("Success", "logged out");
         }
+
+
+        // Updates the users basic information
+        public async Task<Dictionary<string, object>> UpdateProfileAsync(int id, UpdateProfileDto newProfile)
+        {
+            User? user = await userRepository.GetUserByIdAsync(id);
+            if (user == null) return Response("Error", "User not found");
+
+            // update first name
+            if (user.FirstName != newProfile.FirstName && newProfile.FirstName != "") user.FirstName = newProfile.FirstName;
+
+            // update last name
+            if (user.LastName != newProfile.LastName && newProfile.LastName != "") user.LastName = newProfile.LastName;
+
+            // Update phone number
+            if (user.Phone != newProfile.Phone && ValidatePhoneNumber(newProfile.Phone)) user.Phone = newProfile.Phone;
+
+            await userRepository.SaveChanges();
+
+            return Response("Success", "Profile updated");
+
+        }
+
+
+        // Gets the user's profile
+        public async Task<Dictionary<string, object>> GetProfile(int id)
+        {
+            User? user = await userRepository.GetUserByIdAsync(id);
+            if (user == null) return Response("Error", "User not found");
+
+            return Response("Success", user.ToProfileDto());
+        }
+
+        // Allows user to request a password reset
+        public async Task<Dictionary<string, object>> ForgotPasswordAsync(string email)
+        {
+            User? user = await userRepository.GetUserByEmailAsync(email);
+            if (user == null && !user.Active) return Response("Error", "If the email exists, a password reset link has been sent.");
+
+            user.PasswordToken = GenerateSecureToken();
+            user.PasswordTokenExpiration = DateTime.UtcNow.AddMinutes(15);
+            await userRepository.SaveChanges();
+
+            // Send the email to the user
+            await emailService.SendPasswordResetEmailAsync(user.Email, user.PasswordToken);
+
+            return Response("Success", "If the email exists, a password reset link has been sent.");
+
+        }
+
+
+        // Allows users to reset their password
+        public async Task<Dictionary<string, object>> ResetPasswordAsync(string token, ResetPasswordDto newPassword)
+        {
+            User? user = await userRepository.GetUserByPasswordToken(token);
+            if (user == null) return Response("Error", "Token expired");
+
+            user.PasswordHash = newPassword.Password;
+            userRepository.SaveChanges();
+
+            user.PasswordToken = "";
+            await LogoutAsync(user.Id);
+
+            return Response("Success", "Password reset successfully. Please log in again.");
+        }
+
 
         // ----- HELPER METHODS ----- //
 
@@ -87,6 +156,7 @@ namespace Backend.Services.UserService
             return response;
         }
 
+
         /*
          * Validates south african number
         */
@@ -95,6 +165,16 @@ namespace Backend.Services.UserService
             string pattern = @"^(?:\+27|0)(6|7|8)\d{8}$";
             Regex regex = new Regex(pattern);
             return regex.IsMatch(num);
+        }
+
+        private string GenerateSecureToken(int size = 32)
+        {
+            // Generate random bytes
+            byte[] randomBytes = new byte[size];
+            RandomNumberGenerator.Fill(randomBytes);
+
+            // Convert the bytes to a Base64 string (which is URL-safe and compact)
+            return Convert.ToBase64String(randomBytes);
         }
     }
 }

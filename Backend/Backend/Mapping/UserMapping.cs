@@ -20,5 +20,15 @@ namespace Backend.Mapping
                 OtpExpirationTime = DateTime.UtcNow.AddMinutes(30)
             };
         }
+
+        public static ProfileDto ToProfileDto(this User user)
+        {
+            return new ProfileDto()
+            {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Phone = user.Phone,
+            };
+        }
     }
 }

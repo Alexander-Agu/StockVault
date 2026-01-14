@@ -2,9 +2,13 @@
 {
     public interface IEmailService
     {
-        // Sends an email to users or admins
-        public Task VerificationMailAsync(string toEmail, string subject, string htmlMessage);
+        // Creates an email service to allow sending emails
+        public Task EMailAsync(string toEmail, string subject, string htmlMessage);
 
+        // Sends an email verification email
         public Task SendOtpEmailAsync(string email, string otp);
+
+        // Sends a forgotten password email
+        public Task SendPasswordResetEmailAsync(string email, string resetToken);
     }
 }
