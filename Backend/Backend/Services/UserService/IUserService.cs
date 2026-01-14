@@ -12,24 +12,24 @@ namespace Backend.Services.UserService
          *  2. Email must be unique
          *  3. Password must meet a requirements and must be hashed
          */
-        public Task<bool> RegisterUserAsync(CreateUserDto newUser);
+        public Task<Dictionary<string, object>> RegisterUserAsync(CreateUserDto newUser);
 
 
         /*
          * TODO: Uses OTP to verify user's email
          */
-        public Task<bool> VerifyEmailAsync(string email, string otp);
+        public Task<Dictionary<string, object>> VerifyEmailAsync(string email, string otp);
 
 
         /*
          * TODO: Logs user into their account
          */
-        public Task<bool> LoginAsync(LoginDto login);
+        public Task<Dictionary<string, object>> LoginAsync(LoginDto login);
 
 
         /*
          * TODO: Logs user out of their account
          */
-        public Task<bool> LogoutAsync(int id);
+        public Task<Dictionary<string, object>> LogoutAsync(int id);
     }
 }

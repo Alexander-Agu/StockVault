@@ -1,4 +1,5 @@
-﻿using Backend.Dtos.UserDtos;
+﻿using System.Text.RegularExpressions;
+using Backend.Dtos.UserDtos;
 using Backend.Entities;
 using Backend.Mapping;
 using Backend.Repository.UserRepository;
@@ -10,10 +11,10 @@ namespace Backend.Services.UserService
     {
         // Regitser's user by saving their data in the DB
         // And sends back a verifiction email
-        public async Task<bool> RegisterUserAsync(CreateUserDto newUser)
+        public async Task<Dictionary<string, object>> RegisterUserAsync(CreateUserDto newUser)
         {
             // Checks if email already exists
-            if (!await userRepository.EmailExistsAsync(newUser.Email)) return false;
+            if (!await userRepository.EmailExistsAsync(newUser.Email)) return Response("Error", "Please enter a valid email");
 
             User user = newUser.ToEntity();
 
@@ -24,48 +25,76 @@ namespace Backend.Services.UserService
             // Once information is verified send an email to activate user's account
             await emailService.SendOtpEmailAsync(user.Email, user.Otp);
 
-            return true;
+            return Response("Success", "Registration successful. Please verify your email.");
         }
 
         // Allows user to verify their email using an OTP
-        public async Task<bool> VerifyEmailAsync(string email, string otp)
+        public async Task<Dictionary<string, object>> VerifyEmailAsync(string email, string otp)
         {
             User? user = await userRepository.GetUserByEmailAsync(email);
 
-            if (user == null) return false;
+            if (user == null) return Response("Error", "Please enter a valid email");
 
             // Validate user's OTP
             bool verify = otp == user.Otp && user.OtpExpirationTime < DateTime.UtcNow;
-            if (!verify) return false;
+            if (!verify) return Response("Error", "OTP has expired, please request a new one");
 
             // If OTP is valid
             user.Active = true;
             await userRepository.SaveChanges();
 
-            return true;
+            return Response("Success", "Email has been varified");
         }
 
 
         // Login user
-        public async Task<bool> LoginAsync(LoginDto login)
+        public async Task<Dictionary<string, object>> LoginAsync(LoginDto login)
         {
             User? user = await userRepository.GetUserByEmailAsync(login.Email);
-            if (user == null) return false;
+            if (user == null) return Response("Error", "Invalid email or password");
+
+            // Check if password is valid
+            if (user.PasswordHash != login.Password) return Response("Error", "Invalid email or password");
 
             // Check if user's email has been varified
-            if (!user.Active) return false;
+            if (!user.Active) return Response("Error", "Invalid email or password");
 
-            return true;
+            return Response("Success", "Logged in");
         }
 
         // Logout user
-        public async Task<bool> LogoutAsync(int id)
+        public async Task<Dictionary<string, object>> LogoutAsync(int id)
         {
             User? User = await userRepository.GetUserByIdAsync(id);
-            if (User == null) return false;
+            if (User == null) return Response("Error", "Failed to logoud");
 
             // Later just remove the access token
-            return true;
+            return Response("Success", "logged out");
+        }
+
+        // ----- HELPER METHODS ----- //
+
+
+        /*
+         * Creates a response message and returns it
+        */
+        private Dictionary<string, object> Response(string result, object message)
+        {
+            Dictionary<string, object> response = new Dictionary<string, object>();
+
+            response.Add("result", result);
+            response.Add("message", message);
+            return response;
+        }
+
+        /*
+         * Validates south african number
+        */
+        private bool ValidatePhoneNumber(string num)
+        {
+            string pattern = @"^(?:\+27|0)(6|7|8)\d{8}$";
+            Regex regex = new Regex(pattern);
+            return regex.IsMatch(num);
         }
     }
 }

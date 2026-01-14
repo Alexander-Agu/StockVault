@@ -18,6 +18,6 @@ namespace Backend.Dtos.UserDtos
             @"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).+$",
             ErrorMessage = "Password must contain uppercase, lowercase, number, and special character."
             )]
-        public string PasswordHash { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }
