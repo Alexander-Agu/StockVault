@@ -1,5 +1,6 @@
 ﻿using Backend.Dtos.UserDtos;
 using Backend.Entities;
+using System.Security.Cryptography;
 
 namespace Backend.Mapping
 {
@@ -15,6 +16,8 @@ namespace Backend.Mapping
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash),
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
+                Otp = RandomNumberGenerator.GetInt32(100000, 1000000).ToString(),
+                OtpExpirationTime = DateTime.UtcNow.AddMinutes(30)
             };
         }
     }

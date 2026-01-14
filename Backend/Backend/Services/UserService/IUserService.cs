@@ -13,5 +13,11 @@ namespace Backend.Services.UserService
          *  3. Password must meet a requirements and must be hashed
          */
         public Task<bool> RegisterUserAsync(CreateUserDto newUser);
+
+
+        /*
+         * TODO: Uses OTP to verify user's email
+         */
+        public Task<bool> VerifyEmailAsync(string email, string otp);
     }
 }

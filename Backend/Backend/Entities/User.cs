@@ -12,8 +12,9 @@
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
-        public bool active { get; set; } = false;
-        public string otp { get; set; } = string.Empty;
+        public bool Active { get; set; } = false;
+        public string Otp { get; set; } = string.Empty;
+        public DateTime OtpExpirationTime { get; set; }
         
     }
 }
