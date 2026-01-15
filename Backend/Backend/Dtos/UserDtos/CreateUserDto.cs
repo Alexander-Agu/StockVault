@@ -17,7 +17,7 @@ namespace Backend.Dtos.UserDtos
         [EmailAddress]
         public required string Email { get; set; } = string.Empty;
 
-        [Required]
+        //[Required]
         [StringLength(10, MinimumLength = 9)]
         public string Phone { get; set; } = string.Empty;
 

@@ -15,7 +15,7 @@ namespace Backend.Services.UserService
         public async Task<Dictionary<string, object>> RegisterUserAsync(CreateUserDto newUser)
         {
             // Checks if email already exists
-            if (!await userRepository.EmailExistsAsync(newUser.Email)) return Response("Error", "Please enter a valid email");
+            if (await userRepository.EmailExistsAsync(newUser.Email)) return Response("Error", "Please enter a valid email");
 
             User user = newUser.ToEntity();
 

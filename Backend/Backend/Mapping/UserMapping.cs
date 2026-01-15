@@ -12,6 +12,7 @@ namespace Backend.Mapping
             {
                 FirstName = user.FirstName,
                 LastName = user.LastName,
+                Email = user.Email,
                 Phone = user.Phone,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash),
                 CreatedAt = DateTime.UtcNow,
