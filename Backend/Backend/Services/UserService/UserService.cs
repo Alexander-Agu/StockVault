@@ -38,7 +38,7 @@ namespace Backend.Services.UserService
             if (user == null) return Response("Error", "Please enter a valid email");
 
             // Validate user's OTP
-            bool verify = otp == user.Otp && user.OtpExpirationTime < DateTime.UtcNow;
+            bool verify = otp == user.Otp && user.OtpExpirationTime < DateTime.Now;
             if (!verify) return Response("Error", "OTP has expired, please request a new one");
 
             // If OTP is valid
