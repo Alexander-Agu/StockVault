@@ -47,7 +47,7 @@ namespace Backend.Services.UserService
         /*
          * TODO: Gets the user's data
          */
-        public Task<Dictionary<string, object>> GetProfile(int id);
+        public Task<Dictionary<string, object>> GetProfileAsync(int id);
 
 
         /*

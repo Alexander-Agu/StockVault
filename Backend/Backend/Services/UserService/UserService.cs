@@ -99,7 +99,7 @@ namespace Backend.Services.UserService
 
 
         // Gets the user's profile
-        public async Task<Dictionary<string, object>> GetProfile(int id)
+        public async Task<Dictionary<string, object>> GetProfileAsync(int id)
         {
             User? user = await userRepository.GetUserByIdAsync(id);
             if (user == null) return Response("Error", "User not found");

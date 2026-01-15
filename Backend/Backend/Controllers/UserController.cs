@@ -55,5 +55,29 @@ namespace Backend.Controllers
 
             return Ok(response);
         }
+
+        
+        // Lets user's update their profile
+        [HttpPut("profile/{userId}")]
+        public async Task<ActionResult<Dictionary<string, object>>> UpdateUserProfileAsync(int userId, [FromBody] UpdateProfileDto profile)
+        {
+            var response = await userService.UpdateProfileAsync(userId, profile);
+
+            if (response["result"] == "Error") return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        
+        // Fetches the user's profile
+        [HttpGet("profile/{userId}")]
+        public async Task<ActionResult<Dictionary<string, object>>> GetUserProfileAsync(int userId)
+        {
+            var response = await userService.GetProfileAsync(userId);
+
+            if (response["result"] == "Error") return BadRequest(response);
+
+            return Ok(response);
+        }
     }
 }
