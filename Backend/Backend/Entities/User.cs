@@ -18,6 +18,11 @@
         public bool Active { get; set; } = false;
         public string Otp { get; set; } = string.Empty;
         public DateTime OtpExpirationTime { get; set; }
+
+
+        // Relationships
+        public int PersonalAccountId { get; set; } // A user can have multiple personal account
+        public List<PersonalAccount>? PersonalAccounts { get; set; }
         
     }
 }
