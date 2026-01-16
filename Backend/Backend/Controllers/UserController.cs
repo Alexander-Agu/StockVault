@@ -79,5 +79,29 @@ namespace Backend.Controllers
 
             return Ok(response);
         }
+
+        
+        // Send's an email to the user to request a password change
+        [HttpPost("forgot-password/")]
+        public async Task<ActionResult<Dictionary<string, object>>> ForgotUserPasswordAsync([FromQuery] string email)
+        {
+            var response = await userService.ForgotPasswordAsync(email);
+
+            if (response["result"] == "Error") return BadRequest(response);
+
+            return Ok(response);
+        }
+
+        
+        // Allows users to reset their password
+        [HttpPut("reset-password/")]
+        public async Task<ActionResult<Dictionary<string, object>>> ResetUserPasswordAsync([FromQuery] string token, [FromBody] ResetPasswordDto newPassword)
+        {
+            var response = await userService.ResetPasswordAsync(token, newPassword);
+
+            if (response["result"] == "Error") return BadRequest(response);
+
+            return Ok(response);
+        }
     }
 }

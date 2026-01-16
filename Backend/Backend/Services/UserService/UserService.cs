@@ -107,6 +107,7 @@ namespace Backend.Services.UserService
             return Response("Success", user.ToProfileDto());
         }
 
+
         // Allows user to request a password reset
         public async Task<Dictionary<string, object>> ForgotPasswordAsync(string email)
         {
