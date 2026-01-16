@@ -1,0 +1,65 @@
+﻿using Backend.Dtos.AccountDtos;
+using Backend.Dtos.AccountLockDtos;
+
+namespace Backend.Services.PersonalAccountService
+{
+    public interface IPersonalAccountService
+    {
+        /*
+         * TODO: Allows users to create a personal account
+         * 
+         * Constraints:
+         *  * User must exists and be aunthorized
+         *  * Balance must start at Zero
+         */
+        public Task<Dictionary<string, object>> CreatePersonalAccountAsync(int userId, CreateAccountDto newAccount);
+        
+
+        /*
+         * TODO: Allows a user to get all their personal account
+         */
+        public Task<List<Dictionary<string, object>>> GetAllPersonalAccountsAsync(int userId);
+
+
+        /*
+         * TODO: Allows a user to get one of their accounts
+         */
+        public Task<Dictionary<string, object>> GetPersonalAccount(int userId, int accountId);
+
+
+        /*
+         * TODO: Allows user to deposit funds into their account
+         * 
+         * Condition
+         *  1. Money must be converted to sends before being saved to the database
+         */
+        public Task<Dictionary<string, object>> DepositAsync(int userId, int accountId, DepositDto amount);
+
+
+        /*
+         * TODO: Allows user's to widthdraw funds from their account
+         * 
+         * Conditions:
+         * 1. Account must not be locked
+         * 2. Money must be converted back to cents before updating the database
+         * 3. Fails if user does not have enough funds
+         */
+        public Task<Dictionary<string, object>> WidthdrawAsync(int userId, int accountId, WidthdrawDto ammount);
+
+
+        /*
+         * TODO: Allows user's to set lock rules for their account
+         * 
+         * Conditions:
+         * 1. Cannot shorten or extend an existing lock
+         * 2. Lock autometically expires
+         */
+        public Task<Dictionary<string, object>> LockAccountAsync(int userId, int accountId, LockAccountDto accountLock);
+
+
+        /*
+         * TODO: Allows user to get their lock account details
+         */
+        public Task<Dictionary<string, object>> GetAccountLockAsync(int userId, int accountId, int lockId);
+    }
+}

@@ -14,6 +14,8 @@ namespace Backend.Repository.Data
         // public DbSet<JointAccount> JointAccounts { get; set; }
         // public DbSet<Payment> Payments { get; set; }
         public DbSet<User> Users => Set<User>();
+        public DbSet<PersonalAccount> PersonalAccounts => Set<PersonalAccount>();
+        public DbSet<AccountLocks> AccountLocks => Set<AccountLocks>();
 
 
         // Fluent API
