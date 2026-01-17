@@ -27,8 +27,8 @@ namespace Backend.Repository.PersonalAccountRespository
                     Title = a.Title,
                     Balance = a.Balance,
                     CreatedAt = a.CreatedAt,
-                    LockedUntil = a.AccountLock.LockedUntil,
-                    IsActive = a.AccountLock.LockedUntil < DateTime.Now
+                    LockedUntil = a.AccountLock != null? a.AccountLock.LockedUntil : DateTime.Today,
+                    IsActive = a.AccountLock != null ? a.AccountLock.LockedUntil < DateTime.Now : false,
                 })
                 .ToListAsync();
         }
@@ -50,8 +50,8 @@ namespace Backend.Repository.PersonalAccountRespository
                     Title = a.Title,
                     Balance = a.Balance,
                     CreatedAt = a.CreatedAt,
-                    LockedUntil = a.AccountLock.LockedUntil,
-                    IsActive = a.AccountLock.LockedUntil < DateTime.Now
+                    LockedUntil = a.AccountLock != null ? a.AccountLock.LockedUntil : DateTime.Today,
+                    IsActive = a.AccountLock != null ? a.AccountLock.LockedUntil < DateTime.Now : false,
                 })
                 .FirstOrDefaultAsync();
         }
