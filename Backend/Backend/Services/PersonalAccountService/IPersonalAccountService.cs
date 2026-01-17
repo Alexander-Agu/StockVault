@@ -44,7 +44,7 @@ namespace Backend.Services.PersonalAccountService
          * 2. Money must be converted back to cents before updating the database
          * 3. Fails if user does not have enough funds
          */
-        public Task<Dictionary<string, object>> WidthdrawAsync(int userId, int accountId, WidthdrawDto ammount);
+        public Task<Dictionary<string, object>> WidthdrawAsync(int userId, int accountId, WidthdrawDto amount);
 
 
         /*
