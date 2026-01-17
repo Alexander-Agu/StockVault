@@ -1,5 +1,7 @@
 ﻿using Backend.Dtos.AccountDtos;
 using Backend.Dtos.AccountLockDtos;
+using Backend.Dtos.PersonalAccountDtos;
+using Backend.Dtos.ResponseDto;
 
 namespace Backend.Services.PersonalAccountService
 {
@@ -12,19 +14,19 @@ namespace Backend.Services.PersonalAccountService
          *  * User must exists and be aunthorized
          *  * Balance must start at Zero
          */
-        public Task<Dictionary<string, object>> CreatePersonalAccountAsync(int userId, CreateAccountDto newAccount);
+        public Task<ApiResponse<PersonalAccountDto>> CreatePersonalAccountAsync(int userId, CreateAccountDto newAccount);
         
 
         /*
          * TODO: Allows a user to get all their personal account
          */
-        public Task<List<Dictionary<string, object>>> GetAllPersonalAccountsAsync(int userId);
+        public Task<ApiResponse<List<PersonalAccountDto>>> GetAllPersonalAccountsAsync(int userId);
 
 
         /*
          * TODO: Allows a user to get one of their accounts
          */
-        public Task<Dictionary<string, object>> GetPersonalAccount(int userId, int accountId);
+        public Task<ApiResponse<PersonalAccountDto>> GetPersonalAccount(int userId, int accountId);
 
 
         /*
@@ -33,7 +35,7 @@ namespace Backend.Services.PersonalAccountService
          * Condition
          *  1. Money must be converted to sends before being saved to the database
          */
-        public Task<Dictionary<string, object>> DepositAsync(int userId, int accountId, DepositDto amount);
+        public Task<ApiResponse<PersonalAccountDto>> DepositAsync(int userId, int accountId, DepositDto amount);
 
 
         /*
@@ -44,7 +46,7 @@ namespace Backend.Services.PersonalAccountService
          * 2. Money must be converted back to cents before updating the database
          * 3. Fails if user does not have enough funds
          */
-        public Task<Dictionary<string, object>> WidthdrawAsync(int userId, int accountId, WidthdrawDto amount);
+        public Task<ApiResponse<PersonalAccountDto>> WidthdrawAsync(int userId, int accountId, WidthdrawDto amount);
 
 
         /*
@@ -54,12 +56,12 @@ namespace Backend.Services.PersonalAccountService
          * 1. Cannot shorten or extend an existing lock
          * 2. Lock autometically expires
          */
-        public Task<Dictionary<string, object>> LockAccountAsync(int userId, int accountId, LockAccountDto accountLock);
+        public Task<ApiResponse<PersonalAccountDto>> LockAccountAsync(int userId, int accountId, LockAccountDto accountLock);
 
 
         /*
          * TODO: Allows user to get their lock account details
          */
-        public Task<Dictionary<string, object>> GetAccountLockAsync(int userId, int accountId, int lockId);
+        //public Task<Dictionary<string, object>> GetAccountLockAsync(int userId, int accountId, int lockId);
     }
 }

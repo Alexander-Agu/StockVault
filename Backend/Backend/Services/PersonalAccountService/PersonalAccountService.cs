@@ -1,5 +1,8 @@
-﻿using Backend.Dtos.AccountDtos;
+﻿using System.Collections.Generic;
+using Backend.Dtos.AccountDtos;
 using Backend.Dtos.AccountLockDtos;
+using Backend.Dtos.PersonalAccountDtos;
+using Backend.Dtos.ResponseDto;
 using Backend.Entities;
 using Backend.Mapping;
 using Backend.Repository.AccountLocksRepository;
@@ -14,11 +17,24 @@ namespace Backend.Services.PersonalAccountService
         IAccountRepositoryLocks lockRep) : IPersonalAccountService
     {
         // Allows user's to create a personal account
-        public async Task<Dictionary<string, object>> CreatePersonalAccountAsync(int userId, CreateAccountDto newAccount)
+        public async Task<ApiResponse<PersonalAccountDto>> CreatePersonalAccountAsync(int userId, CreateAccountDto newAccount)
         {
+            ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
+            {
+                Success = true,
+                Message = "Personal account created",
+                Data = null
+            };
+
             // Check if user exists
             User? user = await userRep.GetUserByIdAsync(userId);
-            if (user == null) return Response("Error", "User not found");
+            if (user == null)
+            {
+                response.Success = false;
+                response.Message = "User not found!";
+
+                return response;
+            }
 
             // Create user to personal relationship
             PersonalAccount account = newAccount.ToEntity();
@@ -27,59 +43,141 @@ namespace Backend.Services.PersonalAccountService
             await accountRep.AddPersonalAccountAsync(account);
             await accountRep.SaveChangesAsync();
 
-            return Response("Success", account);
+            // After saving new acccount return it
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+
+            return response;
         }
 
 
         // Allows users to deposit money into their account
-        public async Task<Dictionary<string, object>> DepositAsync(int userId, int accountId, DepositDto amount)
+        public async Task<ApiResponse<PersonalAccountDto>> DepositAsync(int userId, int accountId, DepositDto amount)
         {
-            // Check if user exists
-            User? user = await userRep.GetUserByIdAsync(userId);
-            if (user == null) return Response("Error", "User not found");
+            ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
+            {
+                Success = true,
+                Message = "Amount was successfully deposited",
+                Data = null
+            };
 
+            // Checks if account exists
             PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
+            if (account == null)
+            {
+                response.Success = false;
+                response.Message = "Account not found";
+
+                return response;
+            }
+
             account.Balance += ToCents(amount.Amount); // Depositing
             await accountRep.SaveChangesAsync();
 
-            return Response("Success", account);
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+
+            return response;
         }
 
-        public async Task<Dictionary<string, object>> GetAccountLockAsync(int userId, int accountId, int lockId)
+
+        // Allows a user to get their account lock details 
+        //public async Task<Dictionary<string, object>> GetAccountLockAsync(int userId, int accountId, int lockId)
+        //{
+        //    // Checks if account lock exists
+        //    AccountLocks? accountLock = await lockRep.GetAccountLockById(accountId, lockId);
+        //    if (accountLock == null) return Response("Error", "Account Lock not found.");
+
+        //    return Response("Success", accountLock);
+        //}
+
+
+        // Allows a user to get all of their personal accounts
+        public async Task<ApiResponse<List<PersonalAccountDto>>> GetAllPersonalAccountsAsync(int userId)
         {
+            List<PersonalAccountDto>? accounts = await accountRep.GetAllJointTableAccountsAsync(userId);
+            return new ApiResponse<List<PersonalAccountDto>>
+            {
+                Success = true,
+                Message = "Accounts fetched",
+                Data = accounts
+            };
+        }
+
+
+        // Allows user to fetch their personal account data
+        public async Task<ApiResponse<PersonalAccountDto>> GetPersonalAccount(int userId, int accountId)
+        {
+            ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
+            {
+                Success = true,
+                Message = "Account found",
+                Data = null
+            };
+
+
+            // Checks if account exists
+            PersonalAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId);
+            if (account == null)
+            {
+                response.Success = false;
+                response.Message = "Account not found";
+
+                return response;
+            }
+            else response.Data = account;
+
+            return response;
+        }
+
+        public async Task<ApiResponse<PersonalAccountDto>> LockAccountAsync(int userId, int accountId, LockAccountDto accountLock)
+        {
+            ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
+            {
+                Success = true,
+                Message = "Account locked",
+                Data = null
+            };
+
+            // Check if account exists
             PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
-            if (account == null) return Response("Error", "Account not found.");
+            if (account == null)
+            {
+                response.Success = false;
+                response.Message = "Failed to lock account";
 
-            AccountLocks? accountLock = await lockRep.GetAccountLockById(accountId, lockId);
-            if (accountLock == null) return Response("Error", "Account Lock not found.");
+                return response;
+            }
 
-            return Response("Success", accountLock);
-        }
+            AccountLocks? accountLocks = accountLock.ToEntity();
+            accountLocks.PersonalAccountId = accountId;
 
-        public Task<List<Dictionary<string, object>>> GetAllPersonalAccountsAsync(int userId)
-        {
-            throw new NotImplementedException();
-        }
+            await lockRep.AddAccountLockAsync(accountLocks);
+            await lockRep.SaveChangesAsync();
 
-        public Task<Dictionary<string, object>> GetPersonalAccount(int userId, int accountId)
-        {
-            throw new NotImplementedException();
-        }
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
 
-        public Task<Dictionary<string, object>> LockAccountAsync(int userId, int accountId, LockAccountDto accountLock)
-        {
-            throw new NotImplementedException();
+            return response;
         }
 
 
         // Allows user to widthdraw money from their account
-        public async Task<Dictionary<string, object>> WidthdrawAsync(int userId, int accountId, WidthdrawDto amount)
+        public async Task<ApiResponse<PersonalAccountDto>> WidthdrawAsync(int userId, int accountId, WidthdrawDto amount)
         {
-            // Check if user exists
-            User? user = await userRep.GetUserByIdAsync(userId);
-            if (user == null) return Response("Error", "User not found");
+            ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
+            {
+                Success = true,
+                Message = "Amount successfully widthdrawed",
+                Data = null
+            };
 
+            // Checks if account exists
             PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
+            if (account == null)
+            {
+                response.Success = false;
+                response.Message = "Account not found";
+
+                return response;
+            }
 
             if (account.Balance - ToCents(amount.Amount) >= 0) // only widthdraw if user has enough funs
             {
@@ -88,11 +186,15 @@ namespace Backend.Services.PersonalAccountService
             }
             else
             {
-                return Response("Error", "Not enough funds");
+                response.Success = false;
+                response.Message = "Not enough funds";
+
+                return response;
             }
+            
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
 
-
-            return Response("Success", account);
+            return response;
         }
 
 

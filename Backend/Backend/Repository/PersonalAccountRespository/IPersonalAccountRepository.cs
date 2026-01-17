@@ -1,4 +1,5 @@
-﻿using Backend.Entities;
+﻿using Backend.Dtos.PersonalAccountDtos;
+using Backend.Entities;
 
 namespace Backend.Repository.PersonalAccountRespository
 {
@@ -23,9 +24,21 @@ namespace Backend.Repository.PersonalAccountRespository
 
 
         /*
+         * TODO: Fetches all personal account
+         */
+        public Task<List<PersonalAccountDto>> GetAllJointTableAccountsAsync(int userId);
+
+
+        /*
          * TODO: Fetches a personal account by userId and personalId
          */
         public Task<PersonalAccount> GetPersonalAccountByIdAsync(int userId, int accountId);
+
+
+        /*
+         * TODO: Fetches a personal account by userId and personalId
+         */
+        public Task<PersonalAccountDto> GetJointTableAccountByIdAsync(int userId, int accountId);
 
 
         /*

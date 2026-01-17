@@ -1,4 +1,5 @@
-﻿using Backend.Entities;
+﻿using Backend.Dtos.PersonalAccountDtos;
+using Backend.Entities;
 using Backend.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,14 +17,50 @@ namespace Backend.Repository.PersonalAccountRespository
             await context.PersonalAccounts.Where(p => p.UserId == userId && p.Id == accountId).ExecuteDeleteAsync();
         }
 
-        public Task<List<PersonalAccount>> GetAllPersonalAccountsAsync(int userId)
+        public async Task<List<PersonalAccountDto>> GetAllJointTableAccountsAsync(int userId)
         {
-            throw new NotImplementedException();
+            return await context.PersonalAccounts
+                .Where(a => a.UserId == userId)
+                .Select(a => new PersonalAccountDto
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Balance = a.Balance,
+                    CreatedAt = a.CreatedAt,
+                    LockedUntil = a.AccountLock.LockedUntil,
+                    IsActive = a.AccountLock.LockedUntil < DateTime.Now
+                })
+                .ToListAsync();
+        }
+
+        public async Task<List<PersonalAccount>> GetAllPersonalAccountsAsync(int userId)
+        {
+            return await context.PersonalAccounts
+                .Where(a => a.UserId == userId)
+                .ToListAsync();
+        }
+
+        public async Task<PersonalAccountDto> GetJointTableAccountByIdAsync(int userId, int accountId)
+        {
+            return await context.PersonalAccounts
+                .Where(a => a.UserId == userId && a.Id == accountId)
+                .Select(a => new PersonalAccountDto
+                {
+                    Id = a.Id,
+                    Title = a.Title,
+                    Balance = a.Balance,
+                    CreatedAt = a.CreatedAt,
+                    LockedUntil = a.AccountLock.LockedUntil,
+                    IsActive = a.AccountLock.LockedUntil < DateTime.Now
+                })
+                .FirstOrDefaultAsync();
         }
 
         public async Task<PersonalAccount> GetPersonalAccountByIdAsync(int userId, int accountId)
         {
-            return await context.PersonalAccounts.Where(p => p.UserId == userId && p.Id == accountId).FirstOrDefaultAsync();
+            return await context.PersonalAccounts
+                .Where(a => a.UserId == userId && a.Id == accountId)
+                .FirstOrDefaultAsync();
         }
 
         public async Task SaveChangesAsync()
