@@ -45,5 +45,11 @@ namespace Backend.Repository.PersonalAccountRespository
          * TODO: Allows a user to delete a personal account
          */
         public Task DeletePersonalAccountByIdAsync(int userId, int accountId);
+
+
+        /*
+         * TODO: Allows user to get account by Id
+         */
+        public Task<bool> PersonalAccountExist(int userId, string title);
     }
 }

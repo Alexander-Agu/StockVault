@@ -22,17 +22,23 @@ namespace Backend.Repository.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // User one-to-many PersonalAccount relationship
-            modelBuilder.Entity<User>()
-                .HasMany(p => p.PersonalAccounts)   // One User has many personal account
-                .WithOne(u => u.User)               // One post has one user
-                .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+            //modelBuilder.Entity<User>()
+            //    .HasMany(p => p.PersonalAccounts)   // One User has many personal account
+            //    .WithOne(u => u.User)               // One post has one user
+            //    .HasForeignKey(p => p.UserId)
+            //    .OnDelete(DeleteBehavior.Cascade);
 
             // PersonalAccount one-to-one AccountLocks Relationships
             modelBuilder.Entity<PersonalAccount>()
                 .HasOne(a => a.AccountLock)         // A Lock can have only belong to one personal account
                 .WithOne(p => p.PersonalAccount)    // One personal account has one lock
-                .HasForeignKey<PersonalAccount>(p => p.Id)
+                .HasForeignKey<AccountLocks>(p => p.PersonalAccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PersonalAccount>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.PersonalAccounts)
+                .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

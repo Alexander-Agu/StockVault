@@ -8,6 +8,7 @@ using Backend.Mapping;
 using Backend.Repository.AccountLocksRepository;
 using Backend.Repository.PersonalAccountRespository;
 using Backend.Repository.UserRepository;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Backend.Services.PersonalAccountService
 {
@@ -36,9 +37,19 @@ namespace Backend.Services.PersonalAccountService
                 return response;
             }
 
+
+
             // Create user to personal relationship
             PersonalAccount account = newAccount.ToEntity();
             account.UserId = userId;
+
+            if (await accountRep.PersonalAccountExist(userId, account.Title))
+            {
+                response.Success = false;
+                response.Message = "Please choose a unique name for your account";
+
+                return response;
+            }
 
             await accountRep.AddPersonalAccountAsync(account);
             await accountRep.SaveChangesAsync();
@@ -93,13 +104,25 @@ namespace Backend.Services.PersonalAccountService
         // Allows a user to get all of their personal accounts
         public async Task<ApiResponse<List<PersonalAccountDto>>> GetAllPersonalAccountsAsync(int userId)
         {
-            List<PersonalAccountDto>? accounts = await accountRep.GetAllJointTableAccountsAsync(userId);
-            return new ApiResponse<List<PersonalAccountDto>>
-            {
+            ApiResponse<List<PersonalAccountDto>> response = new ApiResponse<List<PersonalAccountDto>>() {
                 Success = true,
                 Message = "Accounts fetched",
-                Data = accounts
+                Data = null
             };
+
+            User? user = await userRep.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                response.Success = false;
+                response.Message = "Account not found";
+
+                return response;
+            }
+
+
+            List<PersonalAccountDto>? accounts = await accountRep.GetAllJointTableAccountsAsync(userId);
+            response.Data = accounts;
+            return response;
         }
 
 
@@ -142,13 +165,22 @@ namespace Backend.Services.PersonalAccountService
             if (account == null)
             {
                 response.Success = false;
-                response.Message = "Failed to lock account";
+                response.Message = "Failed to lock account because account does not exist";
+
+                return response;
+            }
+
+            AccountLocks? findAccount = await lockRep.FindAccountLockByAccountId(accountId);
+            if (findAccount != null)
+            {
+                response.Success = false;
+                response.Message = "Lock already exists";
 
                 return response;
             }
 
             AccountLocks? accountLocks = accountLock.ToEntity();
-            accountLocks.PersonalAccountId = accountId;
+            accountLocks.PersonalAccountId = account.Id;
 
             await lockRep.AddAccountLockAsync(accountLocks);
             await lockRep.SaveChangesAsync();
@@ -181,7 +213,7 @@ namespace Backend.Services.PersonalAccountService
 
             if (account.Balance - ToCents(amount.Amount) >= 0) // only widthdraw if user has enough funs
             {
-                account.Balance += ToCents(amount.Amount); // widthdrawing
+                account.Balance -= ToCents(amount.Amount); // widthdrawing
                 await accountRep.SaveChangesAsync();
             }
             else
@@ -217,7 +249,7 @@ namespace Backend.Services.PersonalAccountService
         /*
          * TODO: Converts float/rands to cents
          */
-        private int ToCents(float amount)
+        private int ToCents(decimal amount)
         {
             return (int)Math.Round(amount * 100);
         }

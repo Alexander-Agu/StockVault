@@ -20,5 +20,11 @@ namespace Backend.Repository.AccountLocksRepository
          * TODO: Fetches an account lock by using the userId, personalId and accountId
          */
         public Task<AccountLocks> GetAccountLockById(int accountId, int lockId);
+
+
+        /*
+         * TODO: Fetches an account lock by using its title
+         */
+        public Task<AccountLocks> FindAccountLockByAccountId(int accountId);
     }
 }

@@ -11,6 +11,11 @@ namespace Backend.Repository.AccountLocksRepository
             await context.AccountLocks.AddAsync(accountLock);
         }
 
+        public async Task<AccountLocks> FindAccountLockByAccountId(int accountId)
+        {
+            return await context.AccountLocks.Where(a => a.PersonalAccountId == accountId).FirstOrDefaultAsync();
+        }
+
         public async Task<AccountLocks> GetAccountLockById(int accountId, int lockId)
         {
             return await context.AccountLocks

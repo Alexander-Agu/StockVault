@@ -21,8 +21,7 @@
 
 
         // Relationships
-        public int PersonalAccountId { get; set; } // A user can have multiple personal account
-        public List<PersonalAccount>? PersonalAccounts { get; set; }
+        public List<PersonalAccount> PersonalAccounts { get; set; } = new();
         
     }
 }

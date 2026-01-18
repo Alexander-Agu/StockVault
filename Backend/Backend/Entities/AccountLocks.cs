@@ -3,7 +3,7 @@
     public class AccountLocks
     {
         public int Id { get; set; }
-        public DateTime LockedUntil { get; set; }
+        public DateOnly LockedUntil { get; set; }
         public bool Active { get; set; }
 
 

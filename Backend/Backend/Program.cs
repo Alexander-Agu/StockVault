@@ -1,6 +1,10 @@
 using System;
+using Backend.Entities;
+using Backend.Repository.AccountLocksRepository;
 using Backend.Repository.Data;
+using Backend.Repository.PersonalAccountRespository;
 using Backend.Repository.UserRepository;
+using Backend.Services.PersonalAccountService;
 using Backend.Services.UserService;
 using FIN.Service.EmailServices;
 using Microsoft.EntityFrameworkCore;
@@ -18,9 +22,15 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<StockVaultContext>(options =>
     options.UseSqlite(connectionString));
 
+// Registering dependency injection services
 builder.Services.AddScoped<IUserService,  UserService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+builder.Services.AddScoped<IPersonalAccountService, PersonalAccountService>();
+builder.Services.AddScoped<IPersonalAccountRepository, PersonalAccountRepository>();
+builder.Services.AddScoped<IAccountRepositoryLocks, AccountLocksRepository>();
+
 
 var app = builder.Build();
 

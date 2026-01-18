@@ -7,7 +7,7 @@
         public int Balance { get; set; }
         public DateTime CreatedAt { get; set; }
 
-        public DateTime LockedUntil { get; set; }
+        public DateOnly LockedUntil { get; set; }
         public bool IsActive { get; set; }
     }
 }

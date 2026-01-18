@@ -5,6 +5,6 @@ namespace Backend.Dtos.AccountDtos
     public class DepositDto
     {
         [Required]
-        public float Amount { get; set; }
+        public decimal Amount { get; set; }
     }
 }

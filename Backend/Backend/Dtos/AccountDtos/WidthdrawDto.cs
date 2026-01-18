@@ -5,6 +5,6 @@ namespace Backend.Dtos.AccountDtos
     public class WidthdrawDto
     {
         [Required]
-        public float Amount { get; set; }
+        public decimal Amount { get; set; }
     }
 }

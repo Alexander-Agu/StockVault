@@ -25,10 +25,10 @@ namespace Backend.Repository.PersonalAccountRespository
                 {
                     Id = a.Id,
                     Title = a.Title,
-                    Balance = a.Balance,
+                    Balance = a.Balance / 100,
                     CreatedAt = a.CreatedAt,
-                    LockedUntil = a.AccountLock != null? a.AccountLock.LockedUntil : DateTime.Today,
-                    IsActive = a.AccountLock != null ? a.AccountLock.LockedUntil < DateTime.Now : false,
+                    LockedUntil = a.AccountLock != null? a.AccountLock.LockedUntil : DateOnly.FromDateTime(DateTime.Today),
+                    IsActive = a.AccountLock != null ? a.AccountLock.LockedUntil > DateOnly.FromDateTime(DateTime.Today) : false,
                 })
                 .ToListAsync();
         }
@@ -48,10 +48,10 @@ namespace Backend.Repository.PersonalAccountRespository
                 {
                     Id = a.Id,
                     Title = a.Title,
-                    Balance = a.Balance,
+                    Balance = a.Balance / 100,
                     CreatedAt = a.CreatedAt,
-                    LockedUntil = a.AccountLock != null ? a.AccountLock.LockedUntil : DateTime.Today,
-                    IsActive = a.AccountLock != null ? a.AccountLock.LockedUntil < DateTime.Now : false,
+                    LockedUntil = a.AccountLock != null ? a.AccountLock.LockedUntil : DateOnly.FromDateTime(DateTime.Today),
+                    IsActive = a.AccountLock != null ? a.AccountLock.LockedUntil > DateOnly.FromDateTime(DateTime.Today) : false,
                 })
                 .FirstOrDefaultAsync();
         }
@@ -61,6 +61,11 @@ namespace Backend.Repository.PersonalAccountRespository
             return await context.PersonalAccounts
                 .Where(a => a.UserId == userId && a.Id == accountId)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> PersonalAccountExist(int userId, string title)
+        {
+            return await context.PersonalAccounts.Where(t => t.Title == title && t.UserId == userId).AnyAsync();
         }
 
         public async Task SaveChangesAsync()

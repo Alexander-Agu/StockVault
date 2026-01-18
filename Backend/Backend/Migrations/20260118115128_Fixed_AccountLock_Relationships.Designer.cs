@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(StockVaultContext))]
-    [Migration("20260116071225_Personal_Account_Tables")]
-    partial class Personal_Account_Tables
+    [Migration("20260118115128_Fixed_AccountLock_Relationships")]
+    partial class Fixed_AccountLock_Relationships
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -29,7 +29,7 @@ namespace Backend.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("LockedUntil")
+                    b.Property<DateOnly>("LockedUntil")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("PersonalAccountId")
@@ -37,15 +37,16 @@ namespace Backend.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PersonalAccountId")
+                        .IsUnique();
+
                     b.ToTable("AccountLocks");
                 });
 
             modelBuilder.Entity("Backend.Entities.PersonalAccount", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AccountLockId")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("Balance")
@@ -65,7 +66,7 @@ namespace Backend.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("PersonalAccount");
+                    b.ToTable("PersonalAccounts");
                 });
 
             modelBuilder.Entity("Backend.Entities.User", b =>
@@ -110,9 +111,6 @@ namespace Backend.Migrations
                     b.Property<DateTime>("PasswordTokenExpiration")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PersonalAccountId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Phone")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -125,28 +123,31 @@ namespace Backend.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Backend.Entities.PersonalAccount", b =>
+            modelBuilder.Entity("Backend.Entities.AccountLocks", b =>
                 {
-                    b.HasOne("Backend.Entities.AccountLocks", "AccountLock")
-                        .WithOne("PersonalAccount")
-                        .HasForeignKey("Backend.Entities.PersonalAccount", "Id")
+                    b.HasOne("Backend.Entities.PersonalAccount", "PersonalAccount")
+                        .WithOne("AccountLock")
+                        .HasForeignKey("Backend.Entities.AccountLocks", "PersonalAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("PersonalAccount");
+                });
+
+            modelBuilder.Entity("Backend.Entities.PersonalAccount", b =>
+                {
                     b.HasOne("Backend.Entities.User", "User")
                         .WithMany("PersonalAccounts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("AccountLock");
-
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Backend.Entities.AccountLocks", b =>
+            modelBuilder.Entity("Backend.Entities.PersonalAccount", b =>
                 {
-                    b.Navigation("PersonalAccount");
+                    b.Navigation("AccountLock");
                 });
 
             modelBuilder.Entity("Backend.Entities.User", b =>
