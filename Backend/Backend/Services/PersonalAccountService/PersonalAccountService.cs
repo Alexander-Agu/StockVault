@@ -3,11 +3,13 @@ using Backend.Dtos.AccountDtos;
 using Backend.Dtos.AccountLockDtos;
 using Backend.Dtos.PersonalAccountDtos;
 using Backend.Dtos.ResponseDto;
+using Backend.Dtos.TransectionDto;
 using Backend.Entities;
 using Backend.Mapping;
 using Backend.Repository.AccountLocksRepository;
 using Backend.Repository.PersonalAccountRespository;
 using Backend.Repository.UserRepository;
+using Backend.Services.TransectionService;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Backend.Services.PersonalAccountService
@@ -15,7 +17,8 @@ namespace Backend.Services.PersonalAccountService
     public class PersonalAccountService( // Dependency Injections
         IPersonalAccountRepository accountRep, 
         IUserRepository userRep, 
-        IAccountRepositoryLocks lockRep) : IPersonalAccountService
+        IAccountRepositoryLocks lockRep,
+        ITransectionService transectionService) : IPersonalAccountService
     {
         // Allows user's to create a personal account
         public async Task<ApiResponse<PersonalAccountDto>> CreatePersonalAccountAsync(int userId, CreateAccountDto newAccount)
@@ -82,6 +85,15 @@ namespace Backend.Services.PersonalAccountService
             }
 
             account.Balance += ToCents(amount.Amount); // Depositing
+
+            // Save transection
+            await transectionService.RecordTransectionAsync(userId, CreateTransection(
+                    userId,
+                    ToCents(amount.Amount),
+                    account,
+                    "DEPOSIT"
+                ));
+
             await accountRep.SaveChangesAsync();
 
             response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
@@ -214,6 +226,15 @@ namespace Backend.Services.PersonalAccountService
             if (account.Balance - ToCents(amount.Amount) >= 0) // only widthdraw if user has enough funs
             {
                 account.Balance -= ToCents(amount.Amount); // widthdrawing
+
+                // Save transection
+                await transectionService.RecordTransectionAsync(userId, CreateTransection(
+                        userId,
+                        -ToCents(amount.Amount),
+                        account,
+                        "WITHDRAWAL"
+                    ));
+
                 await accountRep.SaveChangesAsync();
             }
             else
@@ -261,6 +282,26 @@ namespace Backend.Services.PersonalAccountService
         private float ToRands(int amount)
         {
             return amount / 100f;
+        }
+
+
+        /*
+         * TODO: Creates a transection DTO
+         */
+        private CreateTransectionDto CreateTransection(
+                int userId,
+                int amount,
+                PersonalAccount account,
+                string transectionType
+            )
+        {
+            return new() { 
+                AccountId = account.Id,
+                AccountType = "PERSONAL",
+                AmountCents = amount,
+                TransectionType = transectionType,
+                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
+            };
         }
     }
 }

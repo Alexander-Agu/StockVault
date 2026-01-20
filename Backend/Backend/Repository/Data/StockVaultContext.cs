@@ -10,24 +10,16 @@ namespace Backend.Repository.Data
         {
         }
 
-        // Add your DbSets here
-        // public DbSet<JointAccount> JointAccounts { get; set; }
-        // public DbSet<Payment> Payments { get; set; }
+        // Database tables
         public DbSet<User> Users => Set<User>();
         public DbSet<PersonalAccount> PersonalAccounts => Set<PersonalAccount>();
         public DbSet<AccountLocks> AccountLocks => Set<AccountLocks>();
+        public DbSet<Transection> Transections => Set<Transection>();
 
 
         // Fluent API
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // User one-to-many PersonalAccount relationship
-            //modelBuilder.Entity<User>()
-            //    .HasMany(p => p.PersonalAccounts)   // One User has many personal account
-            //    .WithOne(u => u.User)               // One post has one user
-            //    .HasForeignKey(p => p.UserId)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
             // PersonalAccount one-to-one AccountLocks Relationships
             modelBuilder.Entity<PersonalAccount>()
                 .HasOne(a => a.AccountLock)         // A Lock can have only belong to one personal account
@@ -39,6 +31,12 @@ namespace Backend.Repository.Data
                 .HasOne(p => p.User)
                 .WithMany(u => u.PersonalAccounts)
                 .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Transection>()
+                .HasOne(u => u.User)
+                .WithMany(t => t.Transections)
+                .HasForeignKey(t => t.userId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

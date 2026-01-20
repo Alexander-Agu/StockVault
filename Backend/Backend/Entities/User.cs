@@ -22,6 +22,7 @@
 
         // Relationships
         public List<PersonalAccount> PersonalAccounts { get; set; } = new();
+        public List<Transection> Transections { get; set; } = new();
         
     }
 }

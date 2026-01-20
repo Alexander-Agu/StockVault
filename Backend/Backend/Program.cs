@@ -3,8 +3,10 @@ using Backend.Entities;
 using Backend.Repository.AccountLocksRepository;
 using Backend.Repository.Data;
 using Backend.Repository.PersonalAccountRespository;
+using Backend.Repository.TransectionRepository;
 using Backend.Repository.UserRepository;
 using Backend.Services.PersonalAccountService;
+using Backend.Services.TransectionService;
 using Backend.Services.UserService;
 using FIN.Service.EmailServices;
 using Microsoft.EntityFrameworkCore;
@@ -30,6 +32,9 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPersonalAccountService, PersonalAccountService>();
 builder.Services.AddScoped<IPersonalAccountRepository, PersonalAccountRepository>();
 builder.Services.AddScoped<IAccountRepositoryLocks, AccountLocksRepository>();
+
+builder.Services.AddScoped<ITransectionRepository, TransectionRepository>();
+builder.Services.AddScoped<ITransectionService, TransectionService>();
 
 
 var app = builder.Build();
