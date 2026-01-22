@@ -7,9 +7,13 @@ export default {
   ],
   theme: {
     extend: {
+      backgroundImage:{
+        "logo": "url('/logo.png')"
+      },
       fontFamily: {
       },
       colors: {
+        mainBackground: "#faf3f3"
       },
     },
   },
