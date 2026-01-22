@@ -8,9 +8,9 @@ export default function Header() {
   return (
         <header 
             className={`${isScrolled? "scrolled" : 'bg-mainBackground'}
-                h-[80px] w-full  p-4
+                h-[70px] w-full  p-4
                 flex items-center justify-between
-                fixed z-[100]
+                 z-[100]
             `}
         >
 
