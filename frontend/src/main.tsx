@@ -4,10 +4,12 @@ import './index.css'
 import App from './App.tsx'
 import Header from './components/Header/Header.tsx'
 import Hero from './components/Hero/Hero.tsx'
+import About from './components/About/About.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <Header />
     <Hero />
+    <About />
   </StrictMode>,
 )

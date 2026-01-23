@@ -42,7 +42,7 @@ export default function Header() {
                     transform transition-transform duration-300 ease-in-out
                     ${menuOpen ? "translate-x-0" : "translate-x-full"}
 
-                    md:static md:translate-x-0 md:h-auto md:w-auto md:bg-transparent md:text-black md:flex-row md:gap-6
+                    md:static md:translate-x-0 md:h-auto md:w-auto md:bg-transparent md:text-black md:flex-row md:gap-6 z-1
                     `}
                 >
                     <li>
