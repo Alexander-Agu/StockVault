@@ -1,11 +1,10 @@
-import { useState } from "react";
 import { aboutData } from "./AboutTools";
 
 export default function About() {
     let numberOfItems = aboutData.length;
 
   return (
-    <section className="bg-[mainBacground] pt-5">
+    <section className="bg-[#FAF3F3] pt-5">
         <div className="w-full flex items-center justify-center flex-col text-center p-2">
             <h2 className="text-2xl font-bold text-red-500">
                 Why StockVault?

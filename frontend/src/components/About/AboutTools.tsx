@@ -5,19 +5,19 @@ interface AboutData {
 
 export const aboutData : AboutData[] = [
     {
-        title: "Personal Savings Made simple",
-        content: "StockVault: modern digital stokvels. Save together with automated rules, transparency, and security."
+        title: "Personal Savings Made Simple",
+        content: "Create personal savings accounts to grow your money with confidence. Lock your funds until a specific date, track every transaction, and stay in control of your financial goals."
     },
     {
-        title: "Personal Savings Made simple",
-        content: "StockVault: modern digital stokvels. Save together with automated rules, transparency, and security."
+        title: "Powerful Stokvel Accounts",
+        content: "Create or join stokvel accounts with friends, family, or colleagues. Define contribution rules, track member compliance, and enjoy automated rotational payouts — all without manual tracking or disputes."
     },
     {
-        title: "Personal Savings Made simple",
-        content: "StockVault: modern digital stokvels. Save together with automated rules, transparency, and security."
+        title: "Transparent & Secure",
+        content: "Every transaction is recorded and auditable. Funds are protected by strict backend rules, secure authentication, and role-based access control to keep your money safe."
     },
     {
-        title: "Personal Savings Made simple",
-        content: "StockVault: modern digital stokvels. Save together with automated rules, transparency, and security."
+        title: "Built for Trust",
+        content: "StockVault is designed to build trust between members by removing human bias and enforcing rules automatically. Everyone plays by the same rules, every time."
     },
 ]
