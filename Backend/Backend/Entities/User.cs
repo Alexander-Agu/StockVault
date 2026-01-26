@@ -19,6 +19,9 @@
         public string Otp { get; set; } = string.Empty;
         public DateTime OtpExpirationTime { get; set; }
 
+        public string RefreshToken { get; set; } = string.Empty;
+        public DateTime RefreshTokenExpiryDate { get; set; }
+
 
         // Relationships
         public List<PersonalAccount> PersonalAccounts { get; set; } = new();

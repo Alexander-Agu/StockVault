@@ -1,22 +1,43 @@
-﻿using System.Security.Cryptography;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
+using Backend.Dtos.AuthenticationDto;
+using Backend.Dtos.ResponseDto;
 using Backend.Dtos.UserDtos;
 using Backend.Entities;
 using Backend.Mapping;
 using Backend.Repository.UserRepository;
 using FIN.Service.EmailServices;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Backend.Services.UserService
 {
-    public class UserService(IUserRepository userRepository, IEmailService emailService) : IUserService
+    public class UserService(
+        IUserRepository userRepository, 
+        IEmailService emailService,
+        IConfiguration configuration) : IUserService
     {
         // Regitser's user by saving their data in the DB
         // And sends back a verifiction email
-        public async Task<Dictionary<string, object>> RegisterUserAsync(CreateUserDto newUser)
+        public async Task<ApiResponse<string>> RegisterUserAsync(CreateUserDto newUser)
         {
+            ApiResponse<string> response = new ApiResponse<string>() {
+                Success = true,
+                Message = "Registration successful. Please verify your email.",
+                Data = ""
+            };
+
             // Checks if email already exists
-            if (await userRepository.EmailExistsAsync(newUser.Email)) return Response("Error", "Please enter a valid email");
+            if (await userRepository.EmailExistsAsync(newUser.Email))
+            {
+                response.Success = false;
+                response.Message = "Please enter a valid email";
+
+                return response;
+            }
 
             User user = newUser.ToEntity();
 
@@ -29,42 +50,84 @@ namespace Backend.Services.UserService
             // Once information is verified send an email to activate user's account
             await emailService.SendOtpEmailAsync(user.Email, user.Otp);
 
-            return Response("Success", "Registration successful. Please verify your email.");
+            return response;
         }
 
 
         // Allows user to verify their email using an OTP
-        public async Task<Dictionary<string, object>> VerifyEmailAsync(string email, string otp)
+        public async Task<ApiResponse<string>> VerifyEmailAsync(string email, string otp)
         {
+            ApiResponse<string> response = new ApiResponse<string>() { 
+                Success = true,
+                Message = "Email has been varified",
+                Data = ""
+            };
+
             User? user = await userRepository.GetUserByEmailAsync(email);
 
-            if (user == null) return Response("Error", "Please enter a valid email");
+            if (user == null)
+            {
+                response.Success = false;
+                response.Message = "Please enter a valid email";
+
+                return response;
+            }
 
             // Validate user's OTP
             bool verify = otp == user.Otp && user.OtpExpirationTime < DateTime.Now;
-            if (!verify) return Response("Error", "OTP has expired, please request a new one");
+            if (!verify)
+            {
+                response.Success = false;
+                response.Message = "OTP has expired, please request a new one";
+
+                return response;
+            }
 
             // If OTP is valid
             user.Active = true;
             await userRepository.SaveChanges();
 
-            return Response("Success", "Email has been varified");
+            return response;
         }
 
 
         // Login user
-        public async Task<Dictionary<string, object>> LoginAsync(LoginDto login)
+        public async Task<ApiResponse<TokenResponseDto>> LoginAsync(LoginDto login)
         {
+            ApiResponse<TokenResponseDto> response = new()
+            {
+                Success = true,
+                Message = "Logged in",
+                Data = null
+            };
             User? user = await userRepository.GetUserByEmailAsync(login.Email);
-            if (user == null) return Response("Error", "Invalid email or password");
+            if (user == null)
+            {
+                response.Success = false;
+                response.Message = "Invalid email or password";
 
-            // Check if password is valid
-            if (!ValidateHashedPassword(user, login.Password)) return Response("Error", "Invalid email or password");
+                return response;
+            }
 
-            // Check if user's email has been varified
-            if (!user.Active) return Response("Error", "Invalid email or password");
+            // Check if password is valid and user's email has been varified
+            if (!ValidateHashedPassword(user, login.Password) || user.Active)
+            {
+                response.Success = false;
+                response.Message = "Invalid email or password";
 
-            return Response("Success", "Logged in");
+                return response;
+            }
+
+            // Saving user's refresh tokens
+            SaveRefreshToken(user);
+
+            // returning Token Response
+            TokenResponseDto tokenResponse = user.ToTokenResponse();
+            tokenResponse.Token = CreateToken(user);
+
+            response.Data = tokenResponse;
+
+            return response;
         }
 
 
@@ -179,6 +242,56 @@ namespace Backend.Services.UserService
             return new PasswordHasher<User>()
                 .VerifyHashedPassword(user, user.PasswordHash, password)
                 == PasswordVerificationResult.Success;
+        }
+
+
+        /*
+         * TODO: Creates a json web token
+         */
+        private string CreateToken(User user)
+        {
+            var claims = new List<Claim> { 
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.FirstName + " " +  user.LastName)
+            };
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(configuration.GetValue<string>("AppSettings:Token")!));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
+
+            var tokenDescriptor = new JwtSecurityToken(
+                    issuer: configuration.GetValue<string>("AppSettings:Issuer"),
+                    audience: configuration.GetValue<string>("AppSettings:Audience"),
+                    claims: claims,
+                    expires: DateTime.UtcNow.AddDays(1),
+                    signingCredentials: creds
+                );
+
+            return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
+        }
+
+
+        /*
+         * TODO: Generates a refresh token string
+         */
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+
+
+        /*
+         * TODO: Allows refresh token to be saved in the database
+         */
+        private async void SaveRefreshToken(User user)
+        {
+            user.RefreshToken = GenerateRefreshToken();
+            user.RefreshTokenExpiryDate = DateTime.UtcNow.AddDays(7);
+            await userRepository.SaveChanges();
         }
 
 

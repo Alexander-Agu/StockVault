@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using Backend.Entities;
 using Backend.Repository.AccountLocksRepository;
 using Backend.Repository.Data;
@@ -9,7 +10,9 @@ using Backend.Services.PersonalAccountService;
 using Backend.Services.TransectionService;
 using Backend.Services.UserService;
 using FIN.Service.EmailServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -23,6 +26,21 @@ builder.Services.AddOpenApi();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<StockVaultContext>(options =>
     options.UseSqlite(connectionString));
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = builder.Configuration["AppSettings:Issuer"],
+            ValidateAudience = true,
+            ValidAudience = builder.Configuration["AppSettings:Audience"],
+            ValidateLifetime = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["AppSettings:Token"])),
+            ValidateIssuerSigningKey = true
+        };
+    });
 
 // Registering dependency injection services
 builder.Services.AddScoped<IUserService,  UserService>();

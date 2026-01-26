@@ -1,4 +1,6 @@
-﻿using Backend.Dtos.UserDtos;
+﻿using Backend.Dtos.AuthenticationDto;
+using Backend.Dtos.ResponseDto;
+using Backend.Dtos.UserDtos;
 
 namespace Backend.Services.UserService
 {
@@ -12,19 +14,19 @@ namespace Backend.Services.UserService
          *  2. Email must be unique
          *  3. Password must meet a requirements and must be hashed
          */
-        public Task<Dictionary<string, object>> RegisterUserAsync(CreateUserDto newUser);
+        public Task<ApiResponse<string>> RegisterUserAsync(CreateUserDto newUser);
 
 
         /*
          * TODO: Uses OTP to verify user's email
          */
-        public Task<Dictionary<string, object>> VerifyEmailAsync(string email, string otp);
+        public Task<ApiResponse<string>> VerifyEmailAsync(string email, string otp);
 
 
         /*
          * TODO: Logs user into their account
          */
-        public Task<Dictionary<string, object>> LoginAsync(LoginDto login);
+        public Task<ApiResponse<TokenResponseDto>> LoginAsync(LoginDto login);
 
 
         /*

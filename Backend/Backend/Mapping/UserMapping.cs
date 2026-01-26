@@ -1,4 +1,5 @@
-﻿using Backend.Dtos.UserDtos;
+﻿using Backend.Dtos.AuthenticationDto;
+using Backend.Dtos.UserDtos;
 using Backend.Entities;
 using System.Security.Cryptography;
 
@@ -29,6 +30,15 @@ namespace Backend.Mapping
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Phone = user.Phone,
+            };
+        }
+
+
+        public static TokenResponseDto ToTokenResponse(this User user) {
+            return new TokenResponseDto() { 
+                Id = user.Id,
+                RefreshToken = user.RefreshToken,
+                RefreshTokenExpiryDate = user.RefreshTokenExpiryDate,
             };
         }
     }
