@@ -5,6 +5,7 @@ using Backend.Entities;
 using Backend.Mapping;
 using Backend.Repository.UserRepository;
 using FIN.Service.EmailServices;
+using Microsoft.AspNetCore.Identity;
 
 namespace Backend.Services.UserService
 {
@@ -18,6 +19,8 @@ namespace Backend.Services.UserService
             if (await userRepository.EmailExistsAsync(newUser.Email)) return Response("Error", "Please enter a valid email");
 
             User user = newUser.ToEntity();
+
+            user.PasswordHash = HashPassword(user, newUser.PasswordHash);
 
             userRepository.AddUserAsync(user);
 
@@ -56,7 +59,7 @@ namespace Backend.Services.UserService
             if (user == null) return Response("Error", "Invalid email or password");
 
             // Check if password is valid
-            if (user.PasswordHash != login.Password) return Response("Error", "Invalid email or password");
+            if (!ValidateHashedPassword(user, login.Password)) return Response("Error", "Invalid email or password");
 
             // Check if user's email has been varified
             if (!user.Active) return Response("Error", "Invalid email or password");
@@ -132,8 +135,8 @@ namespace Backend.Services.UserService
             User? user = await userRepository.GetUserByPasswordToken(token);
             if (user == null) return Response("Error", "Token expired");
 
-            user.PasswordHash = newPassword.Password;
-            userRepository.SaveChanges();
+            user.PasswordHash = HashPassword(user, newPassword.Password);
+            await userRepository.SaveChanges();
 
             user.PasswordToken = "";
             await LogoutAsync(user.Id);
@@ -155,6 +158,27 @@ namespace Backend.Services.UserService
             response.Add("result", result);
             response.Add("message", message);
             return response;
+        }
+
+
+        /*
+         * TODO: Returns a string of a hashed password
+         */
+        private string HashPassword(User user, string password)
+        {
+            return new PasswordHasher<User>()
+                .HashPassword(user, password);
+        }
+
+
+        /*
+         * TODO: Returns a bool to validate a hashed password
+         */
+        private bool ValidateHashedPassword(User user, string password)
+        {
+            return new PasswordHasher<User>()
+                .VerifyHashedPassword(user, user.PasswordHash, password)
+                == PasswordVerificationResult.Success;
         }
 
 
