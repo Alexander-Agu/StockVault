@@ -25,7 +25,7 @@ namespace Backend.Services.UserService
         public async Task<ApiResponse<string>> RegisterUserAsync(CreateUserDto newUser)
         {
             ApiResponse<string> response = new ApiResponse<string>() {
-                Success = true,
+                ResponseCode = ResponseCode.Created,
                 Message = "Registration successful. Please verify your email.",
                 Data = ""
             };
@@ -33,7 +33,7 @@ namespace Backend.Services.UserService
             // Checks if email already exists
             if (await userRepository.EmailExistsAsync(newUser.Email))
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.BadRequest;
                 response.Message = "Please enter a valid email";
 
                 return response;
@@ -58,7 +58,7 @@ namespace Backend.Services.UserService
         public async Task<ApiResponse<string>> VerifyEmailAsync(string email, string otp)
         {
             ApiResponse<string> response = new ApiResponse<string>() { 
-                Success = true,
+                ResponseCode = ResponseCode.Ok,
                 Message = "Email has been varified",
                 Data = ""
             };
@@ -67,7 +67,7 @@ namespace Backend.Services.UserService
 
             if (user == null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.BadRequest;
                 response.Message = "Please enter a valid email";
 
                 return response;
@@ -77,7 +77,7 @@ namespace Backend.Services.UserService
             bool verify = otp == user.Otp && user.OtpExpirationTime < DateTime.Now;
             if (!verify)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.BadRequest;
                 response.Message = "OTP has expired, please request a new one";
 
                 return response;
@@ -96,23 +96,23 @@ namespace Backend.Services.UserService
         {
             ApiResponse<TokenResponseDto> response = new()
             {
-                Success = true,
+                ResponseCode = ResponseCode.Ok,
                 Message = "Logged in",
                 Data = null
             };
             User? user = await userRepository.GetUserByEmailAsync(login.Email);
             if (user == null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.BadRequest;
                 response.Message = "Invalid email or password";
 
                 return response;
             }
 
             // Check if password is valid and user's email has been varified
-            if (!ValidateHashedPassword(user, login.Password) || user.Active)
+            if (!ValidateHashedPassword(user, login.Password) || !user.Active)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.BadRequest;
                 response.Message = "Invalid email or password";
 
                 return response;
@@ -132,21 +132,47 @@ namespace Backend.Services.UserService
 
 
         // Logout user
-        public async Task<Dictionary<string, object>> LogoutAsync(int id)
+        public async Task<ApiResponse<string>> LogoutAsync(int id)
         {
+            ApiResponse<string> response = new()
+            {
+                ResponseCode = ResponseCode.Ok,
+                Message = "logged out",
+                Data = ""
+            };
+
             User? User = await userRepository.GetUserByIdAsync(id);
-            if (User == null) return Response("Error", "Failed to logoud");
+            if (User == null)
+            {
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "Failed to logoud";
+
+                return response;
+            }
 
             // Later just remove the access token
-            return Response("Success", "logged out");
+            return response;
         }
 
 
         // Updates the users basic information
-        public async Task<Dictionary<string, object>> UpdateProfileAsync(int id, UpdateProfileDto newProfile)
-        {
+        public async Task<ApiResponse<string>> UpdateProfileAsync(int id, UpdateProfileDto newProfile)
+        {       
+            ApiResponse<string> response = new()
+            {
+                ResponseCode = ResponseCode.Ok,
+                Message = "Profile updated",
+                Data = ""
+            };
+
             User? user = await userRepository.GetUserByIdAsync(id);
-            if (user == null) return Response("Error", "User not found");
+            if (user == null)
+            {
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "User not found";
+
+                return response;
+            }
 
             // update first name
             if (user.FirstName != newProfile.FirstName && newProfile.FirstName != "") user.FirstName = newProfile.FirstName;
@@ -159,26 +185,52 @@ namespace Backend.Services.UserService
 
             await userRepository.SaveChanges();
 
-            return Response("Success", "Profile updated");
+            return response;
 
         }
 
 
         // Gets the user's profile
-        public async Task<Dictionary<string, object>> GetProfileAsync(int id)
+        public async Task<ApiResponse<ProfileDto>> GetProfileAsync(int id)
         {
-            User? user = await userRepository.GetUserByIdAsync(id);
-            if (user == null) return Response("Error", "User not found");
+            ApiResponse<ProfileDto> response = new()
+            {
+                ResponseCode = ResponseCode.Ok,
+                Message = "Data retrieved",
+                Data = null
+            };
 
-            return Response("Success", user.ToProfileDto());
+            User? user = await userRepository.GetUserByIdAsync(id);
+            if (user == null)
+            {
+                response.ResponseCode = ResponseCode.NotFound;
+                response.Message = "User not found";
+
+                return response;
+            }
+
+            response.Data = user.ToProfileDto();
+
+            return response;
         }
 
 
         // Allows user to request a password reset
-        public async Task<Dictionary<string, object>> ForgotPasswordAsync(string email)
+        public async Task<ApiResponse<string>> ForgotPasswordAsync(string email)
         {
+            ApiResponse<string> response = new() {
+                ResponseCode = ResponseCode.Ok,
+                Message = "If the email exists, a password reset link has been sent.",
+                Data = ""
+            };
             User? user = await userRepository.GetUserByEmailAsync(email);
-            if (user == null && !user.Active) return Response("Error", "If the email exists, a password reset link has been sent.");
+            if (user == null && !user.Active)
+            {
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "If the email exists, a password reset link has been sent.";
+
+                return response;
+            }
 
             user.PasswordToken = GenerateSecureToken();
             user.PasswordTokenExpiration = DateTime.UtcNow.AddMinutes(15);
@@ -187,16 +239,28 @@ namespace Backend.Services.UserService
             // Send the email to the user
             await emailService.SendPasswordResetEmailAsync(user.Email, user.PasswordToken);
 
-            return Response("Success", "If the email exists, a password reset link has been sent.");
+            return response;
 
         }
 
 
         // Allows users to reset their password
-        public async Task<Dictionary<string, object>> ResetPasswordAsync(string token, ResetPasswordDto newPassword)
+        public async Task<ApiResponse<string>> ResetPasswordAsync(string token, ResetPasswordDto newPassword)
         {
+            ApiResponse<string> response = new() {
+                ResponseCode = ResponseCode.Ok,
+                Message = "Password reset successfully. Please log in again.",
+                Data = ""
+            };
+
             User? user = await userRepository.GetUserByPasswordToken(token);
-            if (user == null) return Response("Error", "Token expired");
+            if (user == null)
+            {
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "Token expired";
+
+                return response;
+            }
 
             user.PasswordHash = HashPassword(user, newPassword.Password);
             await userRepository.SaveChanges();
@@ -204,7 +268,7 @@ namespace Backend.Services.UserService
             user.PasswordToken = "";
             await LogoutAsync(user.Id);
 
-            return Response("Success", "Password reset successfully. Please log in again.");
+            return response;
         }
 
 

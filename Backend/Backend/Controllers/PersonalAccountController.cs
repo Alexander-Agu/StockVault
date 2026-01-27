@@ -18,12 +18,7 @@ namespace Backend.Controllers
         {
             ApiResponse<PersonalAccountDto>? response = await accountService.CreatePersonalAccountAsync(userId, newAccount);
 
-            if (!response.Success)
-            {
-                return NotFound(response);
-            }
-
-            return Ok(response);
+            return HandleResponse(response);
         }
 
 
@@ -36,12 +31,7 @@ namespace Backend.Controllers
         {
             ApiResponse<PersonalAccountDto>? response = await accountService.DepositAsync(userId, accountId, deposit);
 
-            if (!response.Success)
-            {
-                return NotFound(response);
-            }
-
-            return Ok(response);
+            return HandleResponse(response);
         }
 
 
@@ -54,17 +44,7 @@ namespace Backend.Controllers
         {
             ApiResponse<PersonalAccountDto>? response = await accountService.WidthdrawAsync(userId, accountId, widthdraw);
 
-            if (response.Message == "Not enough funds")
-            {
-                return BadRequest(response);
-            }
-
-            if (!response.Success)
-            {
-                return NotFound(response);
-            }
-
-            return Ok(response);
+            return HandleResponse(response);
         }
 
 
@@ -74,12 +54,7 @@ namespace Backend.Controllers
         {
             ApiResponse<PersonalAccountDto>? response = await accountService.GetPersonalAccount(userId, accountId);
 
-            if (!response.Success)
-            {
-                return NotFound(response);
-            }
-
-            return Ok(response);
+            return HandleResponse(response);
         }
 
 
@@ -89,12 +64,7 @@ namespace Backend.Controllers
         {
             ApiResponse<List<PersonalAccountDto>>? response = await accountService.GetAllPersonalAccountsAsync(userId);
 
-            if (!response.Success)
-            {
-                return NotFound(response);
-            }
-
-            return Ok(response);
+            return HandleResponse(response);
         }
 
 
@@ -107,39 +77,26 @@ namespace Backend.Controllers
         {
             ApiResponse<PersonalAccountDto>? response = await accountService.LockAccountAsync(userId, accountId, accountLock);
 
-            if (response.Message == "Lock already exists")
-            {
-                return BadRequest(response);
-            }
-
-            if (!response.Success)
-            {
-                return NotFound(response);
-            }
-
-            return Ok(response);
+            return HandleResponse(response);
         }
 
 
-        // Allows a user to get their account lock details
-        //[HttpGet("lock/{userId}/{lockId}")]
-        //public async Task<ActionResult> GetAccountLockAsync(
-        //    int userId, 
-        //    int lockId)
-        //{
-        //    ApiResponse<PersonalAccountDto>? response = await accountService.
-
-        //    if (response.Message == "Lock already exists")
-        //    {
-        //        return BadRequest(response);
-        //    }
-
-        //    if (!response.Success)
-        //    {
-        //        return NotFound(response);
-        //    }
-
-        //    return Ok(response);
-        //}
+        /*
+         * TODO: Handles http responses
+         */
+        protected ActionResult HandleResponse<T>(ApiResponse<T> response)
+        {
+            return response.ResponseCode switch
+            {
+                ResponseCode.Ok => Ok(response),
+                ResponseCode.Created => StatusCode(StatusCodes.Status201Created, response),
+                ResponseCode.BadRequest => BadRequest(response),
+                ResponseCode.NotFound => NotFound(response),
+                ResponseCode.Unauthorized => Unauthorized(),
+                ResponseCode.Forbidden => Forbid(),
+                ResponseCode.ServerError => StatusCode(StatusCodes.Status500InternalServerError, response),
+                _ => BadRequest(response)
+            };
+        }
     }
 }

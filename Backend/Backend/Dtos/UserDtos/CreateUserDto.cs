@@ -13,7 +13,7 @@ namespace Backend.Dtos.UserDtos
         public required string LastName { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(20, MinimumLength = 3)]
+        [StringLength(100, MinimumLength = 3)]
         //[EmailAddress]
         public required string Email { get; set; } = string.Empty;
 

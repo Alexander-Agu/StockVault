@@ -18,7 +18,7 @@ namespace Backend.Services.TransectionService
         {
             ApiResponse<List<TransectionDto>> response = new()
             {
-                Success = true,
+                ResponseCode = ResponseCode.Ok,
                 Message = "All available account transections fetched",
                 Data = null
             };
@@ -26,7 +26,7 @@ namespace Backend.Services.TransectionService
             // Checking if user exists
             User? user = await userRep.GetUserByIdAsync(userId);
             if (user == null) {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "User not found";
 
                 return response;
@@ -42,7 +42,7 @@ namespace Backend.Services.TransectionService
         {
             ApiResponse<AccountBalanceDto> response = new()
             {
-                Success = true,
+                ResponseCode = ResponseCode.Ok,
                 Message = "Account balance fetched",
                 Data = null
             };
@@ -51,7 +51,7 @@ namespace Backend.Services.TransectionService
             User? user = await userRep.GetUserByIdAsync(userId);
             if (user == null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "User not found";
 
                 return response;
@@ -72,7 +72,7 @@ namespace Backend.Services.TransectionService
         {
             ApiResponse<List<TransectionDto>> response = new()
             {
-                Success = true,
+                ResponseCode = ResponseCode.Ok,
                 Message = "All available user transections fetched",
                 Data = null
             };
@@ -81,7 +81,7 @@ namespace Backend.Services.TransectionService
             User? user = await userRep.GetUserByIdAsync(userId);
             if (user == null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "User not found";
 
                 return response;
@@ -96,7 +96,7 @@ namespace Backend.Services.TransectionService
         public async Task<ApiResponse<TransectionDto>> RecordTransectionAsync(int userId, CreateTransectionDto transection)
         {
             ApiResponse<TransectionDto> response = new() {
-                Success = true,
+                ResponseCode = ResponseCode.Created,
                 Message = "Transection saved",
                 Data = null
             };
@@ -105,7 +105,7 @@ namespace Backend.Services.TransectionService
             User? user = await userRep.GetUserByIdAsync(userId);
             if (user == null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "User not found";
 
                 return response;

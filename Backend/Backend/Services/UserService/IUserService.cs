@@ -32,7 +32,7 @@ namespace Backend.Services.UserService
         /*
          * TODO: Logs user out of their account
          */
-        public Task<Dictionary<string, object>> LogoutAsync(int id);
+        public Task<ApiResponse<string>> LogoutAsync(int id);
 
 
         /*
@@ -43,13 +43,13 @@ namespace Backend.Services.UserService
          *  2. Lastname
          *  3. Phonenumber
          */
-        public Task<Dictionary<string, object>> UpdateProfileAsync(int id, UpdateProfileDto newProfile);
+        public Task<ApiResponse<string>> UpdateProfileAsync(int id, UpdateProfileDto newProfile);
 
 
         /*
          * TODO: Gets the user's data
          */
-        public Task<Dictionary<string, object>> GetProfileAsync(int id);
+        public Task<ApiResponse<ProfileDto>> GetProfileAsync(int id);
 
 
         /*
@@ -60,12 +60,12 @@ namespace Backend.Services.UserService
          * 2. Generates a secure, time-limited reset token
          * 3. Sends password reset link via email
          */
-        public Task<Dictionary<string, object>> ForgotPasswordAsync(string email);
+        public Task<ApiResponse<string>> ForgotPasswordAsync(string email);
 
 
         /*
          * TODO: Resets user's password
          */
-        public Task<Dictionary<string, object>> ResetPasswordAsync(string token, ResetPasswordDto newPassword);
+        public Task<ApiResponse<string>> ResetPasswordAsync(string token, ResetPasswordDto newPassword);
     }
 }

@@ -25,7 +25,7 @@ namespace Backend.Services.PersonalAccountService
         {
             ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
             {
-                Success = true,
+                ResponseCode = ResponseCode.Created,
                 Message = "Personal account created",
                 Data = null
             };
@@ -34,7 +34,7 @@ namespace Backend.Services.PersonalAccountService
             User? user = await userRep.GetUserByIdAsync(userId);
             if (user == null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "User not found!";
 
                 return response;
@@ -48,7 +48,7 @@ namespace Backend.Services.PersonalAccountService
 
             if (await accountRep.PersonalAccountExist(userId, account.Title))
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.BadRequest;
                 response.Message = "Please choose a unique name for your account";
 
                 return response;
@@ -69,7 +69,7 @@ namespace Backend.Services.PersonalAccountService
         {
             ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
             {
-                Success = true,
+                ResponseCode = ResponseCode.Ok,
                 Message = "Amount was successfully deposited",
                 Data = null
             };
@@ -78,7 +78,7 @@ namespace Backend.Services.PersonalAccountService
             PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
             if (account == null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "Account not found";
 
                 return response;
@@ -117,7 +117,7 @@ namespace Backend.Services.PersonalAccountService
         public async Task<ApiResponse<List<PersonalAccountDto>>> GetAllPersonalAccountsAsync(int userId)
         {
             ApiResponse<List<PersonalAccountDto>> response = new ApiResponse<List<PersonalAccountDto>>() {
-                Success = true,
+                ResponseCode = ResponseCode.Ok,
                 Message = "Accounts fetched",
                 Data = null
             };
@@ -125,7 +125,7 @@ namespace Backend.Services.PersonalAccountService
             User? user = await userRep.GetUserByIdAsync(userId);
             if (user == null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "Account not found";
 
                 return response;
@@ -143,7 +143,7 @@ namespace Backend.Services.PersonalAccountService
         {
             ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
             {
-                Success = true,
+                ResponseCode = ResponseCode.Ok,
                 Message = "Account found",
                 Data = null
             };
@@ -153,7 +153,7 @@ namespace Backend.Services.PersonalAccountService
             PersonalAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId);
             if (account == null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "Account not found";
 
                 return response;
@@ -167,7 +167,7 @@ namespace Backend.Services.PersonalAccountService
         {
             ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
             {
-                Success = true,
+                ResponseCode = ResponseCode.Ok,
                 Message = "Account locked",
                 Data = null
             };
@@ -176,7 +176,7 @@ namespace Backend.Services.PersonalAccountService
             PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
             if (account == null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.BadRequest;
                 response.Message = "Failed to lock account because account does not exist";
 
                 return response;
@@ -185,7 +185,7 @@ namespace Backend.Services.PersonalAccountService
             AccountLocks? findAccount = await lockRep.FindAccountLockByAccountId(accountId);
             if (findAccount != null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.BadRequest;
                 response.Message = "Lock already exists";
 
                 return response;
@@ -208,7 +208,7 @@ namespace Backend.Services.PersonalAccountService
         {
             ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
             {
-                Success = true,
+                ResponseCode = ResponseCode.Ok,
                 Message = "Amount successfully widthdrawed",
                 Data = null
             };
@@ -217,7 +217,7 @@ namespace Backend.Services.PersonalAccountService
             PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
             if (account == null)
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "Account not found";
 
                 return response;
@@ -239,7 +239,7 @@ namespace Backend.Services.PersonalAccountService
             }
             else
             {
-                response.Success = false;
+                response.ResponseCode = ResponseCode.BadRequest;
                 response.Message = "Not enough funds";
 
                 return response;
