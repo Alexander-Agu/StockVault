@@ -64,16 +64,16 @@ export default function SignUn() {
     ];
 
   return (
-    <article className='w-full h-[100dvh] p-3
-        flex flex-col
+    <article className='w-full h-[100dvh]
+        flex flex-col items-center
     '>
-        <div className='w-full'>
+        <div className='w-full p-2'>
             <a href="/" className='text-2xl text-red-500 font-bold'>
                 StockVault
             </a>
         </div>
 
-        <div className='flex flex-col justify-center gap-4 flex-1'>
+        <div className='w-[375px] p-3 flex flex-col justify-center gap-4 flex-1 sm:w-[450px]'>
             <div className='momo-trust-sans'>
                 <h2 className='text-3xl font-medium'>
                     Sign up
