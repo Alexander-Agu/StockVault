@@ -6,9 +6,10 @@ import Header from './components/Header/Header.tsx'
 import Hero from './components/Hero/Hero.tsx'
 import About from './components/About/About.tsx'
 import Home from './pages/Home.tsx'
+import SignIn from './pages/SignUp.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <Home />
+    <SignIn />
   </StrictMode>,
 )
