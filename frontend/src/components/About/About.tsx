@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { aboutData, iconsData } from "./AboutTools";
 
 export default function About() {
@@ -7,11 +8,11 @@ export default function About() {
     <section className="bg-[#F8EEED] pt-5 flex flex-col items-center justify-center">
         <div className="w-full flex items-center justify-center flex-col text-center p-2">
             <h2 className="text-2xl font-bold text-red-500">
-                Why StockVault?
+                Why StokVault?
             </h2>
 
             <p className="font-normal pt-5 text-[#737373] md:w-[640px]">
-                StockVault: modern digital stokvels. Save together with automated rules, transparency, and security.StockVault: modern digital stokvels. Save together with automated rules, transparency, and security.
+                StokVault: modern digital stokvels. Save together with automated rules, transparency, and security.StokVault: modern digital stokvels. Save together with automated rules, transparency, and security.
             </p>
         </div>
 
@@ -47,9 +48,9 @@ export default function About() {
                 Create an account, start saving, and experience a smarter way to manage personal and group finances.
             </h2>
 
-            <a href="#" className="w-[150px] h-12 bg-[#F8EEED] rounded-3xl flex items-center justify-center text-[#dc2626] font-medium">
+            <Link to="sign-up" className="w-[150px] h-12 bg-[#F8EEED] rounded-3xl flex items-center justify-center text-[#dc2626] font-medium">
                 Get Started Today
-            </a>
+            </Link>
         </div>
 
         <div className="flex flex-wrap items-center justify-center p-5 gap-3">

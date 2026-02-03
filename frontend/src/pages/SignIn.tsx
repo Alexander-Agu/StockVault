@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
+import BackHomeHeader from '../components/BackHomeHeader/BackHomeHeader';
 
 interface SignInInputs {
     required: boolean;
@@ -35,11 +36,7 @@ export default function SignIn() {
     <article className='w-full h-[100dvh]
         flex flex-col items-center bg-[#f8eeed8e]
     '>
-        <div className='w-full p-2'>
-            <a href="/" className='text-2xl text-red-500 font-bold'>
-                StockVault
-            </a>
-        </div>
+        <BackHomeHeader />
 
         <div className='w-[375px] p-3 flex flex-col justify-center gap-4 flex-1 sm:w-[450px]'>
             <div className='momo-trust-sans'>
@@ -85,7 +82,7 @@ export default function SignIn() {
                 />
 
                 <div className='w-full flex items-center justify-center'>
-                    <p >
+                    <p className='text-[#00000077]'>
                         Don't have an account? <Link className='text-red-400 font-bold' to={"/sign-up"}>SIgnUp</Link> instead.
                     </p>
                 </div>

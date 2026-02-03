@@ -7,9 +7,10 @@ import Hero from './components/Hero/Hero.tsx'
 import About from './components/About/About.tsx'
 import Home from './pages/Home.tsx'
 import SignUp from './pages/SignUp.tsx'
+import OtpActivation from './pages/OtpActivation.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <OtpActivation />
   </StrictMode>,
 )

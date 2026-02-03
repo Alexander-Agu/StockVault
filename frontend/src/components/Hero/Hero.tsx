@@ -45,13 +45,13 @@ export default function Hero() {
               className="text-4xl lg:text-5xl font-bold text-[#dc2626]">
               Welcome to
               <br />
-              StockVault
+              StokVault
             </h1>
 
             {/* Description */}
             <p
               className="max-w-md text-[#737373]">
-              StockVault: modern digital stokvels. Save together with automated
+              StokVault: modern digital stokvels. Save together with automated
               rules, transparency, and security.
             </p>
           </div>

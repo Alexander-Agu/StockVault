@@ -23,7 +23,7 @@ export default function Header() {
                 <div className="bg-[url('/src/assets/logo.png')] w-[50px] h-[50px]
                     bg-cover
                 "></div>
-                <h2 className='inter text-[1.2rem] font-bold'>StockVault</h2>
+                <h2 className='inter text-[1.2rem] font-bold'>StokVault</h2>
             </Link>
             
 
