@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import BackHomeHeader from '../components/BackHomeHeader/BackHomeHeader';
+import { isValidPassword } from '../tools/UserTools';
+import { RegisterUserAsync } from '../api/UserApi';
 
 interface SignUpInputs {
     required: boolean;
@@ -25,7 +27,12 @@ export default function SignUp() {
     const [email, setEmail] = useState("");
     const [phone, setPhone] = useState("");
     const [password, setPassword] = useState("");
+
+    const [failed, setFailed] = useState(false);
+    const [isAccountCreated, setIsAccountCreated] = useState(false);
     // const [confirmPassword, setConfirmPassword] = useState("");
+
+    const navigate = useNavigate();
 
     const inputs: SignUpInputs[] = [
         {
@@ -65,6 +72,34 @@ export default function SignUp() {
         // },
     ];
 
+
+    const HandleRegisterUserAsync = async ()=> {
+        // Validate password
+        if (!isValidPassword(password)) {
+            setFailed(true);
+            return;
+        }
+
+        // Check if other input fields are not empty
+        if (name === "" && email === "") {
+            setFailed(true);
+            return;
+        }
+
+        try{
+            const response = await RegisterUserAsync({
+                name: name,
+                email: email,
+                phone: phone,
+                passwordHash: password
+            });
+
+            if (response != false) navigate(`/activate/${email}`)
+        } catch{
+            console.log("Failed to create account")
+        }
+    }
+
   return (
     <article className='w-full h-[100dvh]
         flex flex-col items-center bg-[#f8eeed8e]
@@ -81,7 +116,7 @@ export default function SignUp() {
                     Start your account today and start saving
                 </p>
             </div>
-            <form action="" id='signup' className='flex flex-col gap-4 momo-trust-sans'>
+            <form action={HandleRegisterUserAsync} id='signup' className='flex flex-col gap-4 momo-trust-sans'>
                 {
                     inputs.map((data, index) => {
                         const { required, title, placeholder, input, value } = data;

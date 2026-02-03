@@ -1,25 +1,57 @@
-import React, { useState } from 'react'
+import React, { use, useRef, useState } from 'react'
 import BackHomeHeader from '../components/BackHomeHeader/BackHomeHeader'
+import { Navigate, useNavigate, useParams } from 'react-router-dom';
+import { VerifyEmailAsync } from '../api/UserApi';
 
 export default function OtpActivation() {
+    const navigate = useNavigate();
+    const { email } = useParams();
+    // const [otp, setOtp] = useState("");
     const [codeSent, setCodeSent] = useState(false);
-    const inputs = document.querySelectorAll<HTMLInputElement>(".digit");
-    
-    inputs.forEach((input, index) => {
-        input.addEventListener("input", () => {
-            // move forward when typed
-            if (input.value.length === 1 && index < inputs.length - 1) {
-            inputs[index + 1].focus();
-            }
-        });
+    // const inputs = document.querySelectorAll<HTMLInputElement>(".digit");
+        
+    const length = 6;
+    const [otp, setOtp] = useState<string[]>(Array(length).fill(""));
+    const inputs = useRef<(HTMLInputElement | null)[]>([]);
 
-        input.addEventListener("keydown", (e) => {
-            // move backward on backspace
-            if (e.key === "Backspace" && input.value === "" && index > 0) {
-            inputs[index - 1].focus();
+    const handleChange = (value: string, index: number) => {
+        const newOtp = [...otp];
+
+        newOtp[index] = value.slice(-1); // only 1 char
+        setOtp(newOtp);
+
+        // move forward
+        if (value && index < length - 1) {
+        inputs.current[index + 1]?.focus();
+        }
+    };
+
+    const handleKeyDown = (
+        e: React.KeyboardEvent<HTMLInputElement>,
+        index: number
+    ) => {
+        // move backward
+        if (e.key === "Backspace" && !otp[index] && index > 0) {
+        inputs.current[index - 1]?.focus();
+        }
+    };
+    
+    const HandleAccountActivationAsync = async () => {
+        if (otp.length < 6) return;
+        
+        try{
+            let createOtp = "";
+            for(let x = 0; x < otp.length; x++){
+                createOtp += otp[x];
             }
-        });
-    });  
+
+            const response = await VerifyEmailAsync(email + "", createOtp);
+
+            if (response != false) navigate("/sign-in");
+        } catch{
+            console.log("Failed to activate account");
+        }
+    }
     
     const ResendCode = ()=> {
         if (codeSent) setCodeSent(false);
@@ -44,16 +76,22 @@ export default function OtpActivation() {
                     </p>
                 </div>
 
-                <form action="" className='flex flex-col items-center gap-6 p-2 w-full'>
-                    <div className='flex gap-2'>
-                        {
-                            [1,2,3,4,5,6].map((x, index) => {
-                                return <input maxLength={1} className="digit w-[40px] h-[40px]
-                                    border border-[#ff00003a] text-center text-red-500
-                                    sm:w-[50px] sm:h-[50px]
-                                " />
-                            })
-                        }
+                <form action={HandleAccountActivationAsync} className='flex flex-col items-center gap-6 p-2 w-full'>
+                    <div className="flex gap-2">
+                    {otp.map((digit, index) => (
+                        <input
+                        key={index}
+                        ref={(el) => { inputs.current[index] = el; }}
+                        value={digit}
+                        maxLength={1}
+                        inputMode="numeric"
+                        className="digit w-[40px] h-[40px]
+                            border border-[#ff00003a] text-center text-red-500
+                            sm:w-[50px] sm:h-[50px]"
+                        onChange={(e) => handleChange(e.target.value, index)}
+                        onKeyDown={(e) => handleKeyDown(e, index)}
+                        />
+                    ))}
                     </div>
 
                     <input type="submit" value={"Activate"} className='

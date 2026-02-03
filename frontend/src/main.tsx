@@ -11,6 +11,6 @@ import OtpActivation from './pages/OtpActivation.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <OtpActivation />
+    <App />
   </StrictMode>,
 )

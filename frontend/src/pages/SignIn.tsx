@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom';
 import BackHomeHeader from '../components/BackHomeHeader/BackHomeHeader';
+import { isValidPassword } from '../tools/UserTools';
+import { LoginUserAsync } from '../api/UserApi';
 
 interface SignInInputs {
     required: boolean;
@@ -32,6 +34,19 @@ export default function SignIn() {
     ];
 
 
+    const HandleLoginAsync = async () => {
+        if (!isValidPassword(password)) return;
+
+        try{
+            const response = await LoginUserAsync({email: email, password: password});
+
+            console.log(response);
+        } catch{
+            console.log("Failed to login");
+        }
+    }
+
+
   return (
     <article className='w-full h-[100dvh]
         flex flex-col items-center bg-[#f8eeed8e]
@@ -48,7 +63,7 @@ export default function SignIn() {
                     Welcome back, continue saving.
                 </p>
             </div>
-            <form action="" id='signup' className='flex flex-col gap-4 momo-trust-sans'>
+            <form action={HandleLoginAsync} id='signup' className='flex flex-col gap-4 momo-trust-sans'>
                 {
                     inputs.map((data, index) => {
                         const { required, title, placeholder, input, value } = data;
