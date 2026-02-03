@@ -1,6 +1,7 @@
 import { CgMenuRight } from "react-icons/cg";
 import { RiCloseLargeFill } from "react-icons/ri";
 import { useEffect, useState } from 'react'
+import { Link } from "react-router-dom";
 
 export default function Header() {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -14,7 +15,7 @@ export default function Header() {
             `}
         >
 
-            <a href="/" 
+            <Link to="/" 
                 className='
                     flex items-center 
                 '
@@ -23,7 +24,7 @@ export default function Header() {
                     bg-cover
                 "></div>
                 <h2 className='inter text-[1.2rem] font-bold'>StockVault</h2>
-            </a>
+            </Link>
             
 
             <nav
@@ -52,19 +53,13 @@ export default function Header() {
                         </div>
                     </li>
                     <li>
-                        <a href='#'> Home </a>
+                        <Link to='/'> Home </Link>
                     </li>
                     <li>
-                        <a href='#'> Home </a>
+                        <Link to='sign-in'> Sign In </Link>
                     </li>
                     <li>
-                        <a href='#'> Home </a>
-                    </li>
-                    <li>
-                        <a href='#'> Home </a>
-                    </li>
-                    <li>
-                        <a href='#'> Home </a>
+                        <Link to='sign-up'> Sign Up </Link>
                     </li>
                 </ul>
             </nav>

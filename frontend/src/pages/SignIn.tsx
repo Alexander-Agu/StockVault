@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
 
 interface SignInInputs {
     required: boolean;
@@ -32,7 +33,7 @@ export default function SignIn() {
 
   return (
     <article className='w-full h-[100dvh]
-        flex flex-col items-center
+        flex flex-col items-center bg-[#f8eeed8e]
     '>
         <div className='w-full p-2'>
             <a href="/" className='text-2xl text-red-500 font-bold'>
@@ -82,6 +83,12 @@ export default function SignIn() {
                 <input type="submit" value="Login" 
                     className='w-full p-3 bg-red-500 rounded-[8px] text-white font-bold'
                 />
+
+                <div className='w-full flex items-center justify-center'>
+                    <p >
+                        Don't have an account? <Link className='text-red-400 font-bold' to={"/sign-up"}>SIgnUp</Link> instead.
+                    </p>
+                </div>
             </form>    
         </div>
 

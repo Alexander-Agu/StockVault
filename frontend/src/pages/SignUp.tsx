@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
 
 interface SignUpInputs {
     required: boolean;
@@ -16,7 +17,7 @@ const passwordConstraints = [
     "Must have at least 1 special character"
 ]
 
-export default function SignUn() {
+export default function SignUp() {
     // const [firstname, setFirstname] = useState("");
     // const [lastname, setLastname] = useState("");
     const [name, setName] = useState("");
@@ -65,7 +66,7 @@ export default function SignUn() {
 
   return (
     <article className='w-full h-[100dvh]
-        flex flex-col items-center
+        flex flex-col items-center bg-[#f8eeed8e]
     '>
         <div className='w-full p-2'>
             <a href="/" className='text-2xl text-red-500 font-bold'>
@@ -127,6 +128,12 @@ export default function SignUn() {
                 <input type="submit" value="Create Account" 
                     className='w-full p-3 bg-red-500 rounded-[8px] text-white font-bold'
                 />
+
+                                <div className='w-full flex items-center justify-center'>
+                    <p >
+                        Already have an account? <Link className='text-red-400 font-bold' to={"/sign-in"}>SIgnIn</Link> instead.
+                    </p>
+                </div>
             </form>    
         </div>
 
