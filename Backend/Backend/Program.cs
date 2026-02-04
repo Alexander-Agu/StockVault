@@ -54,6 +54,24 @@ builder.Services.AddScoped<IAccountRepositoryLocks, AccountLocksRepository>();
 builder.Services.AddScoped<ITransectionRepository, TransectionRepository>();
 builder.Services.AddScoped<ITransectionService, TransectionService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("FrontendPolicy", policy =>
+    {
+        policy
+            .WithOrigins(
+                "http://localhost:5173",
+                "https://yourdomain.com"
+            )
+
+            .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+
+            .AllowAnyHeader()
+
+            .AllowCredentials();
+    });
+});
+
 
 var app = builder.Build();
 
@@ -66,6 +84,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("FrontendPolicy");
+
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

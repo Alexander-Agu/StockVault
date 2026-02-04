@@ -11,8 +11,9 @@ namespace Backend.Mapping
         {
             return new User()
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
+                //FirstName = user.FirstName,
+                //LastName = user.LastName,
+                Name = user.Name,
                 Email = user.Email,
                 Phone = user.Phone,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(user.PasswordHash),
@@ -27,8 +28,9 @@ namespace Backend.Mapping
         {
             return new ProfileDto()
             {
-                FirstName = user.FirstName,
-                LastName = user.LastName,
+                //FirstName = user.FirstName,
+                //LastName = user.LastName,
+                Name = user.Name,
                 Phone = user.Phone,
             };
         }

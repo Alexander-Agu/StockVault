@@ -24,7 +24,7 @@ namespace Backend.Mapping
                 AccountType = transection.AccountType,
                 AmountCents = transection.AmountCents,
                 TransectionType = transection.TransectionType,
-                UserName = transection.User != null ? transection.User.FirstName : "",
+                UserName = transection.User != null ? transection.User.Name : "",
                 CreatedAt = transection.CreatedAt,
             };
         }

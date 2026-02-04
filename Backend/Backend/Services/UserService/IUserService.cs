@@ -24,6 +24,12 @@ namespace Backend.Services.UserService
 
 
         /*
+         * TODO: Resends a new otp if it expired
+         */
+        public Task<ApiResponse<string>> ResendVarificationEmail(string email);
+
+
+        /*
          * TODO: Logs user into their account
          */
         public Task<ApiResponse<TokenResponseDto>> LoginAsync(LoginDto login);

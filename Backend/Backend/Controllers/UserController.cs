@@ -30,7 +30,17 @@ namespace Backend.Controllers
             return HandleResponse(response);
         }
 
-        
+
+        // Resends varification email
+        [HttpPut("resend-email")]
+        public async Task<ActionResult> ResendEmailAsync([FromQuery] string email)
+        {
+            var response = await userService.ResendVarificationEmail(email);
+
+            return HandleResponse(response);
+        }
+
+
         // Log's user into their account
         [HttpPost("login")]
         public async Task<ActionResult> LoginUserAsync([FromBody] LoginDto loginDetails)

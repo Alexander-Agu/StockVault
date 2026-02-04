@@ -37,7 +37,7 @@ namespace Backend.Repository.TransectionRepository
                     transectionId = transection.Id,
                     AccountId = transection.AccountId,
                     AccountType = transection.AccountType,
-                    UserName = transection.User != null? transection.User.FirstName : "",
+                    UserName = transection.User != null? transection.User.Name : "",
                     AmountCents = transection.AmountCents / 100,
                     TransectionType =  transection.TransectionType,
                     CreatedAt = transection.CreatedAt  
@@ -55,7 +55,7 @@ namespace Backend.Repository.TransectionRepository
                     transectionId = transection.Id,
                     AccountId = transection.AccountId,
                     AccountType = transection.AccountType,
-                    UserName = transection.User != null ? transection.User.FirstName : "",
+                    UserName = transection.User != null ? transection.User.Name : "",
                     AmountCents = transection.AmountCents / 100,
                     TransectionType = transection.TransectionType,
                     CreatedAt = transection.CreatedAt

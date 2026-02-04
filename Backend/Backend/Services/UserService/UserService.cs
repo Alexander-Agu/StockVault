@@ -91,6 +91,34 @@ namespace Backend.Services.UserService
         }
 
 
+        // Resends varification email
+        public async Task<ApiResponse<string>> ResendVarificationEmail(string email)
+        {
+            ApiResponse<string> response = new ApiResponse<string>()
+            {
+                ResponseCode = ResponseCode.Ok,
+                Message = "Varification email was sent",
+                Data = ""
+            };
+
+            User? user = await userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+            {
+                response.ResponseCode = ResponseCode.NotFound;
+                response.Message = "User account not found";
+
+                return response;
+            }
+
+            user.Otp = RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
+            await userRepository.SaveChanges();
+
+            await emailService.SendOtpEmailAsync(user.Email, user.Otp);
+
+            return response;
+        }
+
+
         // Login user
         public async Task<ApiResponse<TokenResponseDto>> LoginAsync(LoginDto login)
         {
@@ -175,10 +203,13 @@ namespace Backend.Services.UserService
             }
 
             // update first name
-            if (user.FirstName != newProfile.FirstName && newProfile.FirstName != "") user.FirstName = newProfile.FirstName;
+            //if (user.FirstName != newProfile.FirstName && newProfile.FirstName != "") user.FirstName = newProfile.FirstName;
 
             // update last name
-            if (user.LastName != newProfile.LastName && newProfile.LastName != "") user.LastName = newProfile.LastName;
+            //if (user.LastName != newProfile.LastName && newProfile.LastName != "") user.LastName = newProfile.LastName;
+
+            // update name
+            if (user.Name != newProfile.Name && newProfile.Name != "") user.Name = newProfile.Name;
 
             // Update phone number
             if (user.Phone != newProfile.Phone && ValidatePhoneNumber(newProfile.Phone)) user.Phone = newProfile.Phone;
@@ -316,7 +347,7 @@ namespace Backend.Services.UserService
         {
             var claims = new List<Claim> { 
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.FirstName + " " +  user.LastName)
+                new Claim(ClaimTypes.Name, user.Name + " " +  user.Name)
             };
 
             var key = new SymmetricSecurityKey(

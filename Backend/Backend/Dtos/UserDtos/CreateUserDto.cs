@@ -4,13 +4,17 @@ namespace Backend.Dtos.UserDtos
 {
     public class CreateUserDto
     {
-        [Required]
-        [StringLength(30, MinimumLength = 3)]
-        public required string FirstName { get; set; } = string.Empty;
+        //[Required]
+        //[StringLength(30, MinimumLength = 3)]
+        //public required string FirstName { get; set; } = string.Empty;
+
+        //[Required]
+        //[StringLength(30, MinimumLength = 3)]
+        //public required string LastName { get; set; } = string.Empty;
 
         [Required]
-        [StringLength(30, MinimumLength = 3)]
-        public required string LastName { get; set; } = string.Empty;
+        [StringLength(50, MinimumLength = 3)]
+        public required string Name { get; set; } = string.Empty;
 
         [Required]
         [StringLength(100, MinimumLength = 3)]
