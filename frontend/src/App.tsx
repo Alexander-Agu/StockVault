@@ -4,6 +4,7 @@ import Home from './pages/Home';
 import SignUn from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import OtpActivation from './pages/OtpActivation';
+import Portal from './pages/Portal';
 
 function App() {
 
@@ -23,6 +24,10 @@ function App() {
     {
       path: "activate/:email",
       element: <OtpActivation />
+    },
+    {
+      path: '/portal/:userId',
+      element: <Portal />
     }
   ]);
   return (

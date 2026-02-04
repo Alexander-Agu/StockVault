@@ -28,7 +28,7 @@ export default function Sidebar() {
       '
     >
 
-      {/* ===== LOGO AREA ===== */}
+
       <div className='
         hidden md:flex w-full items-center justify-center
         border-b border-red-600/30
@@ -49,7 +49,6 @@ export default function Sidebar() {
       </div>
 
 
-      {/* ===== NAV ITEMS ===== */}
       {
         sidebarItems.map((data, index) => {
           const Icon = data.icon;
@@ -101,7 +100,6 @@ export default function Sidebar() {
       }
 
 
-      {/* ===== PROFILE ===== */}
       <div className='hidden md:flex flex-1 relative w-full'>
         <div
           className='

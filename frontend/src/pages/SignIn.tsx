@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import BackHomeHeader from '../components/BackHomeHeader/BackHomeHeader';
 import { isValidPassword } from '../tools/UserTools';
 import { LoginUserAsync } from '../api/UserApi';
@@ -16,6 +16,9 @@ export default function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [buttonClicked, setButtonClicked] = useState(false);
+
+    // Navigation Attributes
+    const navigate = useNavigate();
 
         const inputs: SignInInputs[] = [
         {
@@ -42,7 +45,9 @@ export default function SignIn() {
         try{
             const response = await LoginUserAsync({email: email, password: password});
 
-            console.log(response);
+            console.log();
+
+            if (response) navigate(`/portal/${response.data.id}`)
         } catch{
             console.log("Failed to login");
             setButtonClicked(false);
