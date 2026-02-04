@@ -10,7 +10,7 @@ interface ProfileHeaderProps{
     title: string
 }
 
-export default function ProfileHeader({ title, name }: ProfileHeaderProps) {
+export default function PortalHeader({ title, name }: ProfileHeaderProps) {
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
     const HandleProfileMenuOpen = ()=> {

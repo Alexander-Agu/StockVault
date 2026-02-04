@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Sidebar from '../components/Sidebar/Sidebar'
-import ProfileHeader from '../components/ProfileHeader/ProfileHeader';
+import PortalHeader from '../components/PortalHeader/PortalHeader';
 
 
 export default function Portal() {
@@ -18,7 +18,7 @@ export default function Portal() {
         xl:ml-[300px]
       ">
         {/* Header */}
-        <ProfileHeader name='Alexander' title='Dashboard' />
+        <PortalHeader name='Alexander' title='Dashboard' />
         {/* Pages (dashboard/payment/etc) */}
         <div>Dashboard</div>
       </main>
