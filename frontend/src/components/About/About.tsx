@@ -5,7 +5,7 @@ export default function About() {
     let numberOfItems = aboutData.length;
 
   return (
-    <section className="bg-[#F8EEED] pt-5 flex flex-col items-center justify-center">
+    <section className="bg-primaryRed pt-5 flex flex-col items-center justify-center">
         <div className="w-full flex items-center justify-center flex-col text-center p-2">
             <h2 className="text-2xl font-bold text-red-500">
                 Why StokVault?
@@ -21,7 +21,7 @@ export default function About() {
                 aboutData.map((about, index) => {
                     const { title, content } = about;
 
-                    return <div className="flex flex-col items-center justify-center text-center w-[300px]">
+                    return <div className="flex flex-col items-center justify-center text-center w-[300px]" key={index}>
                         <div className="relative w-[110px] h-[90px] flex items-center justify-center">
                             <h2 className="font-medium text-4xl text-red-500">0{index + 1}</h2>
                             <h2 className="absolute top-0 right-0 font-medium text-2xl text-[#212121]">/0{numberOfItems}</h2>

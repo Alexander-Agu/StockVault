@@ -72,16 +72,18 @@ export default function OtpActivation() {
             const response = await ResendEmailAsync(email + "");
             
             console.log(response)
+            setCodeSent(true);
             return response;
         } catch{
             setResendButtonClicked(false);
+            setCodeSent(false)
             return false;
         } finally{
             setResendButtonClicked(false);
         }
     }
 
-    
+
   return (
     <article className='bg-[#f8eeed8e] flex flex-col items-center w-full h-[100dvh]'>
         <BackHomeHeader />

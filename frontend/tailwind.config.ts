@@ -13,7 +13,8 @@ export default {
       fontFamily: {
       },
       colors: {
-        mainBackground: "#faf3f3"
+        mainBackground: "#faf3f3",
+        primaryRed: "#FF2D2D"
       },
     },
   },
