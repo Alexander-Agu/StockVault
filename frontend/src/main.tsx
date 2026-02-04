@@ -8,9 +8,10 @@ import About from './components/About/About.tsx'
 import Home from './pages/Home.tsx'
 import SignUp from './pages/SignUp.tsx'
 import OtpActivation from './pages/OtpActivation.tsx'
+import Portal from './pages/Portal.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <App />
+    <Portal />
   </StrictMode>,
 )

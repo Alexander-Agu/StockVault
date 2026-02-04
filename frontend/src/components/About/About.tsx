@@ -5,7 +5,7 @@ export default function About() {
     let numberOfItems = aboutData.length;
 
   return (
-    <section className="bg-primaryRed pt-5 flex flex-col items-center justify-center">
+    <section className="bg-[#F8EEED] pt-5 flex flex-col items-center justify-center">
         <div className="w-full flex items-center justify-center flex-col text-center p-2">
             <h2 className="text-2xl font-bold text-red-500">
                 Why StokVault?
