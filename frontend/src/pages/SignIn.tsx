@@ -15,6 +15,7 @@ interface SignInInputs {
 export default function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [buttonClicked, setButtonClicked] = useState(false);
 
         const inputs: SignInInputs[] = [
         {
@@ -35,14 +36,18 @@ export default function SignIn() {
 
 
     const HandleLoginAsync = async () => {
-        if (!isValidPassword(password)) return;
+        if (!isValidPassword(password) || buttonClicked) return;
 
+        setButtonClicked(true);
         try{
             const response = await LoginUserAsync({email: email, password: password});
 
             console.log(response);
         } catch{
             console.log("Failed to login");
+            setButtonClicked(false);
+        } finally{
+            setButtonClicked(false)
         }
     }
 

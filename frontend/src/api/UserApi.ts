@@ -35,6 +35,19 @@ export const VerifyEmailAsync = async (email: string, otp: string) => {
 }
 
 
+// Allows user to resend their varification email
+export const ResendEmailAsync = async (email: string) => {
+    try{
+        const response = await api.put(`User/resend-email?email=${email}`);
+
+        return response.data;
+    } catch{
+        console.log("Failed to resend email");
+        return false;
+    }
+}
+
+
 // Logs user into their account
 export const LoginUserAsync = async (body: {
     email: string,

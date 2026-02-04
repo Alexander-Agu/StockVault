@@ -1,14 +1,18 @@
 import React, { use, useRef, useState } from 'react'
 import BackHomeHeader from '../components/BackHomeHeader/BackHomeHeader'
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
-import { VerifyEmailAsync } from '../api/UserApi';
+import { ResendEmailAsync, VerifyEmailAsync } from '../api/UserApi';
 
 export default function OtpActivation() {
+    // navigation attributes
     const navigate = useNavigate();
     const { email } = useParams();
-    // const [otp, setOtp] = useState("");
+
     const [codeSent, setCodeSent] = useState(false);
-    // const inputs = document.querySelectorAll<HTMLInputElement>(".digit");
+
+    // Button states
+    const [activationButtonClicked, setActivationButtonClicked] = useState(false);
+    const [resendButtonClicked, setResendButtonClicked] = useState(false);
         
     const length = 6;
     const [otp, setOtp] = useState<string[]>(Array(length).fill(""));
@@ -36,27 +40,48 @@ export default function OtpActivation() {
         }
     };
     
-    const HandleAccountActivationAsync = async () => {
-        if (otp.length < 6) return;
-        
-        try{
-            let createOtp = "";
-            for(let x = 0; x < otp.length; x++){
-                createOtp += otp[x];
+    const handleAccountActivationAsync = async () => {
+        if (otp.length !== 6 || activationButtonClicked) return;
+
+        setActivationButtonClicked(true);
+
+        try {
+            const code = otp.join("");
+
+            const response = await VerifyEmailAsync(email + "", code);
+
+            if (response) {
+                navigate("/sign-in");
+            } else {
+                setActivationButtonClicked(false);
             }
 
-            const response = await VerifyEmailAsync(email + "", createOtp);
+        } catch (err) {
+            console.log("Failed to activate account", err);
+            setActivationButtonClicked(false);
+        } finally{
+            setActivationButtonClicked(false);
+        }
+    };
+    
+    const HandleResendCodeAsync = async ()=> {
+        if (resendButtonClicked) return;
 
-            if (response != false) navigate("/sign-in");
+        setResendButtonClicked(true);
+        try{
+            const response = await ResendEmailAsync(email + "");
+            
+            console.log(response)
+            return response;
         } catch{
-            console.log("Failed to activate account");
+            setResendButtonClicked(false);
+            return false;
+        } finally{
+            setResendButtonClicked(false);
         }
     }
+
     
-    const ResendCode = ()=> {
-        if (codeSent) setCodeSent(false);
-        else setCodeSent(true);
-    }
   return (
     <article className='bg-[#f8eeed8e] flex flex-col items-center w-full h-[100dvh]'>
         <BackHomeHeader />
@@ -76,7 +101,7 @@ export default function OtpActivation() {
                     </p>
                 </div>
 
-                <form action={HandleAccountActivationAsync} className='flex flex-col items-center gap-6 p-2 w-full'>
+                <form action={handleAccountActivationAsync} className='flex flex-col items-center gap-6 p-2 w-full'>
                     <div className="flex gap-2">
                     {otp.map((digit, index) => (
                         <input
@@ -101,7 +126,7 @@ export default function OtpActivation() {
                 </form>
 
                 <p className='text-[#00000077]'>
-                        Didn't receive the code? <button onClick={()=> ResendCode()} className='text-red-500 font-medium'>Resend</button>
+                        Didn't receive the code? <button onClick={()=> HandleResendCodeAsync()} className='text-red-500 font-medium'>Resend</button>
                 </p>
 
                 {

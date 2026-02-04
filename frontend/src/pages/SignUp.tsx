@@ -32,6 +32,8 @@ export default function SignUp() {
     const [isAccountCreated, setIsAccountCreated] = useState(false);
     // const [confirmPassword, setConfirmPassword] = useState("");
 
+    const [buttonClicked, setButtonClicked] = useState(false);
+
     const navigate = useNavigate();
 
     const inputs: SignUpInputs[] = [
@@ -80,12 +82,15 @@ export default function SignUp() {
             return;
         }
 
+        if (buttonClicked) return;
+
         // Check if other input fields are not empty
         if (name === "" && email === "") {
             setFailed(true);
             return;
         }
 
+        setButtonClicked(true);
         try{
             const response = await RegisterUserAsync({
                 name: name,
@@ -97,6 +102,9 @@ export default function SignUp() {
             if (response != false) navigate(`/activate/${email}`)
         } catch{
             console.log("Failed to create account")
+            setButtonClicked(false);
+        } finally{
+            setButtonClicked(false);
         }
     }
 
