@@ -6,7 +6,7 @@ import BackHomeHeader from '../BackHomeHeader/BackHomeHeader';
 export default function Sidebar() {
   return (
     <nav
-      className='
+      className='z-2
         w-full fixed bottom-0 flex items-center justify-between p-3
 
         /* black gradient */

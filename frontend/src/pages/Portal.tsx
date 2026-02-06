@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import Sidebar from '../components/Sidebar/Sidebar'
 import PortalHeader from '../components/PortalHeader/PortalHeader';
+import Dashboard from '../components/Dashboard/Dashboard';
 
 
 export default function Portal() {
@@ -19,8 +20,9 @@ export default function Portal() {
       ">
         {/* Header */}
         <PortalHeader name='Alexander' title='Dashboard' />
+        
         {/* Pages (dashboard/payment/etc) */}
-        <div>Dashboard</div>
+        <Dashboard />
       </main>
 
     </article>
