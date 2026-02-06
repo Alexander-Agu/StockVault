@@ -28,7 +28,7 @@ export default function StatCard ({ title, count, icon: Icon, linkText }: StatCa
       <div className="flex justify-end">
         <a 
           href="#" 
-          className="text-xs font-bold text-red-400 hover:text-red-600 transition-colors uppercase tracking-tight"
+          className="text-xs font-bold text-red-400 hover:text-red-600 transition-colors uppercase tracking-tight underline"
         >
           {linkText}
         </a>
