@@ -1,12 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar/Sidebar'
 import PortalHeader from '../components/PortalHeader/PortalHeader';
 import Dashboard from '../components/Dashboard/Dashboard';
+import { useDispatch, useSelector } from 'react-redux';
+import type { RootState, AppDispatch } from '../state/store/store';
+import { useParams } from 'react-router-dom';
+import { fetchUser } from '../state/User/UserSlice';
 
 
 export default function Portal() {
-  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const { userId } = useParams();
+  const user = useSelector((state: RootState) => state.user)
+  const dispatch = useDispatch<AppDispatch>();
 
+  useEffect(()=>{
+    if (userId) {
+      dispatch(fetchUser(Number(userId)))
+    }
+  },[userId]);
+
+  if (user.loading) return <h1>LOADING....</h1>
+  
   return (
     <article className="bg-[#F8EEED] min-h-[100dvh] flex">
       <Sidebar />

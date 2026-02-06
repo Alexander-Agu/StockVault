@@ -9,9 +9,11 @@ import Home from './pages/Home.tsx'
 import SignUp from './pages/SignUp.tsx'
 import OtpActivation from './pages/OtpActivation.tsx'
 import Portal from './pages/Portal.tsx'
+import { Provider } from 'react-redux'
+import { store } from './state/store/store.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+  <Provider store={store}>
     <App />
-  </StrictMode>,
+  </Provider>
 )

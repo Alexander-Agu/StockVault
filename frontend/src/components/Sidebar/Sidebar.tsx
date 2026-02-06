@@ -2,8 +2,12 @@ import React from 'react'
 import { sidebarItems } from './SidebarTools'
 import { Link } from 'react-router-dom';
 import BackHomeHeader from '../BackHomeHeader/BackHomeHeader';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../state/store/store';
 
 export default function Sidebar() {
+  const user = useSelector((state: RootState) => state.user);
+
   return (
     <nav
       className='z-2
@@ -128,7 +132,7 @@ export default function Sidebar() {
 
           <div className='hidden lg:block text-white/80'>
             <h2 className='text-[1.1rem] font-semibold'>
-              Alexander Agu
+              {user.user?.name}
             </h2>
 
             <p className='text-sm text-white/50'>

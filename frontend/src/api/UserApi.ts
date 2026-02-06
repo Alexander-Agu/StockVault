@@ -61,3 +61,14 @@ export const LoginUserAsync = async (body: {
         return false;
     }
 }
+
+
+// Fetches user data
+export const FetchProfileAsync = async (userId: number) => {
+    try{
+        const response = await api.get(`User/profile/${userId}`);
+        return response.data
+    } catch{
+        return false;
+    }
+}
