@@ -31,3 +31,17 @@ export const FetchPersonalAccountsAsync = async () => {
         return false;
     }
 }
+
+export interface CreateAccount {
+    title: string;
+}
+// Creates a personal account
+export const CreatePersonalAccountsAsync = async (body: CreateAccount) => {
+    try{
+        const response = await api.post(`/PersonalAccount/create-account/${data.id}`, body);
+
+        return response.data;
+    } catch{
+        return false;
+    }
+}

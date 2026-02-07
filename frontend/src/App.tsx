@@ -7,6 +7,7 @@ import OtpActivation from './pages/OtpActivation';
 import Portal from './pages/Portal';
 import Dashboard from './components/Dashboard/Dashboard';
 import PersonalAccount from './components/PersonalAccount/PersonalAccount';
+import CreatePersonalAccount from './components/CreatePersonalAccount/CreatePersonalAccount';
 
 function App() {
 
@@ -28,7 +29,7 @@ function App() {
       element: <OtpActivation />
     },
     {
-      path: '/portal/:userId/',
+      path: '/portal/:userId',
       element: <Portal />,
       children: [
         {
@@ -37,13 +38,18 @@ function App() {
         },
 
         {
-          path: "dashboard",
+          path: "/portal/:userId/dashboard",
           element: <Dashboard />
         },
 
         {
-          path: "personal-account",
+          path: "/portal/:userId/personal-account",
           element: <PersonalAccount />
+        },
+
+        {
+          path: "/portal/:userId/personal-account/create",
+          element: <CreatePersonalAccount />
         }
       ]
     }

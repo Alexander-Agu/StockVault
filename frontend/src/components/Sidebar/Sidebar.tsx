@@ -73,8 +73,7 @@ export default function Sidebar() {
                   : "md:border-b md:border-red-600/20"}
               `}
             >
-              <a
-                href={data.path}
+              <Link to={data.path}
                 className='
                   group
                   flex flex-col items-center gap-2 text-center
@@ -98,7 +97,7 @@ export default function Sidebar() {
                 <p className='text-[12px] lg:text-[1rem] font-medium'>
                   {data.title}
                 </p>
-              </a>
+              </Link>
             </div>
           );
         })

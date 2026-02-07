@@ -4,7 +4,7 @@ import PortalHeader from '../components/PortalHeader/PortalHeader';
 import Dashboard from '../components/Dashboard/Dashboard';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../state/store/store';
-import { Outlet, useParams } from 'react-router-dom';
+import { Outlet, useMatch, useParams } from 'react-router-dom';
 import { fetchUser } from '../state/User/UserSlice';
 import { FetchPersonalAccounts } from '../state/PersonalAccount/PersonalAccountSlicer';
 import PersonalAccount from '../components/PersonalAccount/PersonalAccount';
@@ -12,6 +12,10 @@ import PersonalAccount from '../components/PersonalAccount/PersonalAccount';
 
 export default function Portal() {
   const { userId } = useParams();
+
+  const [openedPage, setOpenedPage] = useState("Dashboard");
+
+
 
   // Redux
   const user = useSelector((state: RootState) => state.user)
@@ -40,7 +44,7 @@ export default function Portal() {
         xl:ml-[300px]
       ">
         {/* Header */}
-        <PortalHeader name={user.user?.name + ""} title='Dashboard' />
+        <PortalHeader name={user.user?.name + ""} title={openedPage} />
         
         {/* Pages (dashboard/payment/etc) */}
         <Outlet />

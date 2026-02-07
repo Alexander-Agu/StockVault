@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { AppDispatch } from "../store/store";
 import { TbReceiptYen } from "react-icons/tb";
-import { FetchPersonalAccountsAsync } from "../../api/PersonalAccountApi";
+import { CreatePersonalAccountsAsync, FetchPersonalAccountsAsync } from "../../api/PersonalAccountApi";
 
 
 interface PersonalAccount{
@@ -66,6 +66,26 @@ export const FetchPersonalAccounts = () =>
             return accounts;
         } catch{
             return [];
+        } finally{
+            dispatch(setLoading(false));
+        }
+    }
+
+interface CreateAccount {
+    title: string;
+}
+export const CreateAccount = (body: CreateAccount) => 
+    async (dispatch: AppDispatch): Promise<boolean> => {
+        try{
+            dispatch(setLoading(true));
+
+            const response =  await CreatePersonalAccountsAsync(body);
+
+            if (!response) throw new Error("Failed to fetch");
+
+            return true;
+        } catch{
+            return false;
         } finally{
             dispatch(setLoading(false));
         }

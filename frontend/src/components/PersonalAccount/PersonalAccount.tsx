@@ -2,17 +2,20 @@ import { useSelector } from "react-redux"
 import type { RootState } from "../../state/store/store"
 import { FaPlus } from "react-icons/fa6";
 import PersonalAccountCard from "../AccountCards/PersonalAccountCard";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 export default function PersonalAccount() {
     const personalAccount = useSelector((state: RootState) => state.personalAccount);
+    const [popup, setPopup] = useState(false);
 
     return (
         <section className="p-8 w-full flex flex-col gap-12">
             {/* Header & Add Button Area */}
             <div className="flex flex-col gap-4">
-                <h1 className="text-2xl font-bold text-slate-800">Personal Accounts</h1>
+                <h2 className="text-2xl font-bold text-slate-800">Personal Accounts</h2>
                 
-                <button className="group w-64 h-32 flex flex-col items-center justify-center gap-2 
+                <Link to={"create"} className="group w-64 h-32 flex flex-col items-center justify-center gap-2 
                     bg-white/50 hover:bg-white border-2 border-dashed border-slate-300 
                     hover:border-red-500 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md">
                     
@@ -23,7 +26,7 @@ export default function PersonalAccount() {
                     <span className="text-sm font-semibold text-slate-500 group-hover:text-red-600">
                         Add new Personal Account
                     </span>
-                </button>
+                </Link >
             </div>
 
             {/* Grid Layout */}
@@ -43,6 +46,8 @@ export default function PersonalAccount() {
                     )
                 })}
             </div>
+
+            
         </section>
     )
 }
