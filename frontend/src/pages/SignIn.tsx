@@ -3,6 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import BackHomeHeader from '../components/BackHomeHeader/BackHomeHeader';
 import { isValidPassword } from '../tools/UserTools';
 import { LoginUserAsync } from '../api/UserApi';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../state/store/store';
+import { Login } from '../state/Auth/AuthSlicer';
 
 interface SignInInputs {
     required: boolean;
@@ -16,6 +19,9 @@ export default function SignIn() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [buttonClicked, setButtonClicked] = useState(false);
+
+    const auth = useSelector((state: RootState) => state.auth);
+    const authDispatch = useDispatch<AppDispatch>();
 
     // Navigation Attributes
     const navigate = useNavigate();
@@ -41,18 +47,12 @@ export default function SignIn() {
     const HandleLoginAsync = async () => {
         if (!isValidPassword(password) || buttonClicked) return;
 
-        setButtonClicked(true);
         try{
-            const response = await LoginUserAsync({email: email, password: password});
+            const id = await authDispatch(Login({email: email, password: password}));
 
-            console.log();
-
-            if (response) navigate(`/portal/${response.data.id}`)
+            if (id) navigate(`/portal/${id}`)
         } catch{
             console.log("Failed to login");
-            setButtonClicked(false);
-        } finally{
-            setButtonClicked(false)
         }
     }
 
@@ -102,7 +102,7 @@ export default function SignIn() {
 
                 <a href="#" className='noto-sans text-red-500'>Forgot your password?</a>
 
-                <input type="submit" value="Login" 
+                <input disabled={auth.loadingAuth} type="submit" value="Login" 
                     className='w-full p-3 bg-red-500 rounded-[8px] text-white font-bold'
                 />
 

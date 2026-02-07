@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { IoPersonSharp } from "react-icons/io5";
 import { IoExitSharp } from "react-icons/io5";
 import { useState } from "react";
+import { GetFirstLetter } from "../../tools/UserTools";
 
 interface ProfileHeaderProps{
     name: string
@@ -53,7 +54,7 @@ export default function PortalHeader({ title, name }: ProfileHeaderProps) {
             transition
         "
         >
-        A
+        {GetFirstLetter(name)}
         </a>
 
 

@@ -2,8 +2,14 @@ import React, { use, useRef, useState } from 'react'
 import BackHomeHeader from '../components/BackHomeHeader/BackHomeHeader'
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { ResendEmailAsync, VerifyEmailAsync } from '../api/UserApi';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../state/store/store';
+import { ResendEmail } from '../state/Auth/AuthSlicer';
 
 export default function OtpActivation() {
+    const auth =  useSelector((state: RootState) => state.auth);
+    const authDispatch = useDispatch<AppDispatch>();
+
     // navigation attributes
     const navigate = useNavigate();
     const { email } = useParams();
@@ -41,45 +47,30 @@ export default function OtpActivation() {
     };
     
     const handleAccountActivationAsync = async () => {
-        if (otp.length !== 6 || activationButtonClicked) return;
-
-        setActivationButtonClicked(true);
+        if (otp.length !== 6) return;
 
         try {
             const code = otp.join("");
 
-            const response = await VerifyEmailAsync(email + "", code);
+            const response = await authDispatch(await VerifyEmailAsync(email + "", code));
 
             if (response) {
                 navigate("/sign-in");
-            } else {
-                setActivationButtonClicked(false);
             }
-
         } catch (err) {
             console.log("Failed to activate account", err);
-            setActivationButtonClicked(false);
-        } finally{
-            setActivationButtonClicked(false);
         }
     };
     
     const HandleResendCodeAsync = async ()=> {
-        if (resendButtonClicked) return;
-
-        setResendButtonClicked(true);
         try{
-            const response = await ResendEmailAsync(email + "");
+            const response = await authDispatch(await ResendEmail(email + ""));
             
-            console.log(response)
             setCodeSent(true);
             return response;
         } catch{
-            setResendButtonClicked(false);
             setCodeSent(false)
             return false;
-        } finally{
-            setResendButtonClicked(false);
         }
     }
 
@@ -121,14 +112,14 @@ export default function OtpActivation() {
                     ))}
                     </div>
 
-                    <input type="submit" value={"Activate"} className='
+                    <input disabled={auth.loadingAuth} type="submit" value={"Activate"} className='
                         bg-red-500 w-[80%] p-3 rounded-2xl
                         text-white text-[1.2rem] font-medium
                     ' />
                 </form>
 
                 <p className='text-[#00000077]'>
-                        Didn't receive the code? <button onClick={()=> HandleResendCodeAsync()} className='text-red-500 font-medium'>Resend</button>
+                        Didn't receive the code? <button disabled={auth.loadingAuth} onClick={()=> HandleResendCodeAsync()} className='text-red-500 font-medium'>Resend</button>
                 </p>
 
                 {

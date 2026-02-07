@@ -3,6 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import BackHomeHeader from '../components/BackHomeHeader/BackHomeHeader';
 import { isValidPassword } from '../tools/UserTools';
 import { RegisterUserAsync } from '../api/UserApi';
+import { useDispatch, useSelector } from 'react-redux';
+import type { AppDispatch, RootState } from '../state/store/store';
+import { RegisterUser } from '../state/Auth/AuthSlicer';
 
 interface SignUpInputs {
     required: boolean;
@@ -32,9 +35,9 @@ export default function SignUp() {
     const [isAccountCreated, setIsAccountCreated] = useState(false);
     // const [confirmPassword, setConfirmPassword] = useState("");
 
-    const [buttonClicked, setButtonClicked] = useState(false);
-
     const navigate = useNavigate();
+    const auth = useSelector((state: RootState) => state.auth);
+    const authDispatch = useDispatch<AppDispatch>();
 
     const inputs: SignUpInputs[] = [
         {
@@ -82,29 +85,23 @@ export default function SignUp() {
             return;
         }
 
-        if (buttonClicked) return;
-
         // Check if other input fields are not empty
         if (name === "" && email === "") {
             setFailed(true);
             return;
         }
 
-        setButtonClicked(true);
         try{
-            const response = await RegisterUserAsync({
+            const res = await authDispatch(RegisterUser({
                 name: name,
                 email: email,
                 phone: phone,
                 passwordHash: password
-            });
+            }))
 
-            if (response != false) navigate(`/activate/${email}`)
+            if (res) navigate(`/activate/${email}`)
         } catch{
             console.log("Failed to create account")
-            setButtonClicked(false);
-        } finally{
-            setButtonClicked(false);
         }
     }
 
@@ -165,7 +162,7 @@ export default function SignUp() {
                     })
                 }
 
-                <input type="submit" value="Create Account" 
+                <input type="submit" value="Create Account" disabled={auth.loadingAuth} 
                     className='w-full p-3 bg-red-500 rounded-[8px] text-white font-bold'
                 />
                     <div className='w-full flex items-center justify-center'>

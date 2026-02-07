@@ -10,13 +10,13 @@ interface User {
 
 interface UserState {
     user: User | null;
-    loading: boolean;
+    loadingUser: boolean;
     error: string | null;
 }
 
 const initialState: UserState = {
     user: null,
-    loading: false,
+    loadingUser: false,
     error: null
 }
 
@@ -25,7 +25,7 @@ const userSlice = createSlice({
     initialState,
     reducers: {
         setLoading: (state, action: PayloadAction<boolean>) => {
-            state.loading = action.payload
+            state.loadingUser = action.payload
         },
 
         setUser: (state, action: PayloadAction<User>) => {

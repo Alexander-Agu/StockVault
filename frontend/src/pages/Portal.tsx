@@ -19,8 +19,8 @@ export default function Portal() {
     }
   },[userId]);
 
-  if (user.loading) return <h1>LOADING....</h1>
-  
+  if (user.loadingUser) return <h1>LOADING....</h1>
+
   return (
     <article className="bg-[#F8EEED] min-h-[100dvh] flex">
       <Sidebar />
@@ -33,7 +33,7 @@ export default function Portal() {
         xl:ml-[300px]
       ">
         {/* Header */}
-        <PortalHeader name='Alexander' title='Dashboard' />
+        <PortalHeader name={user.user?.name + ""} title='Dashboard' />
         
         {/* Pages (dashboard/payment/etc) */}
         <Dashboard />

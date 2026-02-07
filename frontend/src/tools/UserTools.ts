@@ -7,3 +7,8 @@ export function isValidPassword(password: string): boolean {
 
   return hasMinLength && hasUpper && hasLower && hasNumber && hasSpecial;
 }
+
+
+export const GetFirstLetter = (name: string) => {
+  return name[0].toUpperCase();
+}

@@ -1,11 +1,24 @@
 import axios from "axios"
+import { useSelector } from "react-redux";
+import type { RootState } from "../state/store/store";
 
+
+const userString: string | null = sessionStorage.getItem("user");
+let token = 0;
+
+if (userString){
+    const data = JSON.parse(userString);
+
+    token = data.token;
+}
 
 // Base URL
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({
     baseURL: apiUrl,
-    headers: {}
+    headers: {
+        Authorization: `bearer ${token}`
+    }
 });
 
 // Sends an api request to backend to register the user

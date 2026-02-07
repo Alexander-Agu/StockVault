@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import BackHomeHeader from '../BackHomeHeader/BackHomeHeader';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../state/store/store';
+import { GetFirstLetter } from '../../tools/UserTools';
 
 export default function Sidebar() {
   const user = useSelector((state: RootState) => state.user);
@@ -127,7 +128,7 @@ export default function Sidebar() {
             flex items-center justify-center
             font-bold text-lg
           '>
-            A
+            {GetFirstLetter(user.user?.name + "")}
           </div>
 
           <div className='hidden lg:block text-white/80'>
@@ -140,7 +141,7 @@ export default function Sidebar() {
             </p>
           </div>
         </div>
-      </div>
+      </div>s
 
     </nav>
   )
