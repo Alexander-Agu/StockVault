@@ -1,6 +1,4 @@
 import axios from "axios"
-import { useSelector } from "react-redux";
-import type { RootState } from "../state/store/store";
 
 
 const userString: string | null = sessionStorage.getItem("user");

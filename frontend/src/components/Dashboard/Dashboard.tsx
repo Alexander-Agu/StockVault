@@ -3,6 +3,8 @@ import { GiWallet } from "react-icons/gi";
 import StatCard from '../StatCard/StatCard';
 import PersonalAccountCard from "../AccountCards/PersonalAccountCard";
 import JointAccountCard from "../AccountCards/JointAccountCard";
+import { useSelector } from "react-redux";
+import type { RootState } from "../../state/store/store";
 
 interface StatItem {
   title: string;
@@ -17,6 +19,9 @@ export default function Dashboard() {
     { title: "Personal accounts", count: 12345, icon: FaWallet, linkText: "View Personal Accounts" },
     { title: "Joint accounts", count: 8240, icon: GiWallet, linkText: "View Joint Accounts" },
   ];
+
+  const twoPersonalAccounts = useSelector((state: RootState) =>
+    state.personalAccount.personalAccounts?.slice(0, 2) ?? []);
 
   return (
     <main className="w-full h-full overflow-y-auto bg-[#F8EEED] custom-scrollbar">
@@ -43,8 +48,19 @@ export default function Dashboard() {
               <h2 className="text-white font-bold text-sm uppercase tracking-wider">Personal Accounts</h2>
             </div>
             <div className="p-5 flex flex-col gap-4">
-              <PersonalAccountCard title="Playstation 5" amount={8250.50} id={1} locked={false} />
-              <PersonalAccountCard title="Travel Fund" amount={0} id={2} locked={true} />
+
+              {
+                twoPersonalAccounts.map(account => {
+                  const { id, title, balance, isActive } = account
+
+                  return <PersonalAccountCard key={id}
+                    title={title}
+                    id={id}
+                    amount={balance}
+                    locked={isActive}
+                  />
+                })
+              }
             </div>
           </section>
 

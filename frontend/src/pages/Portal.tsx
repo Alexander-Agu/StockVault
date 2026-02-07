@@ -6,20 +6,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../state/store/store';
 import { useParams } from 'react-router-dom';
 import { fetchUser } from '../state/User/UserSlice';
+import { FetchPersonalAccounts } from '../state/PersonalAccount/PersonalAccountSlicer';
 
 
 export default function Portal() {
   const { userId } = useParams();
+
+  // Redux
   const user = useSelector((state: RootState) => state.user)
   const dispatch = useDispatch<AppDispatch>();
+  const personalAccount = useSelector((state: RootState) => state.personalAccount)
+  const personalAccountDispatch = useDispatch<AppDispatch>();
 
   useEffect(()=>{
     if (userId) {
       dispatch(fetchUser(Number(userId)))
+      personalAccountDispatch(FetchPersonalAccounts())
     }
   },[userId]);
 
-  if (user.loadingUser) return <h1>LOADING....</h1>
+  if (user.loadingUser || personalAccount.Loading) return <h1>LOADING....</h1>
 
   return (
     <article className="bg-[#F8EEED] min-h-[100dvh] flex">
