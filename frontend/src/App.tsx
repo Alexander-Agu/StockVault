@@ -5,6 +5,8 @@ import SignUn from './pages/SignUp';
 import SignIn from './pages/SignIn';
 import OtpActivation from './pages/OtpActivation';
 import Portal from './pages/Portal';
+import Dashboard from './components/Dashboard/Dashboard';
+import PersonalAccount from './components/PersonalAccount/PersonalAccount';
 
 function App() {
 
@@ -26,8 +28,24 @@ function App() {
       element: <OtpActivation />
     },
     {
-      path: '/portal/:userId',
-      element: <Portal />
+      path: '/portal/:userId/',
+      element: <Portal />,
+      children: [
+        {
+          index: true,
+          element: <Dashboard />
+        },
+
+        {
+          path: "dashboard",
+          element: <Dashboard />
+        },
+
+        {
+          path: "personal-account",
+          element: <PersonalAccount />
+        }
+      ]
     }
   ]);
   return (

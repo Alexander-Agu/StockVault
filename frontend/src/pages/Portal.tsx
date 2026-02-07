@@ -4,9 +4,10 @@ import PortalHeader from '../components/PortalHeader/PortalHeader';
 import Dashboard from '../components/Dashboard/Dashboard';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../state/store/store';
-import { useParams } from 'react-router-dom';
+import { Outlet, useParams } from 'react-router-dom';
 import { fetchUser } from '../state/User/UserSlice';
 import { FetchPersonalAccounts } from '../state/PersonalAccount/PersonalAccountSlicer';
+import PersonalAccount from '../components/PersonalAccount/PersonalAccount';
 
 
 export default function Portal() {
@@ -42,7 +43,7 @@ export default function Portal() {
         <PortalHeader name={user.user?.name + ""} title='Dashboard' />
         
         {/* Pages (dashboard/payment/etc) */}
-        <Dashboard />
+        <Outlet />
       </main>
 
     </article>

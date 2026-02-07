@@ -24,7 +24,7 @@ export default function Dashboard() {
     state.personalAccount.personalAccounts?.slice(0, 2) ?? []);
 
   return (
-    <main className="w-full h-full overflow-y-auto bg-[#F8EEED] custom-scrollbar">
+    <section className="w-full h-full overflow-y-auto bg-[#F8EEED] custom-scrollbar">
       <section className="p-6 lg:p-10 flex flex-col gap-10">
         {/* ACCOUNT STATS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -93,6 +93,6 @@ export default function Dashboard() {
 
         </div>
       </section>
-    </main>
+    </section>
   );
 }
