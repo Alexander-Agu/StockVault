@@ -23,9 +23,17 @@ export default function PersonalAccountCard({ title, amount, locked, url }: Pers
             Locked
           </div>
         </div>
-        <div className="flex items-center gap-2 text-red-500 text-[10px] font-bold">
-          <FaLock size={10} />
-          <span>Locked until May 15, 2024</span>
+        <div className="flex items-center justify-between gap-2 text-red-500 text-[10px] font-bold">
+          <div className="flex items-center justify-between">
+            <FaLock size={10} />
+          `<span>Locked until May 15, 2024</span>
+          </div>
+
+          <button onClick={() => navigate(url)}  
+            className="px-4 py-1.5 bg-red-400 hover:bg-red-500 text-white text-xs font-bold rounded-md transition-all active:scale-95"
+          >
+            view
+          </button>
         </div>
         <FaLock className="absolute top-4 right-4 text-red-200" size={18} />
       </div>
