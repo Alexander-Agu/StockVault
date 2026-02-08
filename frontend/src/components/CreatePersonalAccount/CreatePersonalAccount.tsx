@@ -4,6 +4,7 @@ import { FaWallet, FaArrowLeft } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "../../state/store/store";
 import { CreateAccount } from "../../state/PersonalAccount/PersonalAccountSlicer";
+import NavigateBackButton from "../../UI/NavigateBackButton";
 
 export default function CreatePersonalAccount() {
   const navigate = useNavigate();
@@ -28,14 +29,10 @@ export default function CreatePersonalAccount() {
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-red-200/50 rounded-full blur-[120px]" />
       <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-rose-300/30 rounded-full blur-[120px]" />
 
-      <button 
-        onClick={() => navigate(-1)}
-        className="absolute top-8 left-8 z-10 flex items-center gap-2 text-slate-500 hover:text-red-600 transition-colors font-semibold"
-      >
-        <FaArrowLeft />
-        Back to Accounts
-      </button>
-
+    <div className="absolute top-8 left-8 z-10">
+    <NavigateBackButton title="Go back to accounts"/>
+    </div>
+      
       <div className="relative z-10 w-full max-w-md bg-white/40 backdrop-blur-xl rounded-[2.5rem] p-10 border border-white/60 shadow-2xl shadow-red-900/5">
         <div className="flex flex-col items-center text-center mb-10">
           <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-rose-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/30 mb-6">

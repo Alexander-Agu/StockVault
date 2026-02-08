@@ -8,6 +8,7 @@ import Portal from './pages/Portal';
 import Dashboard from './components/Dashboard/Dashboard';
 import PersonalAccount from './components/PersonalAccount/PersonalAccount';
 import CreatePersonalAccount from './components/CreatePersonalAccount/CreatePersonalAccount';
+import ViewPersonalAccount from './pages/ViewPersonalAccount';
 
 function App() {
 
@@ -38,19 +39,24 @@ function App() {
         },
 
         {
-          path: "/portal/:userId/dashboard",
+          path: "dashboard",
           element: <Dashboard />
         },
 
         {
-          path: "/portal/:userId/personal-account",
-          element: <PersonalAccount />
+          path: "personal-account",
+          element: <PersonalAccount />,
         },
 
         {
-          path: "/portal/:userId/personal-account/create",
+          path: "personal-account/create",
           element: <CreatePersonalAccount />
-        }
+        },
+
+        {
+          path: "personal-account/:accountId",
+          element: <ViewPersonalAccount />
+        },
       ]
     }
   ]);

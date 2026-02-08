@@ -55,7 +55,7 @@ export default function Dashboard() {
 
                   return <PersonalAccountCard key={id}
                     title={title}
-                    id={id}
+                    url={`../personal-account/${id}`}
                     amount={balance}
                     locked={isActive}
                   />

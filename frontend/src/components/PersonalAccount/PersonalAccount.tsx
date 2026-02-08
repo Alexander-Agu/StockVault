@@ -13,7 +13,7 @@ export default function PersonalAccount() {
         <section className="p-8 w-full flex flex-col gap-12">
             {/* Header & Add Button Area */}
             <div className="flex flex-col gap-4">
-                <h2 className="text-2xl font-bold text-slate-800">Personal Accounts</h2>
+                <h2 className="text-2xl font-bold  text-slate-800">Personal Accounts</h2>
                 
                 <Link to={"create"} className="group w-64 h-32 flex flex-col items-center justify-center gap-2 
                     bg-white/50 hover:bg-white border-2 border-dashed border-slate-300 
@@ -37,7 +37,7 @@ export default function PersonalAccount() {
                     return (
                         <div key={id} className="min-w-[320px] flex-1 max-w-[400px]">
                             <PersonalAccountCard
-                                id={id}
+                                url={`../personal-account/${id}`}
                                 title={title}
                                 amount={balance}
                                 locked={isActive}
