@@ -1,13 +1,17 @@
 import type { IconType } from "react-icons";
+import { useNavigate } from "react-router-dom";
 
 interface StatCardProps {
   title: string;
   count: number;
   icon: IconType;
   linkText: string;
+  resultName: string;
+  path: string;
 }
 
-export default function StatCard ({ title, count, icon: Icon, linkText }: StatCardProps){
+export default function StatCard ({ title, count, icon: Icon, linkText, resultName, path }: StatCardProps){
+  const navigate = useNavigate();
   return (
     <div className="group relative flex flex-col justify-between w-full h-48 p-5 bg-white/40 backdrop-blur-sm border border-white/60 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-white/60 hover:border-red-200/50">
       
@@ -22,16 +26,16 @@ export default function StatCard ({ title, count, icon: Icon, linkText }: StatCa
         <h2 className="text-4xl font-bold text-slate-900">
           {count.toLocaleString()}
         </h2>
-        <span className="text-sm font-medium text-slate-500 uppercase tracking-wider">Total</span>
+        <span className="text-sm font-medium text-slate-500 uppercase tracking-wider">{resultName}</span>
       </div>
 
       <div className="flex justify-end">
-        <a 
-          href="#" 
+        <button 
+          onClick={()=> navigate(`../${path}`)}
           className="text-xs font-bold text-red-400 hover:text-red-600 transition-colors uppercase tracking-tight underline"
         >
           {linkText}
-        </a>
+        </button>
       </div>
     </div>
   );

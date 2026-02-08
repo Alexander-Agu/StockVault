@@ -35,6 +35,10 @@ const personalAccountSlicer =  createSlice({
             state.personalAccounts = action.payload;
         },
 
+        addPersonalAccount: (state, action: PayloadAction<PersonalAccount>) => {
+            state.personalAccounts?.push(action.payload);
+        },
+
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.Loading = action.payload;
         },
@@ -45,7 +49,7 @@ const personalAccountSlicer =  createSlice({
     }
 });
 
-export const { setPersonalAccounts, setLoading, setError } = personalAccountSlicer.actions;
+export const { setPersonalAccounts, addPersonalAccount, setLoading, setError } = personalAccountSlicer.actions;
 export default personalAccountSlicer.reducer;
 
 
@@ -82,7 +86,8 @@ export const CreateAccount = (body: CreateAccount) =>
             const response =  await CreatePersonalAccountsAsync(body);
 
             if (!response) throw new Error("Failed to fetch");
-
+            // Capture new Personal account state after creating
+            dispatch(addPersonalAccount(response.data));
             return true;
         } catch{
             return false;

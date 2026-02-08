@@ -11,17 +11,19 @@ interface StatItem {
   count: number;
   icon: any;
   linkText: string;
+  path: string;
+  resultName: string;
 }
 
 export default function Dashboard() {
+  const personalAccount = useSelector((state: RootState) => state.personalAccount);
   const stats: StatItem[] = [
-    { title: "Savings accounts", count: 3100, icon: FaWallet, linkText: "View Savings" },
-    { title: "Personal accounts", count: 12345, icon: FaWallet, linkText: "View Personal Accounts" },
-    { title: "Joint accounts", count: 8240, icon: GiWallet, linkText: "View Joint Accounts" },
+    { title: "Savings accounts", count: 3100, resultName: "Rands", icon: FaWallet, linkText: "View Savings", path:"" },
+    { title: "Personal accounts", count: personalAccount.personalAccounts?.length || 0,  resultName: "Total", icon: FaWallet, linkText: "View Personal Accounts", path: "personal-account" },
+    { title: "Joint accounts", count: 8240,  resultName: "Total", icon: GiWallet, linkText: "View Joint Accounts", path: "" },
   ];
 
-  const twoPersonalAccounts = useSelector((state: RootState) =>
-    state.personalAccount.personalAccounts?.slice(0, 2) ?? []);
+  const twoPersonalAccounts = personalAccount.personalAccounts?.slice(0, 2) ?? [];
 
   return (
     <section className="w-full h-full overflow-y-auto bg-[#F8EEED] custom-scrollbar">
@@ -35,6 +37,8 @@ export default function Dashboard() {
               count={stat.count}
               icon={stat.icon}
               linkText={stat.linkText}
+              resultName={stat.resultName}
+              path={stat.path}
             />
           ))}
         </div>
