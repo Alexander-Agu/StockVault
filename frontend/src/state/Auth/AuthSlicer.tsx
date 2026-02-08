@@ -29,11 +29,13 @@ const authSlicer = createSlice({
 
         setError: (state, action: PayloadAction<string>) => {
             state.error = action.payload;
-        }
+        },
+
+        resetAuth: () => initialState
     }
 });
 
-export const { setId, setLoading, setError } = authSlicer.actions;
+export const { setId, setLoading, setError, resetAuth } = authSlicer.actions;
 export default authSlicer.reducer;
 
 
@@ -49,21 +51,24 @@ interface CreateUserData {
 
 export const RegisterUser = (body: CreateUserData) =>
     async (dispatch: AppDispatch): Promise<boolean> => {
+        let success = false;
+
         try{
             dispatch(setLoading(true));
             setError("");
 
             const response = await RegisterUserAsync(body)
 
-            if (!response) throw new Error("Ye its chaai");
-            else{
-                return true
-            }
+            if (!response) {  
+                success = false;
+                throw new Error("Ye its chaai");
+            }else success = true
         } catch {
             console.log("Again its chaai");
-            return false
-        }finally{
-            dispatch(setLoading(false));
+            return success;
+        }finally{        
+            await dispatch(setLoading(false));
+            return success;
         }
 }
 
@@ -71,20 +76,22 @@ export const RegisterUser = (body: CreateUserData) =>
 
 export const ActivateAccount = (email: string, code: string) => 
     async (dispatch: AppDispatch): Promise<boolean> => {
+        let success = false;
         try{
             dispatch(setLoading(true));
-
             const response = await VerifyEmailAsync(email, code);
 
-            if (!response) throw new Error("Ye its chaai");
-            else{
-                return true
-            }   
+            if (!response) {
+                success = false;
+                throw new Error("Ye its chaai");
+            }
+            else success = true  
         } catch {
             console.log("Again its chaai");
-            return false
-        }finally{
+            return success;
+        }finally{        
             dispatch(setLoading(false));
+            return success;
         }
     }
 
@@ -92,20 +99,23 @@ export const ActivateAccount = (email: string, code: string) =>
 
 export const ResendEmail = (email: string) => 
     async (dispatch: AppDispatch): Promise<boolean> => {
+        let success = false;
         try{
             dispatch(setLoading(true));
 
             const response = await ResendEmailAsync(email);
 
-            if (!response) throw new Error("Ye its chaai");
-            else{
-                return true
-            }   
+            if (!response) {
+                success = false
+                throw new Error("Ye its chaai");
+            }
+            else success = true  
         } catch {
             console.log("Again its chaai");
-            return false
-        }finally{
+            return success;
+        }finally{        
             dispatch(setLoading(false));
+            return success;
         }
     }
 
@@ -117,21 +127,25 @@ interface LoginData {
 
 export const Login = (body: LoginData) => 
     async (dispatch: AppDispatch): Promise<number> => {
+        let id = 0;
         try{
             dispatch(setLoading(true));
 
             const response = await LoginUserAsync(body);
 
-            if (!response) throw new Error("Ye its chaai");
-             
-            const id = response.data.id;
-            dispatch(setId(id));
-            sessionStorage.setItem("user", JSON.stringify(response.data));
-            return id 
+            if (!response){
+                id = 0;
+                throw new Error("Ye its chaai");
+            } else{
+                id = response.data.id;
+                dispatch(setId(id));
+                sessionStorage.setItem("user", JSON.stringify(response.data));               
+            }
         } catch {
             console.log("Again its chaai");
-            return 0
-        }finally{
+            return id;
+        }finally{        
             dispatch(setLoading(false));
+            return id;
         }
     }

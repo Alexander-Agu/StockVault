@@ -34,11 +34,13 @@ const userSlice = createSlice({
 
         setError: (state, action: PayloadAction<string>) => {
             state.error = action.payload;
-        }
+        },
+
+        resetUser: ()=> initialState
     }
 });
 
-export const { setLoading, setUser, setError } = userSlice.actions;
+export const { setLoading, setUser, setError, resetUser } = userSlice.actions;
 export default userSlice.reducer;
 
 export const fetchUser = (id: number) => 

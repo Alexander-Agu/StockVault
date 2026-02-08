@@ -4,7 +4,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { ResendEmailAsync, VerifyEmailAsync } from '../api/UserApi';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../state/store/store';
-import { ResendEmail } from '../state/Auth/AuthSlicer';
+import { ActivateAccount, ResendEmail } from '../state/Auth/AuthSlicer';
 
 export default function OtpActivation() {
     const auth =  useSelector((state: RootState) => state.auth);
@@ -52,7 +52,7 @@ export default function OtpActivation() {
         try {
             const code = otp.join("");
 
-            const response = await authDispatch(await VerifyEmailAsync(email + "", code));
+            const response = await authDispatch(ActivateAccount(email + "", code));
 
             if (response) {
                 navigate("/sign-in");
@@ -64,7 +64,7 @@ export default function OtpActivation() {
     
     const HandleResendCodeAsync = async ()=> {
         try{
-            const response = await authDispatch(await ResendEmail(email + ""));
+            const response = await authDispatch(ResendEmail(email + ""));
             
             setCodeSent(true);
             return response;

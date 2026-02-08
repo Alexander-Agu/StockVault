@@ -36,7 +36,7 @@ export default function ViewPersonalAccount() {
             <div className="flex flex-col gap-5 justify-center center lg:flex-row lg:justify-between">
 
                 <div className="flex flex-col gap-1">
-                                    <div className="flex flex-col items-start gap-3 text-right">
+                    <div className="flex flex-col items-start gap-3 text-right">
                     <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
                     <p className="text-slate-400 text-sm font-medium">Account ID: #{id}</p>       
                 </div>
@@ -77,7 +77,7 @@ export default function ViewPersonalAccount() {
                             </h2>
                             <p className="text-x5 font-bold text-slate-900 tracking-tight">
                                 {
-                                    !false? "Account not locked" : lockedUntil.toString()
+                                    !isLocked? "Account not locked" : lockedUntil.toString()
                                 }
                             </p>
                         </div>

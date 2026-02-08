@@ -45,17 +45,20 @@ const personalAccountSlicer =  createSlice({
 
         setError: (state, action: PayloadAction<string>) => {
             state.error = action.payload;
-        }
+        },
+
+        resetPersonalAccount: () => initialState
     }
 });
 
-export const { setPersonalAccounts, addPersonalAccount, setLoading, setError } = personalAccountSlicer.actions;
+export const { setPersonalAccounts, addPersonalAccount, setLoading, setError, resetPersonalAccount } = personalAccountSlicer.actions;
 export default personalAccountSlicer.reducer;
 
 
 // Fetches ALl User Personal Accounts
 export const FetchPersonalAccounts = () => 
     async (dispatch: AppDispatch): Promise<PersonalAccount[]> => {
+        let accounts: PersonalAccount[] = [];
         try{
             dispatch(setLoading(true));
 
@@ -63,15 +66,15 @@ export const FetchPersonalAccounts = () =>
 
             if (!response) throw new Error("Failed to fetch");
 
-            const accounts = response.data;
+            accounts = response.data;
 
             dispatch(setPersonalAccounts(accounts));
-
+        } catch {
+            console.log("Again its chaai");
             return accounts;
-        } catch{
-            return [];
-        } finally{
-            dispatch(setLoading(false));
+        }finally{        
+            await dispatch(setLoading(false));
+            return accounts;
         }
     }
 
@@ -80,6 +83,7 @@ interface CreateAccount {
 }
 export const CreateAccount = (body: CreateAccount) => 
     async (dispatch: AppDispatch): Promise<boolean> => {
+        let success = false;
         try{
             dispatch(setLoading(true));
 
@@ -87,11 +91,17 @@ export const CreateAccount = (body: CreateAccount) =>
 
             if (!response) throw new Error("Failed to fetch");
             // Capture new Personal account state after creating
-            dispatch(addPersonalAccount(response.data));
-            return true;
-        } catch{
-            return false;
-        } finally{
-            dispatch(setLoading(false));
+            else{
+                dispatch(addPersonalAccount(response.data));
+                success = true;
+            }
+            
+            
+        } catch {
+            console.log("Again its chaai");
+            return success;
+        }finally{        
+            await dispatch(setLoading(false));
+            return success;
         }
     }
