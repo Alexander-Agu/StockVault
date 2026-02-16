@@ -29,11 +29,11 @@ export default function PersonalAccountCard({ title, amount, locked, url }: Pers
           `<span>Locked until May 15, 2024</span>
           </div>
 
-          <button onClick={() => navigate(url)}  
+          <Link to={url}
             className="px-4 py-1.5 bg-red-400 hover:bg-red-500 text-white text-xs font-bold rounded-md transition-all active:scale-95"
           >
             view
-          </button>
+          </Link>
         </div>
         <FaLock className="absolute top-4 right-4 text-red-200" size={18} />
       </div>
@@ -50,12 +50,12 @@ export default function PersonalAccountCard({ title, amount, locked, url }: Pers
       
       <div className="flex gap-2 pt-1">
         {["View", "Deposit", "Withdraw"].map((label) => (
-          <button onClick={() => navigate(url)} 
+          <Link to={`${url}`}
             key={label} 
             className="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-md transition-all active:scale-95"
           >
             {label}
-          </button>
+          </Link>
         ))}
       </div>
     </div>

@@ -10,18 +10,17 @@ import { FetchPersonalAccounts } from '../state/PersonalAccount/PersonalAccountS
 
 
 export default function Portal() {
-  // const { userId } = useParams();
+  const { userId } = useParams();
 
   const [openedPage, setOpenedPage] = useState("Dashboard");
 
   // Redux
-  const user = useSelector((state: RootState) => state.user)
+  const user = useSelector((state: RootState) => state.user);
+  const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   const personalAccount = useSelector((state: RootState) => state.personalAccount);
-  const userId = user.user?.name;
 
   useEffect(()=>{
-    console.log(userId)
     if (userId) {
       
       dispatch(fetchUser(Number(userId)))

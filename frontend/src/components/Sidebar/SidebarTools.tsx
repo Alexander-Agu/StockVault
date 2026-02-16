@@ -11,7 +11,7 @@ interface SidebarData {
 
 export const sidebarItems: SidebarData[] = [
   {
-    path: "dashboard",
+    path: "",
     title: "Home",
     icon: AiFillHome,
   },

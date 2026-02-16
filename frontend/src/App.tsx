@@ -38,10 +38,10 @@ function App() {
           element: <Dashboard />
         },
 
-        {
-          path: "dashboard",
-          element: <Dashboard />
-        },
+        // {
+        //   path: "",
+        //   element: <Dashboard />
+        // },
 
         {
           path: "personal-account",

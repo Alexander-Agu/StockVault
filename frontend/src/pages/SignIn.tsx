@@ -50,11 +50,12 @@ export default function SignIn() {
 
         try{
             const id = await dispatch(Login({email: email, password: password}));
+            console.log("tets ", id);
 
             if (id){
-                await dispatch(fetchUser(id));
+                const userId = await dispatch(fetchUser(id));
 
-                navigate(`/portal/${id}`)
+                if (userId > 0) navigate(`/portal/${userId}`)
             }
         } catch{
             console.log("Failed to login");

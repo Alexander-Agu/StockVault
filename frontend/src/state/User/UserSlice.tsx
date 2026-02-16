@@ -44,19 +44,23 @@ export const { setLoading, setUser, setError, resetUser } = userSlice.actions;
 export default userSlice.reducer;
 
 export const fetchUser = (id: number) => 
-    async (dispatch: AppDispatch): Promise<void> => {
+    async (dispatch: AppDispatch): Promise<number> => {
+        let userId = 0;
         try{
             dispatch(setLoading(true));
 
             const response = await FetchProfileAsync(id);
 
             if (!response) throw new Error("Failed to fetch");
+            await dispatch(setUser(response.data));
 
-            dispatch(setUser(response.data));
+            userId = id;
+            return userId;
             
         } catch{
             dispatch(setError("Its chaai"))
         } finally{
             dispatch(setLoading(false));
+            return userId;
         }
     };

@@ -30,7 +30,7 @@ export default function StatCard ({ title, count, icon: Icon, linkText, resultNa
       </div>
 
       <div className="flex justify-end">
-        <Link to={`../${path}`}
+        <Link to={path}
           // onClick={()=> navigate(`../../${path}`)}
           className="text-xs font-bold text-red-400 hover:text-red-600 transition-colors uppercase tracking-tight underline"
         >

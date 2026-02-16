@@ -138,14 +138,14 @@ export const Login = (body: LoginData) =>
                 throw new Error("Ye its chaai");
             } else{
                 id = response.data.id;
-                dispatch(setId(id));
+                await dispatch(setId(id));
                 sessionStorage.setItem("user", JSON.stringify(response.data));               
             }
         } catch {
             console.log("Again its chaai");
             return id;
-        }finally{        
-            dispatch(setLoading(false));
+        }finally{       
+            console.log("tets ", id); 
             return id;
         }
     }
