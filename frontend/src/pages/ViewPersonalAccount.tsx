@@ -1,5 +1,5 @@
 
-import { FaLock, FaUnlock, FaArrowUp, FaArrowDown, FaArrowLeft } from "react-icons/fa6";
+import { FaLock, FaUnlock, FaArrowUp, FaArrowDown, FaArrowLeft, FaTrashCan, FaPenToSquare } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import type { RootState } from "../state/store/store";
 import { useNavigate, useParams } from "react-router-dom";
@@ -27,72 +27,85 @@ export default function ViewPersonalAccount() {
   };
 
   return (
-    <div className="w-full min-h-screen bg-[#F8EEED] p-4 flex flex-col gap-8">
-        <NavigateBackButton title="Go Back" />
+  <div className="w-full min-h-screen bg-[#F8EEED] p-4 flex flex-col gap-8">
+    <NavigateBackButton title="Go Back" />
 
       
-        <div className="w-full bg-white/40 backdrop-blur-md rounded-[2rem] p-6 border border-white/60 shadow-xl shadow-red-900/5">
-            {/* Basic account data */}
-            <div className="flex flex-col gap-5 justify-center center lg:flex-row lg:justify-between">
+    <div className="w-full bg-white/40 backdrop-blur-md rounded-[2rem] p-6 border border-white/60 shadow-xl shadow-red-900/5">
+      {/* Basic account data */}
+      <div className="flex flex-col gap-5 justify-center center lg:flex-row lg:justify-between">
 
-                <div className="flex flex-col gap-1">
-                    <div className="flex flex-col items-start gap-3 text-right">
-                    <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
-                    <p className="text-slate-400 text-sm font-medium">Account ID: #{id}</p>       
-                </div>
-                    <span className="text-slate-500 font-bold uppercase tracking-widest text-xs">Total Balance</span>
-                    <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-                        {formatCurrency(balance)}
-                    </h1>
-                    <div className="flex items-center gap-4 mt-4">
-                        <button className="flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-xl   font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
-                            <FaArrowDown /> Deposit
-                        </button>
-                        <button className="flex items-center gap-2 bg-white text-slate-700 px-6 py-2 rounded-xl font-bold border border-slate-200 hover:bg-slate-50 transition-all">
-                            <FaArrowUp /> Withdraw
-                        </button>
-                    </div>
-                </div>
+        <div className="flex flex-col gap-1">
+          <div className="flex flex-col items-start gap-3 text-right">
+            <div className="flex gap-4 items-center">
+              <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
 
-                {/* Checking if account is locked */}
-                <div className="">
-                    <div>
-                        <h2 className="text-2xl font-bold text-slate-800">Account Lock</h2>
-                    </div>
+              <div  className="flex gap-4 items-center">
+                <button className="text-green-400 hover:text-green-700">
+                  <FaPenToSquare />
+                </button>
 
-
-                    <div>
-                        <div className="flex gap-1 items-center pt-4 pb-5 border-b border-slate-300">
-                            <h2 className="text-slate-500 font-bold tracking-widest text-xs">
-                                Created At:
-                            </h2>
-                            <p className="text-x5 font-bold text-slate-900 tracking-tight">
-                                25 Nov 2025
-                            </p>
-                        </div>
-
-                        <div className="flex gap-1 items-center pt-4 pb-5 border-b border-slate-300">
-                            <h2 className="text-slate-500 font-bold tracking-widest text-xs">
-                                Locked Until:
-                            </h2>
-                            <p className="text-x5 font-bold text-slate-900 tracking-tight">
-                                {
-                                    !isLocked? "Account not locked" : lockedUntil.toString()
-                                }
-                            </p>
-                        </div>
-                    </div>
-
-                    {
-                        !isLocked?<button className="mt-2 flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-xl   font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
-                        <FaLock /> Lock Account
-                    </button> : ""
-                    }
-                </div>               
+                <button className="text-red-400 hover:text-red-700">
+                  <FaTrashCan />
+                </button>
+              </div>
             </div>
+            
+            <p className="text-slate-400 text-sm font-medium">Account ID: #{id}</p>       
+            </div>
+              <span className="text-slate-500 font-bold uppercase tracking-widest text-xs">Total Balance</span>
+              <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+                {formatCurrency(balance)}
+              </h1>
+              <div className="flex items-center gap-4 mt-4">
+                <button className="flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-xl   font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
+                  <FaArrowDown /> Deposit
+                </button>
+                <button className="flex items-center gap-2 bg-white text-slate-700 px-6 py-2 rounded-xl font-bold border border-slate-200 hover:bg-slate-50 transition-all">
+                  <FaArrowUp /> Withdraw
+                </button>
+          </div>
         </div>
 
-      {/* SECTION 2: TRANSACTION LEDGER (Professional Table) */}
+        {/* Checking if account is locked */}
+        <div className="">
+          <div>
+              <h2 className="text-2xl font-bold text-slate-800">Account Lock</h2>
+          </div>
+
+
+          <div>
+            <div className="flex gap-1 items-center pt-4 pb-5 border-b border-slate-300">
+              <h2 className="text-slate-500 font-bold tracking-widest text-xs">
+                Created At:
+              </h2>
+              <p className="text-x5 font-bold text-slate-900 tracking-tight">
+                25 Nov 2025
+              </p>
+            </div>
+
+            <div className="flex gap-1 items-center pt-4 pb-5 border-b border-slate-300">
+              <h2 className="text-slate-500 font-bold tracking-widest text-xs">
+                Locked Until:
+              </h2>
+              <p className="text-x5 font-bold text-slate-900 tracking-tight">
+                {
+                    !isLocked? "Account not locked" : lockedUntil.toString()
+                }
+              </p>
+            </div>
+          </div>
+
+          {
+              !isLocked?<button className="mt-2 flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-xl   font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
+              <FaLock /> Lock Account
+          </button> : ""
+          }
+        </div>               
+      </div>
+    </div>
+
+      {/* SECTION 2: TRANSACTION LEDGER */}
       {/* <div className="flex flex-col gap-4">
         <h3 className="text-xl font-bold text-slate-800 ml-2">Recent Activity</h3>
         <div className="bg-white/40 backdrop-blur-sm rounded-[2rem] border border-white/60 overflow-hidden">
@@ -127,6 +140,6 @@ export default function ViewPersonalAccount() {
           </table>
         </div>
       </div> */}
-    </div>
+  </div>
   );
 }
