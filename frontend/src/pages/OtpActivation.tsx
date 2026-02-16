@@ -8,7 +8,7 @@ import { ActivateAccount, ResendEmail } from '../state/Auth/AuthSlicer';
 
 export default function OtpActivation() {
     const auth =  useSelector((state: RootState) => state.auth);
-    const authDispatch = useDispatch<AppDispatch>();
+    const dispatch = useDispatch<AppDispatch>();
 
     // navigation attributes
     const navigate = useNavigate();
@@ -52,7 +52,7 @@ export default function OtpActivation() {
         try {
             const code = otp.join("");
 
-            const response = await authDispatch(ActivateAccount(email + "", code));
+            const response = await dispatch(ActivateAccount(email + "", code));
 
             if (response) {
                 navigate("/sign-in");
@@ -64,7 +64,7 @@ export default function OtpActivation() {
     
     const HandleResendCodeAsync = async ()=> {
         try{
-            const response = await authDispatch(ResendEmail(email + ""));
+            const response = await dispatch(ResendEmail(email + ""));
             
             setCodeSent(true);
             return response;

@@ -1,5 +1,5 @@
 import type { IconType } from "react-icons";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 interface StatCardProps {
   title: string;
@@ -30,12 +30,12 @@ export default function StatCard ({ title, count, icon: Icon, linkText, resultNa
       </div>
 
       <div className="flex justify-end">
-        <button 
-          onClick={()=> navigate(`../../${path}`)}
+        <Link to={`../${path}`}
+          // onClick={()=> navigate(`../../${path}`)}
           className="text-xs font-bold text-red-400 hover:text-red-600 transition-colors uppercase tracking-tight underline"
         >
           {linkText}
-        </button>
+        </Link>
       </div>
     </div>
   );

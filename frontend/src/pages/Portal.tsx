@@ -7,26 +7,25 @@ import type { RootState, AppDispatch } from '../state/store/store';
 import { Outlet, useMatch, useParams } from 'react-router-dom';
 import { fetchUser } from '../state/User/UserSlice';
 import { FetchPersonalAccounts } from '../state/PersonalAccount/PersonalAccountSlicer';
-import PersonalAccount from '../components/PersonalAccount/PersonalAccount';
 
 
 export default function Portal() {
-  const { userId } = useParams();
+  // const { userId } = useParams();
 
   const [openedPage, setOpenedPage] = useState("Dashboard");
-
-
 
   // Redux
   const user = useSelector((state: RootState) => state.user)
   const dispatch = useDispatch<AppDispatch>();
-  const personalAccount = useSelector((state: RootState) => state.personalAccount)
-  const personalAccountDispatch = useDispatch<AppDispatch>();
+  const personalAccount = useSelector((state: RootState) => state.personalAccount);
+  const userId = user.user?.name;
 
   useEffect(()=>{
+    console.log(userId)
     if (userId) {
+      
       dispatch(fetchUser(Number(userId)))
-      personalAccountDispatch(FetchPersonalAccounts())
+      dispatch(FetchPersonalAccounts())
     }
   },[userId]);
 

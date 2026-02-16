@@ -37,7 +37,7 @@ export default function SignUp() {
 
     const navigate = useNavigate();
     const auth = useSelector((state: RootState) => state.auth);
-    const authDispatch = useDispatch<AppDispatch>();
+    const dispatch = useDispatch<AppDispatch>();
 
     const inputs: SignUpInputs[] = [
         {
@@ -92,7 +92,7 @@ export default function SignUp() {
         }
 
         try{
-            const res = await authDispatch(RegisterUser({
+            const res = await dispatch(RegisterUser({
                 name: name,
                 email: email,
                 phone: phone,

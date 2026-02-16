@@ -6,6 +6,7 @@ import { LoginUserAsync } from '../api/UserApi';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../state/store/store';
 import { Login } from '../state/Auth/AuthSlicer';
+import { fetchUser } from '../state/User/UserSlice';
 
 interface SignInInputs {
     required: boolean;
@@ -21,7 +22,7 @@ export default function SignIn() {
     const [buttonClicked, setButtonClicked] = useState(false);
 
     const auth = useSelector((state: RootState) => state.auth);
-    const authDispatch = useDispatch<AppDispatch>();
+    const dispatch = useDispatch<AppDispatch>();
 
     // Navigation Attributes
     const navigate = useNavigate();
@@ -48,9 +49,13 @@ export default function SignIn() {
         if (!isValidPassword(password) || buttonClicked) return;
 
         try{
-            const id = await authDispatch(Login({email: email, password: password}));
+            const id = await dispatch(Login({email: email, password: password}));
 
-            if (id) navigate(`/portal/${id}`)
+            if (id){
+                await dispatch(fetchUser(id));
+
+                navigate(`/portal/${id}`)
+            }
         } catch{
             console.log("Failed to login");
         }

@@ -9,13 +9,13 @@ import NavigateBackButton from "../../UI/NavigateBackButton";
 export default function CreatePersonalAccount() {
   const navigate = useNavigate();
   const personalAccount =  useSelector((state: RootState) => state.personalAccount);
-  const accountDispatch = useDispatch<AppDispatch>();
+  const dispatch = useDispatch<AppDispatch>();
 
   const [title, setTitle] = useState("");
 
   const HandleCreateAccountAsync = async () => {
     try{
-      const res = await accountDispatch(CreateAccount({title: title}));
+      const res = await dispatch(CreateAccount({title: title}));
 
       if (res) navigate(-1);
     } catch{
