@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { AppDispatch } from "../store/store";
 import { TbReceiptYen } from "react-icons/tb";
-import { CreatePersonalAccountsAsync, FetchPersonalAccountsAsync } from "../../api/PersonalAccountApi";
+import { CreatePersonalAccountsAsync, FetchPersonalAccountsAsync, LockAccountsAsync, type LockAccountDto } from "../../api/PersonalAccountApi";
 
 
 interface PersonalAccount{
@@ -39,6 +39,12 @@ const personalAccountSlicer =  createSlice({
             state.personalAccounts?.push(action.payload);
         },
 
+        setAccountLock: (state, action:PayloadAction<number>) => {
+            const personalAccount = state.personalAccounts?.find(account => account.id == action.payload )
+
+            if (personalAccount) personalAccount.isActive = true;
+        },
+
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.Loading = action.payload;
         },
@@ -51,7 +57,7 @@ const personalAccountSlicer =  createSlice({
     }
 });
 
-export const { setPersonalAccounts, addPersonalAccount, setLoading, setError, resetPersonalAccount } = personalAccountSlicer.actions;
+export const { setPersonalAccounts, setAccountLock, addPersonalAccount, setLoading, setError, resetPersonalAccount } = personalAccountSlicer.actions;
 export default personalAccountSlicer.reducer;
 
 
@@ -97,6 +103,31 @@ export const CreateAccount = (body: CreateAccount) =>
             }
             
             
+        } catch {
+            console.log("Again its chaai");
+            return success;
+        }finally{        
+            await dispatch(setLoading(false));
+            return success;
+        }
+}
+
+
+// Locks account    
+export const LockAccounts = (body: LockAccountDto, accountId: string) => 
+    async (dispatch: AppDispatch): Promise<boolean> => {
+        let success = false;
+        try{
+            dispatch(setLoading(true));
+
+            const response =  await LockAccountsAsync(body, accountId);
+
+            if (!response) throw new Error("Failed to fetch");
+            // Set lock account state after creating
+            else{
+                dispatch(setAccountLock(Number.parseInt(accountId)));
+                success = true;
+            }            
         } catch {
             console.log("Again its chaai");
             return success;

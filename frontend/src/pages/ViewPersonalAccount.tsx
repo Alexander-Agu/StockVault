@@ -2,7 +2,7 @@
 import { FaLock, FaUnlock, FaArrowUp, FaArrowDown, FaArrowLeft, FaTrashCan, FaPenToSquare } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import type { RootState } from "../state/store/store";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import NavigateBackButton from "../UI/NavigateBackButton";
 // import { transactions } from "./TransactionTableTools";
 
@@ -97,9 +97,9 @@ export default function ViewPersonalAccount() {
           </div>
 
           {
-              !isLocked?<button className="mt-2 flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-xl   font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
+              !isLocked?<Link to={"lock-account"} className="mt-2 flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-xl   font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
               <FaLock /> Lock Account
-          </button> : ""
+          </Link> : ""
           }
         </div>               
       </div>

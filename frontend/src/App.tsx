@@ -9,6 +9,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import PersonalAccount from './components/PersonalAccount/PersonalAccount';
 import CreatePersonalAccount from './components/CreatePersonalAccount/CreatePersonalAccount';
 import ViewPersonalAccount from './pages/ViewPersonalAccount';
+import LockAccount from './pages/LockAccount';
 
 function App() {
 
@@ -38,11 +39,6 @@ function App() {
           element: <Dashboard />
         },
 
-        // {
-        //   path: "",
-        //   element: <Dashboard />
-        // },
-
         {
           path: "personal-account",
           element: <PersonalAccount />,
@@ -56,6 +52,11 @@ function App() {
         {
           path: "personal-account/:accountId",
           element: <ViewPersonalAccount />
+        },
+
+        {
+          path: "personal-account/:accountId/lock-account",
+          element: <LockAccount />
         },
       ]
     }

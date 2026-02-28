@@ -145,7 +145,7 @@ export const Login = (body: LoginData) =>
             console.log("Again its chaai");
             return id;
         }finally{       
-            console.log("tets ", id); 
+            dispatch(setLoading(false));
             return id;
         }
     }

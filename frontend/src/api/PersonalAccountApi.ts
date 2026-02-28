@@ -45,3 +45,18 @@ export const CreatePersonalAccountsAsync = async (body: CreateAccount) => {
         return false;
     }
 }
+
+
+export interface LockAccountDto {
+    lockDate: string;
+}
+// Creates a personal account
+export const LockAccountsAsync = async (body: LockAccountDto, accountId: string) => {
+    try{
+        const response = await api.post(`/PersonalAccount/lock/${data.id}/${accountId}`, body);
+
+        return response.data;
+    } catch{
+        return false;
+    }
+}
