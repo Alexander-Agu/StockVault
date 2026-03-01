@@ -54,6 +54,7 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IPersonalAccountService, PersonalAccountService>();
 builder.Services.AddScoped<IPersonalAccountRepository, PersonalAccountRepository>();
 builder.Services.AddScoped<IAccountRepositoryLocks, AccountLocksRepository>();
+builder.Services.AddScoped<PaymentIntentService>();
 
 builder.Services.AddScoped<ITransectionRepository, TransectionRepository>();
 builder.Services.AddScoped<ITransectionService, TransectionService>();
