@@ -10,6 +10,7 @@ using Backend.Repository.AccountLocksRepository;
 using Backend.Repository.PersonalAccountRespository;
 using Backend.Repository.UserRepository;
 using Backend.Services.TransectionService;
+using Stripe;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Backend.Services.PersonalAccountService
@@ -18,7 +19,8 @@ namespace Backend.Services.PersonalAccountService
         IPersonalAccountRepository accountRep, 
         IUserRepository userRep, 
         IAccountRepositoryLocks lockRep,
-        ITransectionService transectionService) : IPersonalAccountService
+        ITransectionService transectionService,
+        PaymentIntentService paymentService) : IPersonalAccountService
     {
         // Allows user's to create a personal account
         public async Task<ApiResponse<PersonalAccountDto>> CreatePersonalAccountAsync(int userId, CreateAccountDto newAccount)
@@ -39,7 +41,6 @@ namespace Backend.Services.PersonalAccountService
 
                 return response;
             }
-
 
 
             // Create user to personal relationship
@@ -84,7 +85,19 @@ namespace Backend.Services.PersonalAccountService
                 return response;
             }
 
-            account.Balance += ToCents(amount.Amount); // Depositing
+            // Simulating stripe transection
+            var options = new PaymentIntentCreateOptions
+            {
+                Amount = (long?)(amount.Amount * 100),
+                Currency = "zar",
+                Customer = account.User.StripeCustomerId,
+                PaymentMethod = amount.PaymentMethodId,
+                Confirm = true
+            };
+
+            var intent = await paymentService.CreateAsync(options);
+
+            if (intent.Status == "succeeded") account.Balance += ToCents(amount.Amount);
 
             // Save transection
             await transectionService.RecordTransectionAsync(userId, CreateTransection(

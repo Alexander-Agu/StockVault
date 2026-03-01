@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Backend.Dtos.AuthenticationDto;
 using Backend.Dtos.ResponseDto;
 using Backend.Dtos.UserDtos;
@@ -12,6 +13,7 @@ using Backend.Repository.UserRepository;
 using FIN.Service.EmailServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 
 namespace Backend.Services.UserService
 {
@@ -42,13 +44,12 @@ namespace Backend.Services.UserService
             User user = newUser.ToEntity();
 
             user.PasswordHash = HashPassword(user, newUser.PasswordHash);
-
-            userRepository.AddUserAsync(user);
-
-            
+            user.StripeCustomerId = await GenerateStripeCustomerId(user);
 
             // Once information is verified send an email to activate user's account
             await emailService.SendOtpEmailAsync(user.Email, user.Otp);
+
+            userRepository.AddUserAsync(user);
 
             return response;
         }
@@ -408,6 +409,23 @@ namespace Backend.Services.UserService
 
             // Convert the bytes to a Base64 string (which is URL-safe and compact)
             return Convert.ToBase64String(randomBytes);
+        }
+
+
+        // Generates Stripe customer id
+        private async Task<string> GenerateStripeCustomerId(User user)
+        {
+            var customerService = new CustomerService();
+
+            var customer = await customerService.CreateAsync(new CustomerCreateOptions
+            {
+                Email = user.Email,
+                Name = user.Name
+            });
+
+            if (customer == null) return "";
+
+            return customer.Id;
         }
     }
 }

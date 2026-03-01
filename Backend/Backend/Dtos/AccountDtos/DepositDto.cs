@@ -6,5 +6,8 @@ namespace Backend.Dtos.AccountDtos
     {
         [Required]
         public decimal Amount { get; set; }
+
+        [Required]
+        public string PaymentMethodId { get; set; } = string.Empty;
     }
 }

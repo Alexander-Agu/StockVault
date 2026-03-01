@@ -22,7 +22,7 @@ namespace Backend.Dtos.UserDtos
         public required string Email { get; set; } = string.Empty;
 
         //[Required]
-        [StringLength(10, MinimumLength = 9)]
+        //[StringLength(10, MinimumLength = 9)]
         public string Phone { get; set; } = string.Empty;
 
         [Required]

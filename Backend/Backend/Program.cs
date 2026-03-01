@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +42,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true
         };
     });
+// Registering payment gateway
+StripeConfiguration.ApiKey =
+    builder.Configuration["stripe:SecreteKey"];
 
 // Registering dependency injection services
 builder.Services.AddScoped<IUserService,  UserService>();

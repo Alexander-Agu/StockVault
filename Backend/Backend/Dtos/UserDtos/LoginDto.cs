@@ -5,7 +5,6 @@ namespace Backend.Dtos.UserDtos
     public class LoginDto
     {
         [Required]
-        [StringLength(20, MinimumLength = 3)]
         [EmailAddress]
         public required string Email { get; set; } = string.Empty;
 
