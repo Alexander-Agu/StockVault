@@ -8,6 +8,10 @@ import {
 } from "@stripe/react-stripe-js";
 import { FaWallet, FaArrowDown, FaLock, FaShieldHalved } from "react-icons/fa6";
 import NavigateBackButton from "../UI/NavigateBackButton";
+import { useDispatch, useSelector } from "react-redux";
+import { type AppDispatch, type RootState } from "../state/store/store";
+import { DepositIntoPersonalAccount } from "../state/PersonalAccount/PersonalAccountSlicer";
+import { useParams } from "react-router-dom";
 
 const stripeElementOptions = {
   style: {
@@ -22,6 +26,10 @@ const stripeElementOptions = {
 };
 
 export default function Deposit() {
+  const personalAccount = useSelector((state: RootState) => state.personalAccount);
+  const dispatch = useDispatch<AppDispatch>();
+  const { accountId } = useParams();
+
   const stripe = useStripe();
   const elements = useElements();
   const [amount, setAmount] = useState<number>(0);
@@ -41,6 +49,15 @@ export default function Deposit() {
       alert(error.message);
       setLoading(false);
       return;
+    }
+
+    try{
+      await dispatch(DepositIntoPersonalAccount({
+        amount: amount,
+        paymentMethodId: paymentMethod.id
+      }, accountId + ""))
+    }catch{
+
     }
 
     alert("Deposit successful!");

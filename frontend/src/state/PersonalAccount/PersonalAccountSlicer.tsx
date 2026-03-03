@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { AppDispatch } from "../store/store";
 import { TbReceiptYen } from "react-icons/tb";
-import { CreatePersonalAccountsAsync, FetchPersonalAccountsAsync, LockAccountsAsync, type LockAccountDto } from "../../api/PersonalAccountApi";
+import { CreatePersonalAccountsAsync, FetchPersonalAccountsAsync, LockAccountsAsync, PersonalAccountDepositAsync, type LockAccountDto, type PersonalAccountDeposit } from "../../api/PersonalAccountApi";
 
 
 interface PersonalAccount{
@@ -135,4 +135,28 @@ export const LockAccounts = (body: LockAccountDto, accountId: string) =>
             await dispatch(setLoading(false));
             return success;
         }
-    }
+}
+
+
+// Deposit money into personal account   
+export const DepositIntoPersonalAccount = (body: PersonalAccountDeposit, accountId: string) => 
+    async (dispatch: AppDispatch): Promise<boolean> => {
+        let success = false;
+        try{
+            dispatch(setLoading(true));
+
+            const response =  await PersonalAccountDepositAsync(body, accountId);
+
+            if (!response) throw new Error("Failed to fetch");
+
+            else{
+                success = true;
+            }            
+        } catch {
+            console.log("Failed to deposit");
+            return success;
+        }finally{        
+            await dispatch(setLoading(false));
+            return success;
+        }
+}
