@@ -58,6 +58,7 @@ export default function Dashboard() {
                   const { id, title, balance, isActive } = account
 
                   return <PersonalAccountCard key={id}
+                    accountId={id.toString()}
                     title={title}
                     url={`personal-account/${id}`}
                     amount={balance}

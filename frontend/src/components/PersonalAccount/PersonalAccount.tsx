@@ -37,6 +37,7 @@ export default function PersonalAccount() {
                     return (
                         <div key={id} className="min-w-[320px] flex-1 max-w-[400px]">
                             <PersonalAccountCard
+                                accountId={id.toString()}
                                 url={`../personal-account/${id}`}
                                 title={title}
                                 amount={balance}

@@ -58,10 +58,16 @@ export default function ViewPersonalAccount() {
                 {formatCurrency(balance)}
               </h1>
               <div className="flex items-center gap-4 mt-4">
-                <button className="flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-xl   font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
+                <Link to={"deposit"}
+                  className="flex items-center gap-2 
+                  bg-red-500 text-white px-6 py-2 rounded-xl 
+                  font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
                   <FaArrowDown /> Deposit
-                </button>
-                <button className="flex items-center gap-2 bg-white text-slate-700 px-6 py-2 rounded-xl font-bold border border-slate-200 hover:bg-slate-50 transition-all">
+                </Link>
+                <button 
+                  className="flex items-center gap-2 
+                    bg-white text-slate-700 px-6 py-2 rounded-xl font-bold border 
+                    border-slate-200 hover:bg-slate-50 transition-all">
                   <FaArrowUp /> Withdraw
                 </button>
           </div>

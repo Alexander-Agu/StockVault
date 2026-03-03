@@ -10,6 +10,7 @@ import PersonalAccount from './components/PersonalAccount/PersonalAccount';
 import CreatePersonalAccount from './components/CreatePersonalAccount/CreatePersonalAccount';
 import ViewPersonalAccount from './pages/ViewPersonalAccount';
 import LockAccount from './pages/LockAccount';
+import Deposit from './pages/Deposit';
 
 function App() {
 
@@ -40,6 +41,16 @@ function App() {
         },
 
         {
+          path: "transection-history",
+          element: <PersonalAccount />,
+        },
+
+        {
+          path: "deposit/:accountId",
+          element: <Deposit />
+        },
+
+        {
           path: "personal-account",
           element: <PersonalAccount />,
         },
@@ -57,6 +68,11 @@ function App() {
         {
           path: "personal-account/:accountId/lock-account",
           element: <LockAccount />
+        },
+
+        {
+          path: "personal-account/:accountId/deposit",
+          element: <Deposit />
         },
       ]
     }
