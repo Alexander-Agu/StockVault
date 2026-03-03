@@ -44,7 +44,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 // Registering payment gateway
 StripeConfiguration.ApiKey =
-    builder.Configuration["stripe:SecreteKey"];
+    builder.Configuration["Stripe:SecretKey"];
 
 // Registering dependency injection services
 builder.Services.AddScoped<IUserService,  UserService>();

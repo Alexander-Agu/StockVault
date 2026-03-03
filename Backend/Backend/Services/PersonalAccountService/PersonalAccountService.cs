@@ -77,22 +77,28 @@ namespace Backend.Services.PersonalAccountService
 
             // Checks if account exists
             PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
+
             if (account == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "Account not found";
-
                 return response;
             }
 
-            // Simulating stripe transection
+            User user = await userRep.GetUserByIdAsync(userId);
+
+            if (user == null || string.IsNullOrEmpty(user.StripeCustomerId))
+                throw new Exception("Stripe customer missing");
+
+            // Stripe charge
             var options = new PaymentIntentCreateOptions
             {
                 Amount = (long?)(amount.Amount * 100),
                 Currency = "zar",
-                Customer = account.User.StripeCustomerId,
+                Customer = user.StripeCustomerId,
                 PaymentMethod = amount.PaymentMethodId,
-                Confirm = true
+                Confirm = true,
+                ReturnUrl = "http://localhost:5173/payment-success"
             };
 
             var intent = await paymentService.CreateAsync(options);
