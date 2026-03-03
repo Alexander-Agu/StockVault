@@ -1,18 +1,21 @@
 import { useSelector } from "react-redux"
-import type { RootState } from "../../state/store/store"
+import type { RootState } from "../state/store/store"
 import { FaPlus } from "react-icons/fa6";
-import PersonalAccountCard from "../AccountCards/PersonalAccountCard";
+import PersonalAccountCard from "../components/AccountCards/PersonalAccountCard";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import PortalHeader from "../components/PortalHeader/PortalHeader";
 
 export default function PersonalAccount() {
     const personalAccount = useSelector((state: RootState) => state.personalAccount);
+    const user = useSelector((state:RootState) => state.user);
     const [popup, setPopup] = useState(false);
 
     return (
-        <section className="p-8 w-full flex flex-col gap-12">
+        <section className="w-full h-full overflow-y-auto bg-[#F8EEED] custom-scrollbar flex flex-col gap-12">
+            <PortalHeader message={`View All Accounts` + ""} title={"Personal Accounts"} name={user.user?.name + ""} />
             {/* Header & Add Button Area */}
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-4 p-7">
                 <h2 className="text-2xl font-bold  text-slate-800">Personal Accounts</h2>
                 
                 <Link to={"create"} className="group w-64 h-32 flex flex-col items-center justify-center gap-2 
@@ -30,7 +33,7 @@ export default function PersonalAccount() {
             </div>
 
             {/* Grid Layout */}
-            <div className="w-full flex flex-wrap gap-6">
+            <div className="w-full flex flex-wrap gap-6 p-7">
                 {personalAccount.personalAccounts?.map(account => {
                     const { id, title, balance, isActive } = account;
 
@@ -47,8 +50,6 @@ export default function PersonalAccount() {
                     )
                 })}
             </div>
-
-            
         </section>
     )
 }

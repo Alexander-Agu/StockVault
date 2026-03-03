@@ -5,6 +5,7 @@ import PersonalAccountCard from "../AccountCards/PersonalAccountCard";
 import JointAccountCard from "../AccountCards/JointAccountCard";
 import { useSelector } from "react-redux";
 import type { RootState } from "../../state/store/store";
+import PortalHeader from "../PortalHeader/PortalHeader";
 
 interface StatItem {
   title: string;
@@ -16,6 +17,7 @@ interface StatItem {
 }
 
 export default function Dashboard() {
+  const user = useSelector((state:RootState) => state.user);
   const personalAccount = useSelector((state: RootState) => state.personalAccount);
   const stats: StatItem[] = [
     { title: "Savings accounts", count: 3100, resultName: "Rands", icon: FaWallet, linkText: "View Savings", path:"" },
@@ -27,6 +29,8 @@ export default function Dashboard() {
 
   return (
     <section className="w-full h-full overflow-y-auto bg-[#F8EEED] custom-scrollbar">
+      <PortalHeader message={`Welcome back, ${user.user?.name}` + ""} title={"Dashboard"} name={user.user?.name + ""} />
+
       <section className="p-6 lg:p-10 flex flex-col gap-10">
         {/* ACCOUNT STATS */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

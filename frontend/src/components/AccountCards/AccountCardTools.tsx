@@ -1,4 +1,4 @@
-import PersonalAccount from "../PersonalAccount/PersonalAccount";
+import PersonalAccount from "../../pages/PersonalAccount";
 
 interface PersonalCardLinks {
     name: string;

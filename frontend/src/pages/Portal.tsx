@@ -41,8 +41,6 @@ export default function Portal() {
         lg:ml-[250px]
         xl:ml-[300px]
       ">
-        {/* Header */}
-        <PortalHeader name={user.user?.name + ""} title={openedPage} />
         
         {/* Pages (dashboard/payment/etc) */}
         <Outlet />

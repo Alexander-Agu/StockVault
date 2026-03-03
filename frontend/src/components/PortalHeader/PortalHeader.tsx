@@ -8,10 +8,11 @@ import { GetFirstLetter } from "../../tools/UserTools";
 
 interface ProfileHeaderProps{
     name: string
-    title: string
+    title: string,
+    message: string
 }
 
-export default function PortalHeader({ title, name }: ProfileHeaderProps) {
+export default function PortalHeader({ title, name, message}: ProfileHeaderProps) {
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
     const HandleProfileMenuOpen = ()=> {
@@ -34,7 +35,7 @@ export default function PortalHeader({ title, name }: ProfileHeaderProps) {
         </h2>
 
         <p className="text-sm text-red-500 font-medium">
-        Welcome back, {name}
+            {message}
         </p>
     </div>
 
