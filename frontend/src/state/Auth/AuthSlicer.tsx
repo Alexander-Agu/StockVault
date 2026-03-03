@@ -125,7 +125,7 @@ interface LoginData {
     password: string;
 }
 
-export const Login = (body: LoginData) => 
+export const Login = (body: LoginData) =>
     async (dispatch: AppDispatch): Promise<number> => {
         let id = 0;
         try{
@@ -139,12 +139,12 @@ export const Login = (body: LoginData) =>
             } else{
                 id = response.data.id;
                 await dispatch(setId(id));
-                sessionStorage.setItem("user", JSON.stringify(response.data));               
+                sessionStorage.setItem("user", JSON.stringify(response.data));
             }
         } catch {
             console.log("Again its chaai");
             return id;
-        }finally{       
+        }finally{
             dispatch(setLoading(false));
             return id;
         }

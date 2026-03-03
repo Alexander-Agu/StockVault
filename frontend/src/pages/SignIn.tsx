@@ -45,7 +45,8 @@ export default function SignIn() {
     ];
 
 
-    const HandleLoginAsync = async () => {
+    const HandleLoginAsync = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault();
         if (!isValidPassword(password) || buttonClicked) return;
 
         try{
@@ -79,7 +80,7 @@ export default function SignIn() {
                     Welcome back, continue saving.
                 </p>
             </div>
-            <form action={HandleLoginAsync} id='signup' className='flex flex-col gap-4 momo-trust-sans'>
+            <form onSubmit={HandleLoginAsync} id='signup' className='flex flex-col gap-4 momo-trust-sans'>
                 {
                     inputs.map((data, index) => {
                         const { required, title, placeholder, input, value } = data;
