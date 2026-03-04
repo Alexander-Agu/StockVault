@@ -12,3 +12,10 @@ export function isValidPassword(password: string): boolean {
 export const GetFirstLetter = (name: string) => {
   return name[0].toUpperCase();
 }
+
+export const formatCurrency = (cents: number) => {
+    return new Intl.NumberFormat('en-ZA', {
+      style: 'currency',
+      currency: 'ZAR',
+    }).format(cents);
+  };

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import type { RootState } from "../state/store/store";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import NavigateBackButton from "../UI/NavigateBackButton";
+import { formatCurrency } from "../tools/UserTools";
 // import { transactions } from "./TransactionTableTools";
 
 export default function ViewPersonalAccount() {
@@ -18,13 +19,6 @@ export default function ViewPersonalAccount() {
   const { id, title, balance, createdAt, lockedUntil, isActive } = account;
 
   const isLocked = isActive;
-
-  const formatCurrency = (cents: number) => {
-    return new Intl.NumberFormat('en-ZA', {
-      style: 'currency',
-      currency: 'ZAR',
-    }).format(cents / 100);
-  };
 
   return (
   <div className="w-full min-h-screen bg-[#F8EEED] p-4 flex flex-col gap-8">
@@ -64,12 +58,12 @@ export default function ViewPersonalAccount() {
                   font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
                   <FaArrowDown /> Deposit
                 </Link>
-                <button 
+                <Link to={"withdraw"}
                   className="flex items-center gap-2 
                     bg-white text-slate-700 px-6 py-2 rounded-xl font-bold border 
                     border-slate-200 hover:bg-slate-50 transition-all">
                   <FaArrowUp /> Withdraw
-                </button>
+                </Link>
           </div>
         </div>
 

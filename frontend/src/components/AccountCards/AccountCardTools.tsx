@@ -20,7 +20,7 @@ export const personalCardLinksData: (viewPath: string, accountId: string) => Per
         
         {
             name: "Widthdraw",
-            path: `../personal-account/${accountId}` == viewPath? `../deposit/${accountId}` : `deposit/${accountId}`
+            path: `../personal-account/${accountId}` == viewPath? `../withdraw/${accountId}` : `withdraw/${accountId}`
         }
     ];
 };

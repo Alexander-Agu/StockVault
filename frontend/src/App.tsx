@@ -11,6 +11,7 @@ import CreatePersonalAccount from './components/CreatePersonalAccount/CreatePers
 import ViewPersonalAccount from './pages/ViewPersonalAccount';
 import LockAccount from './pages/LockAccount';
 import Deposit from './pages/Deposit';
+import Withdraw from './pages/Withdraw';
 
 function App() {
 
@@ -51,6 +52,11 @@ function App() {
         },
 
         {
+          path: "withdraw/:accountId",
+          element: <Withdraw />
+        },
+
+        {
           path: "personal-account",
           element: <PersonalAccount />,
         },
@@ -73,6 +79,11 @@ function App() {
         {
           path: "personal-account/:accountId/deposit",
           element: <Deposit />
+        },
+
+        {
+          path: "personal-account/:accountId/withdraw",
+          element: <Withdraw />
         },
       ]
     }

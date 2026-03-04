@@ -75,3 +75,16 @@ export const PersonalAccountDepositAsync = async (body: PersonalAccountDeposit, 
         return false;
     }
 }
+export interface PersonalAccountWithdraw {
+    amount: number;
+}
+// Creates a personal account
+export const PersonalAccountWithdrawAsync = async (body: PersonalAccountWithdraw, accountId: string) => {
+    try{
+        const response = await api.put(`/withdraw/${data.id}/${accountId}`, body);
+
+        return response.data;
+    } catch{
+        return false;
+    }
+}
