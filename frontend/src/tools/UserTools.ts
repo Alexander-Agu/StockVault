@@ -18,4 +18,4 @@ export const formatCurrency = (cents: number) => {
       style: 'currency',
       currency: 'ZAR',
     }).format(cents);
-  };
+};

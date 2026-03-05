@@ -6,6 +6,7 @@ import { RegisterUserAsync } from '../api/UserApi';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../state/store/store';
 import { RegisterUser } from '../state/Auth/AuthSlicer';
+import ResetStore from '../state/store/ResetStore';
 
 interface SignUpInputs {
     required: boolean;
@@ -103,6 +104,13 @@ export default function SignUp() {
         } catch{
             console.log("Failed to create account")
         }
+    }
+
+    // Clear redux and session storage state 
+    try{
+        ResetStore();
+    } catch{
+        console.log("Ohh no it ddint work");
     }
 
   return (

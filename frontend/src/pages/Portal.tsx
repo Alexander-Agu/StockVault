@@ -7,6 +7,7 @@ import type { RootState, AppDispatch } from '../state/store/store';
 import { Outlet, useMatch, useParams } from 'react-router-dom';
 import { fetchUser } from '../state/User/UserSlice';
 import { FetchPersonalAccounts } from '../state/PersonalAccount/PersonalAccountSlicer';
+import ResetStore from '../state/store/ResetStore';
 
 
 export default function Portal() {
@@ -22,11 +23,10 @@ export default function Portal() {
 
   useEffect(()=>{
     if (userId) {
-      
       dispatch(fetchUser(Number(userId)))
       dispatch(FetchPersonalAccounts())
     }
-  },[userId]);
+  },[userId, dispatch]);
 
   if (user.loadingUser || personalAccount.Loading) return <h1>LOADING....</h1>
 

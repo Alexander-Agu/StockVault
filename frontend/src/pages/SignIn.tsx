@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../state/store/store';
 import { Login } from '../state/Auth/AuthSlicer';
 import { fetchUser } from '../state/User/UserSlice';
+import ResetStore from '../state/store/ResetStore';
 
 interface SignInInputs {
     required: boolean;
@@ -60,6 +61,14 @@ export default function SignIn() {
         } catch{
             console.log("Failed to login");
         }
+    }
+
+
+    // Clear redux and session storage state 
+    try{
+        ResetStore();
+    } catch{
+        console.log("Ohh no it ddint work");
     }
 
 
