@@ -13,6 +13,7 @@ namespace Backend.Repository.Data
         // Database tables
         public DbSet<User> Users => Set<User>();
         public DbSet<PersonalAccount> PersonalAccounts => Set<PersonalAccount>();
+        public DbSet<JointAccount> JointAccounts => Set<JointAccount>();
         public DbSet<AccountLocks> AccountLocks => Set<AccountLocks>();
         public DbSet<Transection> Transections => Set<Transection>();
 

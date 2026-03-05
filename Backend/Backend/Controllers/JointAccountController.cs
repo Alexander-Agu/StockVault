@@ -1,82 +1,29 @@
+using System.Security.Principal;
+using Backend.Dtos.AccountDtos;
+using Backend.Dtos.AccountLockDtos;
 using Backend.Dtos.JointAccountDtos;
+using Backend.Dtos.PersonalAccountDtos;
 using Backend.Dtos.ResponseDto;
 using Backend.Services.JointAccountService;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
-    public class JointAccountController(IJointAccountService jointAccountService) : Controller
+    public class JointAccountController(IJointAccountService accountService) : Controller
     {
-        // Creates a new joint account
-        [HttpPost]
-        public async Task<ActionResult> CreateJointAccountAsync([FromBody] CreateJointAccountDto newAccount)
+        // Allows user's to create a joint account
+        [HttpPost("")]
+        public async Task<ActionResult> CreateJointAccount([FromRoute] int userId, [FromBody] CreateAccountDto newAccount)
         {
-            var userId = User.FindFirst("id")?.Value;
-
-            if (!int.TryParse(userId, out int userIdParsed))
-            {
-                return Unauthorized();
-            }
-
-            var response = await jointAccountService.CreateJointAccountAsync(userIdParsed, newAccount);
+            ApiResponse<JointAccountDto>? response = await accountService.CreateJointAccountAsync(userId, newAccount);
 
             return HandleResponse(response);
         }
 
 
-        // Lists all joint accounts created by the authenticated user
-        [HttpGet]
-        public async Task<ActionResult> GetUserJointAccountsAsync()
-        {
-            var userId = User.FindFirst("id")?.Value;
-
-            if (!int.TryParse(userId, out int userIdParsed))
-            {
-                return Unauthorized();
-            }
-
-            var response = await jointAccountService.GetUserJointAccountsAsync(userIdParsed);
-
-            return HandleResponse(response);
-        }
-
-
-        // Fetches details of a specific joint account
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetJointAccountDetailsAsync(int id)
-        {
-            var userId = User.FindFirst("id")?.Value;
-
-            if (!int.TryParse(userId, out int userIdParsed))
-            {
-                return Unauthorized();
-            }
-
-            var response = await jointAccountService.GetJointAccountDetailsAsync(id, userIdParsed);
-
-            return HandleResponse(response);
-        }
-
-
-        // Deletes/closes a joint account
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteJointAccountAsync(int id)
-        {
-            var userId = User.FindFirst("id")?.Value;
-
-            if (!int.TryParse(userId, out int userIdParsed))
-            {
-                return Unauthorized();
-            }
-
-            var response = await jointAccountService.DeleteJointAccountAsync(id, userIdParsed);
-
-            return HandleResponse(response);
-        }
+        
 
 
         /*
