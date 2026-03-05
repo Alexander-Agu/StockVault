@@ -25,6 +25,8 @@ export default function SignIn() {
     const auth = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch<AppDispatch>();
 
+    
+
     // Navigation Attributes
     const navigate = useNavigate();
 
@@ -50,6 +52,7 @@ export default function SignIn() {
         if (!isValidPassword(password) || buttonClicked) return;
 
         try{
+            setButtonClicked(true);
             const id = await dispatch(Login({email: email, password: password}));
             console.log("tets ", id);
 
@@ -60,6 +63,8 @@ export default function SignIn() {
             }
         } catch{
             console.log("Failed to login");
+        }finally{
+            setButtonClicked(false);
         }
     }
 
@@ -117,7 +122,7 @@ export default function SignIn() {
 
                 <a href="#" className='noto-sans text-red-500'>Forgot your password?</a>
 
-                <input disabled={auth.loadingAuth} type="submit" value="Login" 
+                <input type="submit" value="Login" 
                     className='w-full p-3 bg-red-500 rounded-[8px] text-white font-bold'
                 />
 

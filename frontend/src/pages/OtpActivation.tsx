@@ -49,7 +49,12 @@ export default function OtpActivation() {
     const handleAccountActivationAsync = async () => {
         if (otp.length !== 6) return;
 
+        // Make sure button is clickable once
+        if (activationButtonClicked) return;
+
         try {
+            setActivationButtonClicked(true);
+
             const code = otp.join("");
 
             const response = await dispatch(ActivateAccount(email + "", code));
@@ -59,11 +64,17 @@ export default function OtpActivation() {
             }
         } catch (err) {
             console.log("Failed to activate account", err);
+        }finally{
+            setActivationButtonClicked(false);
         }
     };
     
     const HandleResendCodeAsync = async ()=> {
+        // make sure button is clickable once
+        if (resendButtonClicked) return;
+
         try{
+            setResendButtonClicked(true);
             const response = await dispatch(ResendEmail(email + ""));
             
             setCodeSent(true);
@@ -71,6 +82,8 @@ export default function OtpActivation() {
         } catch{
             setCodeSent(false)
             return false;
+        }finally{
+            setResendButtonClicked(false);
         }
     }
 
@@ -112,14 +125,14 @@ export default function OtpActivation() {
                     ))}
                     </div>
 
-                    <input disabled={auth.loadingAuth} type="submit" value={"Activate"} className='
+                    <input type="submit" value={"Activate"} className='
                         bg-red-500 w-[80%] p-3 rounded-2xl
                         text-white text-[1.2rem] font-medium
                     ' />
                 </form>
 
                 <p className='text-[#00000077]'>
-                        Didn't receive the code? <button disabled={auth.loadingAuth} onClick={()=> HandleResendCodeAsync()} className='text-red-500 font-medium'>Resend</button>
+                        Didn't receive the code? <button onClick={()=> HandleResendCodeAsync()} className='text-red-500 font-medium'>Resend</button>
                 </p>
 
                 {

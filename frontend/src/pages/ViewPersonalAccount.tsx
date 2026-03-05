@@ -8,7 +8,6 @@ import { formatCurrency } from "../tools/UserTools";
 // import { transactions } from "./TransactionTableTools";
 
 export default function ViewPersonalAccount() {
-  // Destructuring based on your PersonalAccountDto
   const personalAccount = useSelector((state: RootState) => state.personalAccount);
   const { accountId } = useParams();
   const account = personalAccount.personalAccounts?.find(x => x.id === Number(accountId));

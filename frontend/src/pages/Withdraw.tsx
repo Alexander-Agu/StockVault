@@ -16,26 +16,33 @@ export default function Withdraw() {
   const [amount, setAmount] = useState<number>(0);
   const [loading, setLoading] = useState(false);
 
+  const [buttonClicked, setButtonClicked] = useState(false);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (amount <= 0 || amount > (getAccount?.balance || 0)) {
       alert("Please enter a valid amount within your balance.");
       return;
     }
-    
-    setLoading(true);
+  
+    // Make sure button is clickbale once
+    if (buttonClicked) return;
 
     try{
+      setButtonClicked(true);
+      setLoading(true);
+
       await dispatch(WithdrawFromPersonalAccount({
         amount: amount
       }, accountId + ""))
 
-    setTimeout(() => {
       alert("Withdrawal successful! Your WeeCode has been sent via Email.");
-      setLoading(false);
-    }, 2000);
+      
     }catch{
-        console.log("Failed to fetch from account")
+      console.log("Failed to fetch from account")
+    }finally{
+      setButtonClicked(false);
+      setLoading(false);
     }
   };
 

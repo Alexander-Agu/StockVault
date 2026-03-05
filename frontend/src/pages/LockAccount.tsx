@@ -13,13 +13,21 @@ export default function LockAccount() {
   const dispatch = useDispatch<AppDispatch>();
   const { accountId } = useParams();
 
+  const [buttonClicked, setButtonClicked] = useState(false);
+
 
   const HandleLockAccountAsync = async () => {
+    // Make sure button is clickbale once
+    if (buttonClicked) return;
+
     try {
+      setButtonClicked(true);
       const res = await dispatch(LockAccounts({lockDate: date}, accountId + ""));
       if (res) navigate(-1);
     } catch {
       console.log("Failed to lock account");
+    }finally{
+      setButtonClicked(false);
     }
   };
 
@@ -74,7 +82,6 @@ export default function LockAccount() {
 
           <div className="flex flex-col gap-3 pt-2">
             <button
-              disabled={personalAccount.Loading}
               onClick={() => HandleLockAccountAsync()}
               type="submit"
               className="w-full py-4 bg-slate-900 hover:bg-black text-white font-bold rounded-2xl shadow-lg shadow-slate-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2"

@@ -35,10 +35,14 @@ export default function Deposit() {
   const [amount, setAmount] = useState<number>(0);
   const [loading, setLoading] = useState(false);
 
+  const [buttonClicked, setButtonClicked] = useState(false);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!stripe || !elements) return;
     setLoading(true);
+
+    if (buttonClicked) return;
 
     const { error, paymentMethod } = await stripe.createPaymentMethod({
       type: "card",
@@ -52,16 +56,21 @@ export default function Deposit() {
     }
 
     try{
+      setButtonClicked(true);
       await dispatch(DepositIntoPersonalAccount({
         amount: amount,
         paymentMethodId: paymentMethod.id
       }, accountId + ""))
+
+      alert("Deposit successful!");
+      setLoading(false);
     }catch{
 
+    }finally{
+      setButtonClicked(false);
     }
 
-    alert("Deposit successful!");
-    setLoading(false);
+
   };
 
   return (
