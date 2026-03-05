@@ -1,7 +1,9 @@
 import { AiFillHome } from "react-icons/ai";
 import { FaWallet, FaBookOpen } from "react-icons/fa";
+import { IoPersonSharp } from "react-icons/io5";
 import { GiWallet } from "react-icons/gi";
 import type { IconType } from "react-icons";
+import { FaPerson, FaPersonMilitaryRifle } from "react-icons/fa6";
 
 interface SidebarData {
   path: string;
@@ -27,7 +29,7 @@ export const sidebarItems: SidebarData[] = [
   },
   {
     path: "#",
-    title: "Transectons",
-    icon: FaBookOpen,
+    title: "Profile",
+    icon: IoPersonSharp,
   },
 ];

@@ -1,16 +1,19 @@
 
 import { FaLock, FaUnlock, FaArrowUp, FaArrowDown, FaArrowLeft, FaTrashCan, FaPenToSquare } from "react-icons/fa6";
-import { useSelector } from "react-redux";
-import type { RootState } from "../state/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { type AppDispatch, type RootState } from "../state/store/store";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import NavigateBackButton from "../UI/NavigateBackButton";
 import { formatCurrency } from "../tools/UserTools";
-// import { transactions } from "./TransactionTableTools";
+import Transactions from "../components/Transaction/Transaction";
+import { FetchPersonalAccountTransactions } from "../state/Transaction/TransactionSlicer";
+import { useState, useEffect } from "react";
 
 export default function ViewPersonalAccount() {
   const personalAccount = useSelector((state: RootState) => state.personalAccount);
   const { accountId } = useParams();
   const account = personalAccount.personalAccounts?.find(x => x.id === Number(accountId));
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
   if (account == null) return;
@@ -18,6 +21,12 @@ export default function ViewPersonalAccount() {
   const { id, title, balance, createdAt, lockedUntil, isActive } = account;
 
   const isLocked = isActive;
+  console.log("ViewPersonalAccount mounted");
+  useEffect(() => {
+    if (accountId) {
+      dispatch(FetchPersonalAccountTransactions(accountId));
+    }
+  }, [accountId, dispatch]);
 
   return (
   <div className="w-full min-h-screen bg-[#F8EEED] p-4 flex flex-col gap-8">
@@ -96,49 +105,16 @@ export default function ViewPersonalAccount() {
           </div>
 
           {
-              !isLocked?<Link to={"lock-account"} className="mt-2 flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-xl   font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
-              <FaLock /> Lock Account
+            !isLocked?<Link to={"lock-account"} className="mt-2 flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-xl   font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
+            <FaLock /> Lock Account
           </Link> : ""
           }
         </div>               
       </div>
     </div>
 
-      {/* SECTION 2: TRANSACTION LEDGER */}
-      {/* <div className="flex flex-col gap-4">
-        <h3 className="text-xl font-bold text-slate-800 ml-2">Recent Activity</h3>
-        <div className="bg-white/40 backdrop-blur-sm rounded-[2rem] border border-white/60 overflow-hidden">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-900/5 text-slate-500">
-                <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest">Transaction</th>
-                <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest">Type</th>
-                <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest text-right">Amount</th>
-                <th className="px-8 py-5 text-xs font-bold uppercase tracking-widest">Date</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200/50">
-              {transactions.map((tx) => {
-                const isDeposit = tx.transactionType.toLowerCase() === 'deposit';
-                return (
-                  <tr key={tx.id} className="hover:bg-white/40 transition-colors">
-                    <td className="px-8 py-5 font-bold text-slate-900">#{tx.id}</td>
-                    <td className="px-8 py-5 text-sm font-semibold">
-                       <span className={`px-3 py-1 rounded-lg ${isDeposit ? 'bg-emerald-100/50 text-emerald-700' : 'bg-rose-100/50 text-rose-700'}`}>
-                        {tx.transactionType}
-                       </span>
-                    </td>
-                    <td className={`px-8 py-5 text-right font-black ${isDeposit ? 'text-emerald-600' : 'text-rose-600'}`}>
-                      {isDeposit ? '+' : '-'} {formatCurrency(tx.amountCents)}
-                    </td>
-                    <td className="px-8 py-5 text-slate-500 font-medium">{tx.createdAt.toString()}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </div> */}
+    {/* SECTION 2: TRANSACTION LEDGER */}
+    <Transactions />
   </div>
   );
 }

@@ -12,9 +12,9 @@ if (userString){
 }
 
 // Base URL
-const apiUrl = import.meta.env.VITE_BASE_URL + "/PersonalAccount";
+const apiUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({
-    baseURL: apiUrl,
+    baseURL: apiUrl + "/PersonalAccount",
     headers: {
         Authorization: `bearer ${token}`
     }
@@ -75,6 +75,7 @@ export const PersonalAccountDepositAsync = async (body: PersonalAccountDeposit, 
         return false;
     }
 }
+
 export interface PersonalAccountWithdraw {
     amount: number;
 }
@@ -84,6 +85,33 @@ export const PersonalAccountWithdrawAsync = async (body: PersonalAccountWithdraw
         const response = await api.put(`/withdraw/${data.id}/${accountId}`, body);
 
         return response.data;
+    } catch{
+        return false;
+    }
+}
+
+
+export interface PersonalAccountTransactions {
+    transectionId: number;
+    accountId: number;
+    accountType: string;
+    userName: string;
+    amountCents: number;
+    transectionType: string;
+    createdAt: Date
+}
+// Get transactions
+export const FetchPersonalAccountTransactionAsync = async (accountId: string) => {
+    try{
+        const response = await axios.get(`${apiUrl}/Transection/${data.id}/` + accountId,
+            {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            }
+        );
+
+        return response.data.data;
     } catch{
         return false;
     }

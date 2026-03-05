@@ -70,11 +70,11 @@ export default function SignIn() {
 
 
     // Clear redux and session storage state 
-    try{
-        ResetStore();
-    } catch{
-        console.log("Ohh no it ddint work");
-    }
+    // try{
+    //     ResetStore();
+    // } catch{
+    //     console.log("Ohh no it ddint work");
+    // }
 
 
   return (
