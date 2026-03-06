@@ -5,6 +5,7 @@
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public int Balance { get; set; }
+        public string code { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
 
         public DateOnly LockedUntil { get; set; }

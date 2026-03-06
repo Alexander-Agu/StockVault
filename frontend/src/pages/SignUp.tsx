@@ -6,6 +6,7 @@ import { RegisterUserAsync } from '../api/UserApi';
 import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../state/store/store';
 import { RegisterUser } from '../state/Auth/AuthSlicer';
+import ResetStore from '../state/store/ResetStore';
 
 interface SignUpInputs {
     required: boolean;
@@ -34,6 +35,8 @@ export default function SignUp() {
     const [failed, setFailed] = useState(false);
     const [isAccountCreated, setIsAccountCreated] = useState(false);
     // const [confirmPassword, setConfirmPassword] = useState("");
+
+    const [buttonClicked, setButtonClicked] = useState(false);
 
     const navigate = useNavigate();
     const auth = useSelector((state: RootState) => state.auth);
@@ -85,6 +88,9 @@ export default function SignUp() {
             return;
         }
 
+        // Make sure button is only clickable once
+        if (buttonClicked) return;
+
         // Check if other input fields are not empty
         if (name === "" && email === "") {
             setFailed(true);
@@ -92,6 +98,7 @@ export default function SignUp() {
         }
 
         try{
+            setButtonClicked(true);
             const res = await dispatch(RegisterUser({
                 name: name,
                 email: email,
@@ -102,7 +109,16 @@ export default function SignUp() {
             if (res) navigate(`/activate/${email}`)
         } catch{
             console.log("Failed to create account")
+        }finally{
+            setButtonClicked(false);
         }
+    }
+
+    // Clear redux and session storage state 
+    try{
+        ResetStore();
+    } catch{
+        console.log("Ohh no it dint work");
     }
 
   return (
@@ -162,7 +178,7 @@ export default function SignUp() {
                     })
                 }
 
-                <input type="submit" value="Create Account" disabled={auth.loadingAuth} 
+                <input type="submit" value="Create Account"
                     className='w-full p-3 bg-red-500 rounded-[8px] text-white font-bold'
                 />
                     <div className='w-full flex items-center justify-center'>

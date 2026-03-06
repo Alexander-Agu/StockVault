@@ -36,7 +36,7 @@ namespace Backend.Controllers
 
 
         // Allows user to widthdraw money from their account
-        [HttpPut("widthdraw/{userId}/{accountId}")]
+        [HttpPut("withdraw/{userId}/{accountId}")]
         public async Task<ActionResult> WidthdrawFromPersonalAccountAsync(
         int userId,
         int accountId,

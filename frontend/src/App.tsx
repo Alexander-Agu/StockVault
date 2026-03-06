@@ -6,10 +6,12 @@ import SignIn from './pages/SignIn';
 import OtpActivation from './pages/OtpActivation';
 import Portal from './pages/Portal';
 import Dashboard from './components/Dashboard/Dashboard';
-import PersonalAccount from './components/PersonalAccount/PersonalAccount';
+import PersonalAccount from './pages/PersonalAccount';
 import CreatePersonalAccount from './components/CreatePersonalAccount/CreatePersonalAccount';
 import ViewPersonalAccount from './pages/ViewPersonalAccount';
 import LockAccount from './pages/LockAccount';
+import Deposit from './pages/Deposit';
+import Withdraw from './pages/Withdraw';
 
 function App() {
 
@@ -40,6 +42,21 @@ function App() {
         },
 
         {
+          path: "transection-history",
+          element: <PersonalAccount />,
+        },
+
+        {
+          path: "deposit/:accountId",
+          element: <Deposit />
+        },
+
+        {
+          path: "withdraw/:accountId",
+          element: <Withdraw />
+        },
+
+        {
           path: "personal-account",
           element: <PersonalAccount />,
         },
@@ -57,6 +74,16 @@ function App() {
         {
           path: "personal-account/:accountId/lock-account",
           element: <LockAccount />
+        },
+
+        {
+          path: "personal-account/:accountId/deposit",
+          element: <Deposit />
+        },
+
+        {
+          path: "personal-account/:accountId/withdraw",
+          element: <Withdraw />
         },
       ]
     }

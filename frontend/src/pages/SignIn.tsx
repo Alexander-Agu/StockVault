@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import type { AppDispatch, RootState } from '../state/store/store';
 import { Login } from '../state/Auth/AuthSlicer';
 import { fetchUser } from '../state/User/UserSlice';
+import ResetStore from '../state/store/ResetStore';
 
 interface SignInInputs {
     required: boolean;
@@ -23,6 +24,8 @@ export default function SignIn() {
 
     const auth = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch<AppDispatch>();
+
+    
 
     // Navigation Attributes
     const navigate = useNavigate();
@@ -50,6 +53,7 @@ export default function SignIn() {
         if (!isValidPassword(password) || buttonClicked) return;
 
         try{
+            setButtonClicked(true);
             const id = await dispatch(Login({email: email, password: password}));
             console.log("tets ", id);
 
@@ -60,8 +64,18 @@ export default function SignIn() {
             }
         } catch{
             console.log("Failed to login");
+        }finally{
+            setButtonClicked(false);
         }
     }
+
+
+    // Clear redux and session storage state 
+    // try{
+    //     ResetStore();
+    // } catch{
+    //     console.log("Ohh no it ddint work");
+    // }
 
 
   return (
@@ -109,7 +123,7 @@ export default function SignIn() {
 
                 <a href="#" className='noto-sans text-red-500'>Forgot your password?</a>
 
-                <input disabled={auth.loadingAuth} type="submit" value="Login" 
+                <input type="submit" value="Login" 
                     className='w-full p-3 bg-red-500 rounded-[8px] text-white font-bold'
                 />
 

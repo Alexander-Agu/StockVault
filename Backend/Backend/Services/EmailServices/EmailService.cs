@@ -164,5 +164,75 @@ namespace FIN.Service.EmailServices
             await EMailAsync(email, "Reset your StockVault password", htmlMessage);
         }
 
+
+        public async Task SendWeeCodeEmailAsync(string email, string code)
+        {
+            string htmlMessage = $@"
+    <body style=""margin:0; padding:0; background-color:#f4f4f4;"">
+        <table width=""100%"" cellpadding=""0"" cellspacing=""0"">
+        <tr>
+            <td align=""center"" style=""padding:30px;"">
+
+            <table width=""600"" cellpadding=""0"" cellspacing=""0"" 
+                    style=""max-width:600px; background:#ffffff; border-radius:12px;
+                            font-family:Arial, sans-serif; overflow:hidden; border: 1px solid #eee;"">
+
+                <td style=""background:#b11226; padding:30px; text-align:center;"">
+                    <h2 style=""margin:0; color:#ffffff; letter-spacing:1px;"">StockVault Withdrawal</h2>
+                    <p style=""color:#ff9999; margin:5px 0 0 0; font-size:14px; font-weight:bold; uppercase"">Your Cash Collection Code</p>
+                </td>
+
+                <tr>
+                <td style=""padding:40px; text-align:center;"">
+                    <p style=""font-size:16px; color:#666; margin-bottom:20px;"">
+                        Your withdrawal request was successful. Use the code below to collect your cash at any supported retailer.
+                    </p>
+
+                    <div style=""background:#f8f9fa; border:2px dashed #b11226; padding:20px; border-radius:8px; margin:20px 0;"">
+                        <span style=""font-size:12px; color:#b11226; font-weight:bold; display:block; margin-bottom:10px; text-transform:uppercase;"">
+                            Your 12-Digit WeeCode
+                        </span>
+                        <h1 style=""font-family:'Courier New', monospace; font-size:36px; color:#333; margin:0; letter-spacing:5px;"">
+                            {code}
+                        </h1>
+                    </div>
+
+                    <div style=""text-align:left; background:#fff5f5; padding:20px; border-radius:8px; margin-top:30px;"">
+                        <h4 style=""margin:0 0 10px 0; color:#b11226;"">How to redeem:</h4>
+                        <ol style=""font-size:14px; color:#444; padding-left:20px; line-height:1.6;"">
+                            <li>Visit any <strong>Checkers, Shoprite, Pick n Pay, or Boxer</strong>.</li>
+                            <li>Tell the cashier you are collecting a <strong>'WeeCode'</strong>.</li>
+                            <li>Provide the 12-digit code shown above.</li>
+                        </ol>
+                    </div>
+
+                    <p style=""margin-top:30px; font-size:13px; color:#999;"">
+                        For your security, do not share this code with anyone other than the retail cashier. 
+                        StockVault staff will never ask for this code.
+                    </p>
+                </td>
+                </tr>
+
+                <tr>
+                <td style=""padding:20px; background:#f8f8f8; text-align:center;"">
+                    <p style=""font-size:12px; color:#999; margin:0;"">
+                        © {DateTime.UtcNow.Year} StockVault South Africa. All rights reserved.
+                    </p>
+                    <p style=""font-size:11px; color:#bbb; margin-top:5px;"">
+                        If you did not authorize this withdrawal, contact support immediately.
+                    </p>
+                </td>
+                </tr>
+
+            </table>
+
+            </td>
+        </tr>
+        </table>
+    </body>";
+
+            await EMailAsync(email, "Your StockVault WeeCode - Cash Withdrawal", htmlMessage);
+        }
+
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using Backend.Dtos.AccountDtos;
 using Backend.Dtos.AccountLockDtos;
 using Backend.Dtos.PersonalAccountDtos;
@@ -10,6 +11,7 @@ using Backend.Repository.AccountLocksRepository;
 using Backend.Repository.PersonalAccountRespository;
 using Backend.Repository.UserRepository;
 using Backend.Services.TransectionService;
+using FIN.Service.EmailServices;
 using Stripe;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -20,7 +22,8 @@ namespace Backend.Services.PersonalAccountService
         IUserRepository userRep, 
         IAccountRepositoryLocks lockRep,
         ITransectionService transectionService,
-        PaymentIntentService paymentService) : IPersonalAccountService
+        PaymentIntentService paymentService,
+        IEmailService emailService) : IPersonalAccountService
     {
         // Allows user's to create a personal account
         public async Task<ApiResponse<PersonalAccountDto>> CreatePersonalAccountAsync(int userId, CreateAccountDto newAccount)
@@ -77,22 +80,28 @@ namespace Backend.Services.PersonalAccountService
 
             // Checks if account exists
             PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
+
             if (account == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "Account not found";
-
                 return response;
             }
 
-            // Simulating stripe transection
+            User user = await userRep.GetUserByIdAsync(userId);
+
+            if (user == null || string.IsNullOrEmpty(user.StripeCustomerId))
+                throw new Exception("Stripe customer missing");
+
+            // Stripe charge
             var options = new PaymentIntentCreateOptions
             {
                 Amount = (long?)(amount.Amount * 100),
                 Currency = "zar",
-                Customer = account.User.StripeCustomerId,
+                Customer = user.StripeCustomerId,
                 PaymentMethod = amount.PaymentMethodId,
-                Confirm = true
+                Confirm = true,
+                ReturnUrl = "http://localhost:5173/payment-success"
             };
 
             var intent = await paymentService.CreateAsync(options);
@@ -226,6 +235,8 @@ namespace Backend.Services.PersonalAccountService
                 Data = null
             };
 
+            string code = GenerateRandomDigitsString(12);
+
             // Checks if account exists
             PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
             if (account == null)
@@ -257,8 +268,9 @@ namespace Backend.Services.PersonalAccountService
 
                 return response;
             }
-            
+            await emailService.SendWeeCodeEmailAsync(account.User.Email, code);
             response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+            response.Data.code = code;
 
             return response;
         }
@@ -315,6 +327,18 @@ namespace Backend.Services.PersonalAccountService
                 TransectionType = transectionType,
                 CreatedAt = DateOnly.FromDateTime(DateTime.Now)
             };
+        }
+
+        // Generates a 12 digit code
+        public string GenerateRandomDigitsString(int length)
+        {
+            Random random = new Random();
+            StringBuilder s = new StringBuilder();
+            for (int i = 0; i < length; i++)
+            {
+                s.Append(random.Next(10).ToString());
+            }
+            return s.ToString();
         }
     }
 }

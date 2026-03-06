@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 import Sidebar from '../components/Sidebar/Sidebar'
-import PortalHeader from '../components/PortalHeader/PortalHeader';
-import Dashboard from '../components/Dashboard/Dashboard';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState, AppDispatch } from '../state/store/store';
 import { Outlet, useMatch, useParams } from 'react-router-dom';
@@ -11,24 +9,17 @@ import { FetchPersonalAccounts } from '../state/PersonalAccount/PersonalAccountS
 
 export default function Portal() {
   const { userId } = useParams();
-
-  const [openedPage, setOpenedPage] = useState("Dashboard");
-
-  // Redux
-  const user = useSelector((state: RootState) => state.user);
-  const auth = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
+
+  const user = useSelector((state: RootState) => state.user);
   const personalAccount = useSelector((state: RootState) => state.personalAccount);
 
-  useEffect(()=>{
+  useEffect(() => {
     if (userId) {
-      
-      dispatch(fetchUser(Number(userId)))
-      dispatch(FetchPersonalAccounts())
+      dispatch(fetchUser(Number(userId)));
+      dispatch(FetchPersonalAccounts());
     }
-  },[userId]);
-
-  if (user.loadingUser || personalAccount.Loading) return <h1>LOADING....</h1>
+  }, [userId, dispatch]);
 
   return (
     <article className="bg-[#F8EEED] min-h-[100dvh] flex">
@@ -41,13 +32,12 @@ export default function Portal() {
         lg:ml-[250px]
         xl:ml-[300px]
       ">
-        {/* Header */}
-        <PortalHeader name={user.user?.name + ""} title={openedPage} />
-        
-        {/* Pages (dashboard/payment/etc) */}
+        {(user.loadingUser || personalAccount.Loading) && (
+          <h1>Loading...</h1>
+        )}
+
         <Outlet />
       </main>
-
     </article>
-  )
+  );
 }

@@ -10,5 +10,8 @@
 
         // Sends a forgotten password email
         public Task SendPasswordResetEmailAsync(string email, string resetToken);
+
+        // Sends a wiicode
+        public Task SendWeeCodeEmailAsync(string email, string code);
     }
 }

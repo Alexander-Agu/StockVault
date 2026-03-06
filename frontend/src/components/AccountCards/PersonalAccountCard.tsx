@@ -1,14 +1,16 @@
 import { FaLock } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { personalCardLinksData } from "./AccountCardTools";
 
 interface PersonalAccountCardProps {
   title: string;
   amount: number;
   locked?: boolean;
   url: string
+  accountId: string
 }
 
-export default function PersonalAccountCard({ title, amount, locked, url }: PersonalAccountCardProps) {
+export default function PersonalAccountCard({ title, amount, locked, url, accountId }: PersonalAccountCardProps) {
   const navigate = useNavigate();
 
 
@@ -49,14 +51,18 @@ export default function PersonalAccountCard({ title, amount, locked, url }: Pers
       </h2>
       
       <div className="flex gap-2 pt-1">
-        {["View", "Deposit", "Withdraw"].map((label) => (
-          <Link to={`${url}`}
-            key={label} 
-            className="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-md transition-all active:scale-95"
-          >
-            {label}
-          </Link>
-        ))}
+        {personalCardLinksData(url, accountId).map(item => {
+
+          const { name, path } = item;
+
+          return <Link to={path}
+              key={name} 
+              className="px-4 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-md transition-all active:scale-95"
+            >
+              {name}
+            </Link>
+          }
+        )}
       </div>
     </div>
   );
