@@ -134,7 +134,7 @@ namespace Backend.Services.JointAccountService
 
 
         // Allows a user to get all of their joint accounts
-        public async Task<ApiResponse<List<JointAccountDto>>> GetAllPersonalAccountsAsync(int userId)
+        public async Task<ApiResponse<List<JointAccountDto>>> GetAllJointAccountsAsync(int userId)
         {
             ApiResponse<List<JointAccountDto>> response = new ApiResponse<List<JointAccountDto>>() {
                 ResponseCode = ResponseCode.Ok,
@@ -146,7 +146,7 @@ namespace Backend.Services.JointAccountService
             if (user == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
-                response.Message = "Account not found";
+                response.Message = "User not found";
 
                 return response;
             }
@@ -158,8 +158,8 @@ namespace Backend.Services.JointAccountService
         }
 
 
-        // Allows user to fetch their joint account data
-        public async Task<ApiResponse<JointAccountDto>> GetPersonalAccount(int userId, int accountId)
+        // Allows user to fetch a single joint account
+        public async Task<ApiResponse<JointAccountDto>> GetJointAccountAsync(int userId, int accountId)
         {
             ApiResponse<JointAccountDto> response = new ApiResponse<JointAccountDto>()
             {
@@ -168,8 +168,7 @@ namespace Backend.Services.JointAccountService
                 Data = null
             };
 
-
-            // Checks if account exists
+            // Check if user is the creator
             JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId);
             if (account == null)
             {
@@ -178,7 +177,53 @@ namespace Backend.Services.JointAccountService
 
                 return response;
             }
-            else response.Data = account;
+
+            // Verify user is the creator
+            if (account.CreatedBy != userId)
+            {
+                response.ResponseCode = ResponseCode.Forbidden;
+                response.Message = "You are not the creator of this account";
+
+                return response;
+            }
+
+            response.Data = account;
+            return response;
+        }
+
+
+        // Allows user to delete a joint account
+        public async Task<ApiResponse<JointAccountDto>> DeleteJointAccountAsync(int userId, int accountId)
+        {
+            ApiResponse<JointAccountDto> response = new ApiResponse<JointAccountDto>()
+            {
+                ResponseCode = ResponseCode.Ok,
+                Message = "Joint account closed successfully",
+                Data = null
+            };
+
+            // Check if account exists
+            JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId);
+            if (account == null)
+            {
+                response.ResponseCode = ResponseCode.NotFound;
+                response.Message = "Account not found";
+
+                return response;
+            }
+
+            // Verify user is the creator
+            if (account.CreatedBy != userId)
+            {
+                response.ResponseCode = ResponseCode.Forbidden;
+                response.Message = "You are not the creator of this account";
+
+                return response;
+            }
+
+            // Delete the account
+            await accountRep.DeleteJointAccountByIdAsync(userId, accountId);
+            await accountRep.SaveChangesAsync();
 
             return response;
         }

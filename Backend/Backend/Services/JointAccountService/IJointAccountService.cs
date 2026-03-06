@@ -16,18 +16,24 @@ namespace Backend.Services.JointAccountService
          *  * Balance must start at Zero
          */
         public Task<ApiResponse<JointAccountDto>> CreateJointAccountAsync(int userId, CreateAccountDto newAccount);
-        
-
-        /*
-         * TODO: Allows a user to get all their personal account
-         */
-        public Task<ApiResponse<List<JointAccountDto>>> GetAllPersonalAccountsAsync(int userId);
 
 
         /*
-         * TODO: Allows a user to get one of their accounts
+         * TODO: Allows a user to get all their joint accounts
          */
-        public Task<ApiResponse<JointAccountDto>> GetPersonalAccount(int userId, int accountId);
+        public Task<ApiResponse<List<JointAccountDto>>> GetAllJointAccountsAsync(int userId);
+
+
+        /*
+         * TODO: Allows a user to get a single joint account
+         */
+        public Task<ApiResponse<JointAccountDto>> GetJointAccountAsync(int userId, int accountId);
+
+
+        /*
+         * TODO: Allows a user to delete a joint account
+         */
+        public Task<ApiResponse<JointAccountDto>> DeleteJointAccountAsync(int userId, int accountId);
 
 
         /*
