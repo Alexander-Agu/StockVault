@@ -3,9 +3,11 @@ using System.Text;
 using Backend.Entities;
 using Backend.Repository.AccountLocksRepository;
 using Backend.Repository.Data;
+using Backend.Repository.JointAccountRepository;
 using Backend.Repository.PersonalAccountRespository;
 using Backend.Repository.TransectionRepository;
 using Backend.Repository.UserRepository;
+using Backend.Services.JointAccountService;
 using Backend.Services.PersonalAccountService;
 using Backend.Services.TransectionService;
 using Backend.Services.UserService;
@@ -53,6 +55,8 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<IPersonalAccountService, PersonalAccountService>();
 builder.Services.AddScoped<IPersonalAccountRepository, PersonalAccountRepository>();
+builder.Services.AddScoped<IJointAccountService, JointAccountService>();
+builder.Services.AddScoped<IJointAccountRepository, JointAccountRepository>();
 builder.Services.AddScoped<IAccountRepositoryLocks, AccountLocksRepository>();
 builder.Services.AddScoped<PaymentIntentService>();
 

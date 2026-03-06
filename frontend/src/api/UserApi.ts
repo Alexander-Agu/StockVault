@@ -50,7 +50,7 @@ export const VerifyEmailAsync = async (email: string, otp: string) => {
 // Allows user to resend their varification email
 export const ResendEmailAsync = async (email: string) => {
     try{
-        const response = await api.put(`User/resend-email?email=${email}`);
+        const response = await api.put(`/User/resend-email?email=${email}`);
 
         return response.data;
     } catch{
@@ -66,7 +66,7 @@ export const LoginUserAsync = async (body: {
     password: string
 }) => {
     try{
-        const response = await api.post("User/login", body);
+        const response = await api.post("/User/login", body);
         return response.data
     } catch{
         return false;
@@ -77,7 +77,7 @@ export const LoginUserAsync = async (body: {
 // Fetches user data
 export const FetchProfileAsync = async (userId: number) => {
     try{
-        const response = await api.get(`User/profile/${userId}`);
+        const response = await api.get(`/User/profile/${userId}`);
         return response.data
     } catch{
         return false;
