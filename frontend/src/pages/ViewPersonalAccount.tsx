@@ -21,7 +21,7 @@ export default function ViewPersonalAccount() {
   const { id, title, balance, createdAt, lockedUntil, isActive } = account;
 
   const isLocked = isActive;
-  console.log("ViewPersonalAccount mounted");
+
   useEffect(() => {
     if (accountId) {
       dispatch(FetchPersonalAccountTransactions(accountId));

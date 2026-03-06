@@ -59,9 +59,6 @@ export const FetchPersonalAccountTransactions = (accountId: string) =>
             transactions = response;
 
             dispatch(setTransactions(transactions));
-
-            console.log("API RESPONSE:", response);
-            console.log("FETCHING TRANSACTIONS");
         } catch {
             console.log("Again its chaai");
             return transactions;

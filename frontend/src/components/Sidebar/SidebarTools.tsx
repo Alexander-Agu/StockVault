@@ -27,9 +27,4 @@ export const sidebarItems: SidebarData[] = [
     title: "Joint Accounts",
     icon: GiWallet,
   },
-  {
-    path: "#",
-    title: "Profile",
-    icon: IoPersonSharp,
-  },
 ];
