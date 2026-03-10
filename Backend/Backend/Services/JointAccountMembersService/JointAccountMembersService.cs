@@ -15,7 +15,7 @@ using Backend.Services.TransectionService;
 using Stripe;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Backend.Services.JointAccountService
+namespace Backend.Services.JointAccountMembersService
 {
     public class JointAccountService( // Dependency Injections
         IJointAccountRepository accountRep, 

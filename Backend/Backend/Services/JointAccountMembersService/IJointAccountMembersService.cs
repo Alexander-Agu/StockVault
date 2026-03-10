@@ -4,7 +4,7 @@ using Backend.Dtos.JointAccountDtos;
 using Backend.Dtos.PersonalAccountDtos;
 using Backend.Dtos.ResponseDto;
 
-namespace Backend.Services.JointAccountService
+namespace Backend.Services.JointAccountMembersService
 {
     public interface IJointAccountService
     {

@@ -1,6 +1,6 @@
 namespace Backend.Entities
 {
-    public class JointAccount
+    public class JointAccountMembers
     {
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;

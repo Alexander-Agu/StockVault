@@ -4,7 +4,7 @@ using Backend.Entities;
 using Backend.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Repository.JointAccountRepository
+namespace Backend.Repository.JointAccountMembersRepository
 {
     public class JointAccountRepository(StockVaultContext context) : IJointAccountRepository
     {
