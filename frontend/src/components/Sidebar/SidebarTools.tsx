@@ -23,7 +23,7 @@ export const sidebarItems: SidebarData[] = [
     icon: FaWallet,
   },
   {
-    path: "#",
+    path: "joint-account",
     title: "Joint Accounts",
     icon: GiWallet,
   },

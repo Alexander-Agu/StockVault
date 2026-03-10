@@ -1,4 +1,5 @@
 import { FaUsers } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 interface JointAccountCardProps {
   title: string;
@@ -16,10 +17,11 @@ export default function JointAccountCard({
   members, 
   role, 
   progress, 
-  contribution 
+  contribution,
+  id 
 }: JointAccountCardProps) {
   return (
-    <div className="w-full border border-[#00000017] p-4 bg-white rounded-lg">
+    <div className="w-full bg-[#FFF5F5] border border-red-100 rounded-xl p-4 flex flex-col gap-2 relative shadow-sm">
 
       <div className="w-full flex items-center justify-between pb-3 border-b border-[#00000031]">
 
@@ -39,15 +41,6 @@ export default function JointAccountCard({
         </div>
       </div>
 
-      <div className="py-4">
-        <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
-          <div 
-            className="bg-red-600 h-full transition-all duration-700" 
-            style={{ width: `${progress}%` }} 
-          />
-        </div>
-      </div>
-
       <div className="flex items-end justify-between">
         <div className="flex flex-col">
           <p className="text-[10px] font-bold text-slate-400 italic mb-1">
@@ -60,9 +53,9 @@ export default function JointAccountCard({
           </div>
         </div>
         
-        <a href="#" className="text-red-500 text-xs font-bold underline underline-offset-4">
+        <Link to={id + ""} className="text-red-500 text-xs font-bold underline underline-offset-4">
           View Details
-        </a>
+        </Link>
       </div>
     </div>
   );

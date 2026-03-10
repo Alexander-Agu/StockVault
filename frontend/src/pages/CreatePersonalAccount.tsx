@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaWallet, FaArrowLeft } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
-import type { AppDispatch, RootState } from "../../state/store/store";
-import { CreateAccount } from "../../state/PersonalAccount/PersonalAccountSlicer";
-import NavigateBackButton from "../../UI/NavigateBackButton";
+import type { AppDispatch, RootState } from "../state/store/store";
+import { CreateAccount } from "../state/PersonalAccount/PersonalAccountSlicer";
+import NavigateBackButton from "../UI/NavigateBackButton";
 
 export default function CreatePersonalAccount() {
   const navigate = useNavigate();

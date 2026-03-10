@@ -7,11 +7,13 @@ import OtpActivation from './pages/OtpActivation';
 import Portal from './pages/Portal';
 import Dashboard from './components/Dashboard/Dashboard';
 import PersonalAccount from './pages/PersonalAccount';
-import CreatePersonalAccount from './components/CreatePersonalAccount/CreatePersonalAccount';
+import CreatePersonalAccount from './pages/CreatePersonalAccount';
 import ViewPersonalAccount from './pages/ViewPersonalAccount';
 import LockAccount from './pages/LockAccount';
 import Deposit from './pages/Deposit';
 import Withdraw from './pages/Withdraw';
+import JointAccounts from './pages/JointAccounts';
+import ViewJointAccount from './pages/ViewJointAccount';
 
 function App() {
 
@@ -84,6 +86,21 @@ function App() {
         {
           path: "personal-account/:accountId/withdraw",
           element: <Withdraw />
+        },
+        
+        {
+          path: "joint-account",
+          element: <JointAccounts />
+        },
+        
+        {
+          path: "joint-account/create",
+          element: <CreatePersonalAccount />
+        },
+        
+        {
+          path: "joint-account/:accountId",
+          element: <ViewJointAccount />
         },
       ]
     }
