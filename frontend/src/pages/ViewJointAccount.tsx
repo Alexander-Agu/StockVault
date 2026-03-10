@@ -28,7 +28,7 @@ export default function ViewJointAccount() {
         <div className="max-w-5xl mx-auto flex flex-col gap-8">
           
           <div className="flex justify-between items-center">
-            <NavigateBackButton title="Back to Hub" />
+            <NavigateBackButton title="Go Back" />
             {/* Mobile Toggle Button */}
             <button 
               onClick={() => setIsSidebarOpen(true)}
@@ -89,12 +89,12 @@ export default function ViewJointAccount() {
       )}
 
       <aside className={`
-        fixed inset-y-0 right-0 w-80 bg-white/80 backdrop-blur-2xl border-l border-white/60 z-50
+        fixed inset-y-0 right-0 w-80 bg-white/80 border-l border-white/60 z-50
         transition-transform duration-300 transform p-8 shadow-2xl
         lg:translate-x-0 lg:static lg:block lg:shadow-none
         ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
       `}>
-        <div className="flex justify-between items-center mb-10">
+        <div className="flex justify-between items-center">
           <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
             <FaUsers className="text-red-500" /> Members
           </h2>
@@ -125,12 +125,12 @@ export default function ViewJointAccount() {
           </section>
         </div>
 
-        <button className="mt-12 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-colors">
+        <button className="mt-5 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-colors">
             Make Payment
         </button>
         
         {/* This will soon be visible only by the admin */}
-        <button className="mt-12 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-colors">
+        <button className="mt-5 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-colors">
             Add Member
         </button>
       </aside>

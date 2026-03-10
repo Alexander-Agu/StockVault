@@ -21,7 +21,7 @@ export default function JointAccountCard({
   id 
 }: JointAccountCardProps) {
   return (
-    <div className="w-full bg-[#FFF5F5] border border-red-100 rounded-xl p-4 flex flex-col gap-2 relative shadow-sm">
+    <div className="w-full bg-white border border-red-100 rounded-xl p-4 flex flex-col gap-2 relative shadow-sm">
 
       <div className="w-full flex items-center justify-between pb-3 border-b border-[#00000031]">
 
