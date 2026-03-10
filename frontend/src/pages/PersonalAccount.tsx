@@ -1,10 +1,9 @@
 import { useSelector } from "react-redux"
 import type { RootState } from "../state/store/store"
-import { FaPlus } from "react-icons/fa6";
 import PersonalAccountCard from "../components/AccountCards/PersonalAccountCard";
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import PortalHeader from "../components/PortalHeader/PortalHeader";
+import CreateAccount from "../UI/CreateAccount";
 
 export default function PersonalAccount() {
     const personalAccount = useSelector((state: RootState) => state.personalAccount);
@@ -15,22 +14,7 @@ export default function PersonalAccount() {
         <section className="w-full h-full overflow-y-auto bg-[#F8EEED] custom-scrollbar flex flex-col gap-12">
             <PortalHeader message={`View All Accounts` + ""} title={"Personal Accounts"} name={user.user?.name + ""} />
             {/* Header & Add Button Area */}
-            <div className="flex flex-col gap-4 p-7">
-                <h2 className="text-2xl font-bold  text-slate-800">Personal Accounts</h2>
-                
-                <Link to={"create"} className="group w-64 h-32 flex flex-col items-center justify-center gap-2 
-                    bg-white/50 hover:bg-white border-2 border-dashed border-slate-300 
-                    hover:border-red-500 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md">
-                    
-                    <div className="p-2 rounded-full bg-slate-100 group-hover:bg-red-50 transition-colors">
-                        <FaPlus className="text-slate-400 group-hover:text-red-500 text-xl" />
-                    </div>
-                    
-                    <span className="text-sm font-semibold text-slate-500 group-hover:text-red-600">
-                        Add new Personal Account
-                    </span>
-                </Link >
-            </div>
+            <CreateAccount title="Personal Account" path="create" />
 
             {/* Grid Layout */}
             <div className="w-full flex flex-wrap gap-6 p-7">
