@@ -14,6 +14,7 @@ namespace Backend.Repository.Data
         public DbSet<User> Users => Set<User>();
         public DbSet<PersonalAccount> PersonalAccounts => Set<PersonalAccount>();
         public DbSet<JointAccount> JointAccounts => Set<JointAccount>();
+        public DbSet<JointAccountMembers> JointAccountMembers => Set<JointAccountMembers>();
         public DbSet<AccountLocks> AccountLocks => Set<AccountLocks>();
         public DbSet<Transection> Transections => Set<Transection>();
 
@@ -39,6 +40,24 @@ namespace Backend.Repository.Data
                 .WithMany(t => t.Transections)
                 .HasForeignKey(t => t.userId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // JointAccountMembers relationships
+            modelBuilder.Entity<JointAccountMembers>()
+                .HasOne(m => m.JointAccount)
+                .WithMany()
+                .HasForeignKey(m => m.JointAccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<JointAccountMembers>()
+                .HasOne(m => m.User)
+                .WithMany()
+                .HasForeignKey(m => m.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Unique constraint: one user per joint account
+            modelBuilder.Entity<JointAccountMembers>()
+                .HasIndex(m => new { m.JointAccountId, m.UserId })
+                .IsUnique();
         }
     }
 }

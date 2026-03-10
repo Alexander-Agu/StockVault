@@ -1,391 +1,169 @@
-using System.Collections.Generic;
-using Backend.Dtos.AccountDtos;
-using Backend.Dtos.AccountLockDtos;
-using Backend.Dtos.JointAccountDtos;
-using Backend.Dtos.PersonalAccountDtos;
+using Backend.Dtos.JointAccountMembersDtos;
 using Backend.Dtos.ResponseDto;
-using Backend.Dtos.TransectionDto;
 using Backend.Entities;
-using Backend.Mapping;
-using Backend.Repository.AccountLocksRepository;
-using Backend.Repository.JointAccountRepository;
-using Backend.Repository.PersonalAccountRespository;
+using Backend.Repository.JointAccountMembersRepository;
 using Backend.Repository.UserRepository;
-using Backend.Services.TransectionService;
-using Stripe;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Backend.Services.JointAccountMembersService
 {
-    public class JointAccountService( // Dependency Injections
-        IJointAccountRepository accountRep, 
-        IUserRepository userRep, 
-        IAccountRepositoryLocks lockRep,
-        ITransectionService transectionService,
-        PaymentIntentService paymentService) : IJointAccountService
+    public class JointAccountMembersService(
+        IJointAccountMembersRepository membersRepo,
+        IUserRepository userRepo) : IJointAccountMembersService
     {
-        // Allows user's to create a personal account
-        public async Task<ApiResponse<JointAccountDto>> CreateJointAccountAsync(int userId, CreateAccountDto newAccount)
+        public async Task<ApiResponse<string>> AddMemberAsync(int userId, int jointAccountId, AddMemberDto addMember)
         {
-            ApiResponse<JointAccountDto> response = new ApiResponse<JointAccountDto>()
+            var response = new ApiResponse<string>
             {
                 ResponseCode = ResponseCode.Created,
-                Message = "Joint account created",
+                Message = "Member added successfully",
                 Data = null
             };
 
-            // Check if user exists
-            User? user = await userRep.GetUserByIdAsync(userId);
-            if (user == null)
+            // Check if user is admin
+            if (!await membersRepo.IsUserAdminAsync(jointAccountId, userId))
             {
-                response.ResponseCode = ResponseCode.NotFound;
-                response.Message = "User not found!";
-
+                response.ResponseCode = ResponseCode.Forbidden;
+                response.Message = "Only admins can add members";
                 return response;
             }
 
-
-            // Create user to joint relationship
-            JointAccount account = new JointAccount
-            {
-                Title = newAccount.Title,
-                CreatedAt = DateTime.Now,
-                Balance = 0
-            };
-            account.UserId = userId;
-
-            if (await accountRep.JointAccountExist(userId, account.Title))
-            {
-                response.ResponseCode = ResponseCode.BadRequest;
-                response.Message = "Please choose a unique name for your account";
-
-                return response;
-            }
-
-            await accountRep.AddJointAccountAsync(account);
-            await accountRep.SaveChangesAsync();
-
-            // After saving new acccount return it
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
-
-            return response;
-        }
-
-
-        // Allows users to deposit money into their account
-        public async Task<ApiResponse<JointAccountDto>> DepositAsync(int userId, int accountId, DepositDto amount)
-        {
-            ApiResponse<JointAccountDto> response = new ApiResponse<JointAccountDto>()
-            {
-                ResponseCode = ResponseCode.Ok,
-                Message = "Amount was successfully deposited",
-                Data = null
-            };
-
-            // Checks if account exists
-            JointAccount account = await accountRep.GetJointAccountByIdAsync(userId, accountId);
-            if (account == null)
-            {
-                response.ResponseCode = ResponseCode.NotFound;
-                response.Message = "Account not found";
-
-                return response;
-            }
-
-            // Simulating stripe transection
-            var options = new PaymentIntentCreateOptions
-            {
-                Amount = (long?)(amount.Amount * 100),
-                Currency = "zar",
-                Customer = account.User.StripeCustomerId,
-                PaymentMethod = amount.PaymentMethodId,
-                Confirm = true
-            };
-
-            var intent = await paymentService.CreateAsync(options);
-
-            if (intent.Status == "succeeded") account.Balance += ToCents(amount.Amount);
-
-            // Save transection
-            await transectionService.RecordTransectionAsync(userId, CreateTransectionForJoint(
-                    userId,
-                    ToCents(amount.Amount),
-                    account,
-                    "DEPOSIT"
-                ));
-
-            await accountRep.SaveChangesAsync();
-
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
-
-            return response;
-        }
-
-
-        // Allows a user to get their account lock details 
-        //public async Task<Dictionary<string, object>> GetAccountLockAsync(int userId, int accountId, int lockId)
-        //{
-        //    // Checks if account lock exists
-        //    AccountLocks? accountLock = await lockRep.GetAccountLockById(accountId, lockId);
-        //    if (accountLock == null) return Response("Error", "Account Lock not found.");
-
-        //    return Response("Success", accountLock);
-        //}
-
-
-        // Allows a user to get all of their joint accounts
-        public async Task<ApiResponse<List<JointAccountDto>>> GetAllJointAccountsAsync(int userId)
-        {
-            ApiResponse<List<JointAccountDto>> response = new ApiResponse<List<JointAccountDto>>() {
-                ResponseCode = ResponseCode.Ok,
-                Message = "Accounts fetched",
-                Data = null
-            };
-
-            User? user = await userRep.GetUserByIdAsync(userId);
-            if (user == null)
+            // Check if target user exists
+            var targetUser = await userRepo.GetUserByIdAsync(addMember.UserId);
+            if (targetUser == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "User not found";
-
                 return response;
             }
 
+            // Check if user is already a member
+            if (await membersRepo.IsUserMemberAsync(jointAccountId, addMember.UserId))
+            {
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "User is already a member";
+                return response;
+            }
 
-            List<JointAccountDto>? accounts = await accountRep.GetAllJointTableAccountsAsync(userId);
-            response.Data = accounts;
+            // Add member
+            var member = new JointAccountMembers
+            {
+                JointAccountId = jointAccountId,
+                UserId = addMember.UserId,
+                Role = addMember.Role,
+                JoinedAt = DateTime.UtcNow
+            };
+
+            await membersRepo.AddMemberAsync(member);
+            await membersRepo.SaveChangesAsync();
+
             return response;
         }
 
-
-        // Allows user to fetch a single joint account
-        public async Task<ApiResponse<JointAccountDto>> GetJointAccountAsync(int userId, int accountId)
+        public async Task<ApiResponse<string>> RemoveMemberAsync(int userId, int jointAccountId, int targetUserId)
         {
-            ApiResponse<JointAccountDto> response = new ApiResponse<JointAccountDto>()
+            var response = new ApiResponse<string>
             {
                 ResponseCode = ResponseCode.Ok,
-                Message = "Account found",
+                Message = "Member removed successfully",
                 Data = null
             };
 
-            // Check if user is the creator
-            JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId);
-            if (account == null)
-            {
-                response.ResponseCode = ResponseCode.NotFound;
-                response.Message = "Account not found";
-
-                return response;
-            }
-
-            // Verify user is the creator
-            if (account.CreatedBy != userId)
+            // Check if user is admin
+            if (!await membersRepo.IsUserAdminAsync(jointAccountId, userId))
             {
                 response.ResponseCode = ResponseCode.Forbidden;
-                response.Message = "You are not the creator of this account";
-
+                response.Message = "Only admins can remove members";
                 return response;
             }
 
-            response.Data = account;
+            // Check if target user is a member
+            if (!await membersRepo.IsUserMemberAsync(jointAccountId, targetUserId))
+            {
+                response.ResponseCode = ResponseCode.NotFound;
+                response.Message = "User is not a member";
+                return response;
+            }
+
+            // Check if removing last admin
+            if (await membersRepo.IsUserAdminAsync(jointAccountId, targetUserId))
+            {
+                var adminCount = await membersRepo.GetAdminCountAsync(jointAccountId);
+                if (adminCount <= 1)
+                {
+                    response.ResponseCode = ResponseCode.BadRequest;
+                    response.Message = "Cannot remove the last admin";
+                    return response;
+                }
+            }
+
+            await membersRepo.RemoveMemberAsync(jointAccountId, targetUserId);
+            await membersRepo.SaveChangesAsync();
+
             return response;
         }
 
-
-        // Allows user to delete a joint account
-        public async Task<ApiResponse<JointAccountDto>> DeleteJointAccountAsync(int userId, int accountId)
+        public async Task<ApiResponse<string>> ChangeRoleAsync(int userId, int jointAccountId, int targetUserId, ChangeRoleDto changeRole)
         {
-            ApiResponse<JointAccountDto> response = new ApiResponse<JointAccountDto>()
+            var response = new ApiResponse<string>
             {
                 ResponseCode = ResponseCode.Ok,
-                Message = "Joint account closed successfully",
+                Message = "Member role updated successfully",
                 Data = null
             };
 
-            // Check if account exists
-            JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId);
-            if (account == null)
-            {
-                response.ResponseCode = ResponseCode.NotFound;
-                response.Message = "Account not found";
-
-                return response;
-            }
-
-            // Verify user is the creator
-            if (account.CreatedBy != userId)
+            // Check if user is admin
+            if (!await membersRepo.IsUserAdminAsync(jointAccountId, userId))
             {
                 response.ResponseCode = ResponseCode.Forbidden;
-                response.Message = "You are not the creator of this account";
-
+                response.Message = "Only admins can change roles";
                 return response;
             }
 
-            // Delete the account
-            await accountRep.DeleteJointAccountByIdAsync(userId, accountId);
-            await accountRep.SaveChangesAsync();
-
-            return response;
-        }
-
-        public async Task<ApiResponse<JointAccountDto>> LockAccountAsync(int userId, int accountId, LockAccountDto accountLock)
-        {
-            ApiResponse<JointAccountDto> response = new ApiResponse<JointAccountDto>()
-            {
-                ResponseCode = ResponseCode.Ok,
-                Message = "Account locked",
-                Data = null
-            };
-
-            // Check if account exists
-            PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
-            if (account == null)
-            {
-                response.ResponseCode = ResponseCode.BadRequest;
-                response.Message = "Failed to lock account because account does not exist";
-
-                return response;
-            }
-
-            AccountLocks? findAccount = await lockRep.FindAccountLockByAccountId(accountId);
-            if (findAccount != null)
-            {
-                response.ResponseCode = ResponseCode.BadRequest;
-                response.Message = "Lock already exists";
-
-                return response;
-            }
-
-            AccountLocks? accountLocks = accountLock.ToEntity();
-            accountLocks.PersonalAccountId = account.Id;
-
-            await lockRep.AddAccountLockAsync(accountLocks);
-            await lockRep.SaveChangesAsync();
-
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
-
-            return response;
-        }
-
-
-        // Allows user to widthdraw money from their account
-        public async Task<ApiResponse<JointAccountDto>> WidthdrawAsync(int userId, int accountId, WidthdrawDto amount)
-        {
-            ApiResponse<JointAccountDto> response = new ApiResponse<JointAccountDto>()
-            {
-                ResponseCode = ResponseCode.Ok,
-                Message = "Amount successfully widthdrawed",
-                Data = null
-            };
-
-            // Checks if account exists
-            PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
-            if (account == null)
+            // Check if target user is a member
+            if (!await membersRepo.IsUserMemberAsync(jointAccountId, targetUserId))
             {
                 response.ResponseCode = ResponseCode.NotFound;
-                response.Message = "Account not found";
-
+                response.Message = "User is not a member";
                 return response;
             }
 
-            if (account.Balance - ToCents(amount.Amount) >= 0) // only widthdraw if user has enough funs
+            // Check if demoting last admin
+            if (changeRole.Role == "MEMBER" && await membersRepo.IsUserAdminAsync(jointAccountId, targetUserId))
             {
-                account.Balance -= ToCents(amount.Amount); // widthdrawing
-
-                // Save transection
-                await transectionService.RecordTransectionAsync(userId, CreateTransection(
-                        userId,
-                        -ToCents(amount.Amount),
-                        account,
-                        "WITHDRAWAL"
-                    ));
-
-                await accountRep.SaveChangesAsync();
-            }
-            else
-            {
-                response.ResponseCode = ResponseCode.BadRequest;
-                response.Message = "Not enough funds";
-
-                return response;
+                var adminCount = await membersRepo.GetAdminCountAsync(jointAccountId);
+                if (adminCount <= 1)
+                {
+                    response.ResponseCode = ResponseCode.BadRequest;
+                    response.Message = "Cannot demote the last admin";
+                    return response;
+                }
             }
 
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+            await membersRepo.UpdateMemberRoleAsync(jointAccountId, targetUserId, changeRole.Role);
+            await membersRepo.SaveChangesAsync();
 
             return response;
         }
 
-
-        // ----- HELPER METHODS ----- //
-
-
-        /*
-         * Creates a response message and returns it
-        */
-        private Dictionary<string, object> Response(string result, object message)
+        public async Task<ApiResponse<List<MemberDto>>> GetMembersAsync(int userId, int jointAccountId)
         {
-            Dictionary<string, object> response = new Dictionary<string, object>();
+            var response = new ApiResponse<List<MemberDto>>
+            {
+                ResponseCode = ResponseCode.Ok,
+                Message = "Members retrieved successfully",
+                Data = null
+            };
 
-            response.Add("result", result);
-            response.Add("message", message);
+            // Check if user is a member
+            if (!await membersRepo.IsUserMemberAsync(jointAccountId, userId))
+            {
+                response.ResponseCode = ResponseCode.Forbidden;
+                response.Message = "You are not a member of this account";
+                return response;
+            }
+
+            response.Data = await membersRepo.GetAllMembersAsync(jointAccountId);
             return response;
-        }
-
-
-        /*
-         * TODO: Converts float/rands to cents
-         */
-        private int ToCents(decimal amount)
-        {
-            return (int)Math.Round(amount * 100);
-        }
-
-
-        /*
-         * TODO: Converts cents to floats/rands
-         */
-        private float ToRands(int amount)
-        {
-            return amount / 100f;
-        }
-
-
-        /*
-         * TODO: Creates a transection DTO for PersonalAccount
-         */
-        private CreateTransectionDto CreateTransection(
-                int userId,
-                int amount,
-                PersonalAccount account,
-                string transectionType
-            )
-        {
-            return new() {
-                AccountId = account.Id,
-                AccountType = "PERSONAL",
-                AmountCents = amount,
-                TransectionType = transectionType,
-                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
-            };
-        }
-
-        /*
-         * TODO: Creates a transection DTO for JointAccount
-         */
-        private CreateTransectionDto CreateTransectionForJoint(
-                int userId,
-                int amount,
-                JointAccount account,
-                string transectionType
-            )
-        {
-            return new() {
-                AccountId = account.Id,
-                AccountType = "JOINT",
-                AmountCents = amount,
-                TransectionType = transectionType,
-                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
-            };
         }
     }
 }
