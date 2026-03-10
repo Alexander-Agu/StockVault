@@ -7,9 +7,11 @@ import {
 import Transactions from "../components/Transaction/Transaction";
 import NavigateBackButton from "../UI/NavigateBackButton";
 import MemberItem from "../components/MemberItem/MemberItem";
+import { Link } from "react-router-dom";
 
 export default function ViewJointAccount() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
 
   // Mock data for members
   const admins = [
@@ -125,9 +127,9 @@ export default function ViewJointAccount() {
           </section>
         </div>
 
-        <button className="mt-5 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-colors">
+        <Link to={"deposit"} className="mt-5 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-colors">
             Make Payment
-        </button>
+        </Link>
         
         {/* This will soon be visible only by the admin */}
         <button className="mt-5 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-colors">

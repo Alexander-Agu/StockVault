@@ -3,21 +3,17 @@ import { Link } from "react-router-dom";
 
 interface JointAccountCardProps {
   title: string;
-  amount: number;
-  members: number;
-  role: "Admin" | "Member";
-  progress: number;
-  contribution: string;
+  balance: number;
+  createdBy: number;
+  createdAt: Date;
   id: number;
 }
 
 export default function JointAccountCard({ 
   title, 
-  amount, 
-  members, 
-  role, 
-  progress, 
-  contribution,
+  balance,
+  createdAt,
+  createdBy,
   id 
 }: JointAccountCardProps) {
   return (
@@ -33,10 +29,10 @@ export default function JointAccountCard({
         <div className="flex flex-col md:flex-row items-center gap-3">
           <div className="flex items-center gap-1 text-slate-400 font-bold text-[10px] uppercase">
             <FaUsers size={14} />
-            <span>{members} Members</span>
+            <span>4 Members</span>
           </div>
           <span className="bg-slate-100 px-2 py-0.5 rounded text-[10px] font-black text-slate-900 uppercase">
-            {role}
+            Admin
           </span>
         </div>
       </div>
@@ -44,11 +40,11 @@ export default function JointAccountCard({
       <div className="flex items-end justify-between">
         <div className="flex flex-col">
           <p className="text-[10px] font-bold text-slate-400 italic mb-1">
-            {contribution}
+            500
           </p>
           <div className="flex items-baseline gap-1">
             <h2 className="text-4xl font-bold text-slate-900">
-              R{amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              R{balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </h2>
           </div>
         </div>

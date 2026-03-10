@@ -5,6 +5,7 @@ import type { RootState, AppDispatch } from '../state/store/store';
 import { Outlet, useMatch, useParams } from 'react-router-dom';
 import { fetchUser } from '../state/User/UserSlice';
 import { FetchPersonalAccounts } from '../state/PersonalAccount/PersonalAccountSlicer';
+import { FetchJointAccounts } from '../state/JointAccount/JointAccountSlicer';
 
 
 export default function Portal() {
@@ -18,6 +19,7 @@ export default function Portal() {
     if (userId) {
       dispatch(fetchUser(Number(userId)));
       dispatch(FetchPersonalAccounts());
+      dispatch(FetchJointAccounts());
     }
   }, [userId, dispatch]);
 

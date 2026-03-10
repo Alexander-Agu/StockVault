@@ -3,13 +3,15 @@ import userReducer  from "../User/UserSlice"
 import authReducer from "../Auth/AuthSlicer"
 import personalAccountReducer from "../PersonalAccount/PersonalAccountSlicer"
 import transactionReducer from "../Transaction/TransactionSlicer"
+import jointAccountReducer from "../JointAccount/JointAccountSlicer"
 
 export const store = configureStore({
     reducer: {
         user: userReducer,
         auth: authReducer,
         personalAccount: personalAccountReducer,
-        transactions: transactionReducer
+        transactions: transactionReducer,
+        jointAccount: jointAccountReducer
     }
 });
 
