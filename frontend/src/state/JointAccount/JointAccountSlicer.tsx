@@ -53,9 +53,8 @@ export default jointAccountSlicer.reducer;
 export const FetchJointAccounts = () => 
     async (dispatch: AppDispatch): Promise<JointAccount[]> => {
         let accounts: JointAccount[] = [];
+        dispatch(setLoading(true));
         try{
-            dispatch(setLoading(true));
-
             const response = await FetchJointAccountsAsync()
 
             if (!response) throw new Error("Failed to fetch");

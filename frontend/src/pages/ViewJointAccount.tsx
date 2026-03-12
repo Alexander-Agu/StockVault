@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { 
   FaUsers, 
   FaXmark, 
@@ -7,11 +7,26 @@ import {
 import Transactions from "../components/Transaction/Transaction";
 import NavigateBackButton from "../UI/NavigateBackButton";
 import MemberItem from "../components/MemberItem/MemberItem";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import type { RootState } from "../state/store/store";
+
+interface JointAccount {
+  id: number;
+  title: string;
+  createdBy: number;
+  balance: number;
+  createdAt: Date;
+}
+
 
 export default function ViewJointAccount() {
+  const jointAccount = useSelector((state: RootState) => state.jointAccount);
+  const { accountId } = useParams();
+  const account = jointAccount.jointAccounts?.find(x => x.id === Number(accountId));
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  
+
 
   // Mock data for members
   const admins = [
@@ -45,7 +60,7 @@ export default function ViewJointAccount() {
             <div className="flex flex-col md:flex-row justify-between gap-6">
               <div className="flex flex-col gap-2">
                 <span className="text-red-500 font-black uppercase tracking-[0.2em] text-[10px]">Joint Account</span>
-                <h1 className="text-4xl font-black text-slate-900 tracking-tight">Fortune Stokvel</h1>
+                <h1 className="text-4xl font-black text-slate-900 tracking-tight">{account?.title + ""}</h1>
                 <div className="flex items-center gap-2 text-slate-500 font-medium">
                   <FaArrowRotateRight className="text-red-400" />
                   <span>Rotation turn: <strong className="text-slate-800">Tshepo</strong></span>

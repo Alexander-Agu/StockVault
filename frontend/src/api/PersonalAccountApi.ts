@@ -1,30 +1,24 @@
 import axios from "axios"
-
-
-const userString: string | null = sessionStorage.getItem("user");
-let token = 0;
-let data = null;
-
-if (userString){
-    data = JSON.parse(userString);
-
-    token = data.token;
-}
+import { getId, getToken } from "./Api";
 
 // Base URL
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({
     baseURL: apiUrl + "/PersonalAccount",
-    headers: {
-        Authorization: `bearer ${token}`
-    }
 });
 
 
 // Fetches all user accounts
 export const FetchPersonalAccountsAsync = async () => {
+    const token = getToken();
+    const id = getId();
+
     try{
-        const response = await api.get(`/${data.id}`);
+        const response = await api.get(`/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
         return response.data;
     } catch{
@@ -37,8 +31,15 @@ export interface CreateAccount {
 }
 // Creates a personal account
 export const CreatePersonalAccountsAsync = async (body: CreateAccount) => {
+    const token = getToken();
+    const id = getId();
+
     try{
-        const response = await api.post(`/create-account/${data.id}`, body);
+        const response = await api.post(`/create-account/${id}`, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
         return response.data;
     } catch{
@@ -52,8 +53,15 @@ export interface LockAccountDto {
 }
 // Creates a personal account
 export const LockAccountsAsync = async (body: LockAccountDto, accountId: string) => {
+    const token = getToken();
+    const id = getId();
+
     try{
-        const response = await api.post(`/lock/${data.id}/${accountId}`, body);
+        const response = await api.post(`/lock/${id}/${accountId}`, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
         return response.data;
     } catch{
@@ -67,8 +75,15 @@ export interface PersonalAccountDeposit {
 }
 // Creates a personal account
 export const PersonalAccountDepositAsync = async (body: PersonalAccountDeposit, accountId: string) => {
+    const token = getToken();
+    const id = getId();
+
     try{
-        const response = await api.put(`/deposit/${data.id}/${accountId}`, body);
+        const response = await api.put(`/deposit/${id}/${accountId}`, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
         return response.data;
     } catch{
@@ -81,8 +96,15 @@ export interface PersonalAccountWithdraw {
 }
 // Creates a personal account
 export const PersonalAccountWithdrawAsync = async (body: PersonalAccountWithdraw, accountId: string) => {
+    const token = getToken();
+    const id = getId();
+
     try{
-        const response = await api.put(`/withdraw/${data.id}/${accountId}`, body);
+        const response = await api.put(`/withdraw/${id}/${accountId}`, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
         return response.data;
     } catch{
@@ -102,8 +124,11 @@ export interface PersonalAccountTransactions {
 }
 // Get transactions
 export const FetchPersonalAccountTransactionAsync = async (accountId: string) => {
+    const token = getToken();
+    const id = getId();
+
     try{
-        const response = await axios.get(`${apiUrl}/Transection/${data.id}/` + accountId,
+        const response = await axios.get(`${apiUrl}/Transection/${id}/` + accountId,
             {
                 headers: {
                     'Authorization': `Bearer ${token}`
