@@ -19,6 +19,9 @@ interface StatItem {
 export default function Dashboard() {
   const user = useSelector((state:RootState) => state.user);
   const personalAccount = useSelector((state: RootState) => state.personalAccount);
+  const jointAccount = useSelector((state: RootState) => state.jointAccount).jointAccounts?.slice(0, 2) ?? [];
+
+
   const stats: StatItem[] = [
     { title: "Savings accounts", count: 3100, resultName: "Rands", icon: FaWallet, linkText: "View Savings", path:"" },
     { title: "Personal accounts", count: personalAccount.personalAccounts?.length || 0,  resultName: "Total", icon: FaWallet, linkText: "View Personal Accounts", path: "personal-account" },
@@ -79,24 +82,19 @@ export default function Dashboard() {
               <h2 className="text-white font-bold text-sm uppercase tracking-wider">Joint Accounts</h2>
             </div>
             <div className="p-5 flex flex-col gap-4">
-              <JointAccountCard 
-                title="Family Vacation Fund" 
-                amount={5200.00} 
-                id={3}
-                members={4} 
-                role="Admin" 
-                progress={65} 
-                contribution="R500 / Monthly"
-              />
-              <JointAccountCard 
-                title="Home Renovation" 
-                amount={8750.00} 
-                id={4}
-                members={3} 
-                role="Member" 
-                progress={80} 
-                contribution="R500 / Monthly"
-              />
+              {
+                jointAccount.map(account => {
+                  const { id, title, createdBy, balance, createdAt } = account;
+
+                  return <JointAccountCard key={id}  
+                    id={id}
+                    title={title}
+                    createdAt={createdAt}
+                    createdBy={createdBy}
+                    balance={balance}
+                  />
+                })
+              }
             </div>
           </section>
 

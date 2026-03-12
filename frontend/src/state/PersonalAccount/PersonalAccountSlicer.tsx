@@ -90,9 +90,8 @@ export default personalAccountSlicer.reducer;
 export const FetchPersonalAccounts = () => 
     async (dispatch: AppDispatch): Promise<PersonalAccount[]> => {
         let accounts: PersonalAccount[] = [];
+        dispatch(setLoading(true));
         try{
-            dispatch(setLoading(true));
-
             const response = await FetchPersonalAccountsAsync()
 
             if (!response) throw new Error("Failed to fetch");
@@ -101,7 +100,7 @@ export const FetchPersonalAccounts = () =>
 
             dispatch(setPersonalAccounts(accounts));
         } catch {
-            console.log("Again its chaai");
+            console.log("Failed to fetch");
             return accounts;
         }finally{        
             await dispatch(setLoading(false));

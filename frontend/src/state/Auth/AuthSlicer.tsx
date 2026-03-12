@@ -135,14 +135,14 @@ export const Login = (body: LoginData) =>
 
             if (!response){
                 id = 0;
-                throw new Error("Ye its chaai");
+                throw new Error("Failed to login");
             } else{
                 id = response.data.id;
-                await dispatch(setId(id));
+                dispatch(setId(id));
                 sessionStorage.setItem("user", JSON.stringify(response.data));
             }
         } catch {
-            console.log("Again its chaai");
+            console.log("Failed to login");
             return id;
         }finally{
             dispatch(setLoading(false));

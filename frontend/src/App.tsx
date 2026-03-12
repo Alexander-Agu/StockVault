@@ -102,6 +102,11 @@ function App() {
           path: "joint-account/:accountId",
           element: <ViewJointAccount />
         },
+        
+        {
+          path: "joint-account/:accountId/deposit",
+          element: <Deposit />
+        },
       ]
     }
   ]);

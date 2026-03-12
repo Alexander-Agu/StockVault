@@ -7,7 +7,7 @@ import CreateAccount from "../UI/CreateAccount";
 import JointAccountCard from "../components/AccountCards/JointAccountCard";
 
 export default function JointAccounts() {
-    const personalAccount = useSelector((state: RootState) => state.personalAccount);
+    const jointAccount = useSelector((state: RootState) => state.jointAccount);
     const user = useSelector((state:RootState) => state.user);
     const [popup, setPopup] = useState(false);
 
@@ -19,24 +19,19 @@ export default function JointAccounts() {
 
         {/* Grid Layout */}
         <div className="w-full flex flex-wrap gap-6 p-7">
-              <JointAccountCard 
-                title="Family Vacation Fund" 
-                amount={5200.00} 
-                id={3}
-                members={4} 
-                role="Admin" 
-                progress={65} 
-                contribution="R500 / Monthly"
+          {
+            jointAccount.jointAccounts?.map(account => {
+              const { id, title, createdBy, balance, createdAt } = account;
+
+              return <JointAccountCard  
+                id={id}
+                title={title}
+                createdAt={createdAt}
+                createdBy={createdBy}
+                balance={balance}
               />
-              <JointAccountCard 
-                title="Home Renovation" 
-                amount={8750.00} 
-                id={4}
-                members={3} 
-                role="Member" 
-                progress={80} 
-                contribution="R500 / Monthly"
-              />
+            })
+          }
         </div>
     </section>
   )
