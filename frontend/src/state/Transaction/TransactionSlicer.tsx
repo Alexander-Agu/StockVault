@@ -17,7 +17,7 @@ const initialState: TransactionState = {
 
 
 const transactionSlicer =  createSlice({
-    name: "personalAccount",
+    name: "transactions",
     initialState,
     reducers: {
         setTransactions: (state, action: PayloadAction<PersonalAccountTransactions[]>) => {
