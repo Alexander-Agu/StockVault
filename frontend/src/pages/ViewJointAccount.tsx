@@ -22,8 +22,8 @@ interface JointAccount {
 
 export default function ViewJointAccount() {
   const jointAccount = useSelector((state: RootState) => state.jointAccount);
-  const { accountId } = useParams();
-  const account = jointAccount.jointAccounts?.find(x => x.id === Number(accountId));
+  const { jointAccountId } = useParams();
+  const account = jointAccount.jointAccounts?.find(x => x.id === Number(jointAccountId));
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 

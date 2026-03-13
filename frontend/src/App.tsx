@@ -99,12 +99,12 @@ function App() {
         },
         
         {
-          path: "joint-account/:accountId",
+          path: "joint-account/:jointAccountId",
           element: <ViewJointAccount />
         },
         
         {
-          path: "joint-account/:accountId/deposit",
+          path: "joint-account/:jointAccountId/deposit",
           element: <Deposit />
         },
       ]

@@ -7,6 +7,7 @@ interface JointAccountCardProps {
   createdBy: number;
   createdAt: Date;
   id: number;
+  path: string;
 }
 
 export default function JointAccountCard({ 
@@ -14,45 +15,57 @@ export default function JointAccountCard({
   balance,
   createdAt,
   createdBy,
-  id 
+  id,
+  path
 }: JointAccountCardProps) {
+
   return (
-    <div className="w-full bg-white border border-red-100 rounded-xl p-4 flex flex-col gap-2 relative shadow-sm">
+    <div className="w-full bg-white border border-slate-200 rounded-xl p-5 flex flex-col gap-4 shadow-sm hover:shadow-md transition-shadow">
 
-      <div className="w-full flex items-center justify-between pb-3 border-b border-[#00000031]">
+      <div className="w-full flex items-center justify-between pb-3 border-b border-slate-200">
 
-        <h2 className="font-medium text-[1.2rem] text-slate-800">
+        <h2 className="font-semibold text-lg text-slate-900">
           {title}
         </h2>
 
-
         <div className="flex flex-col md:flex-row items-center gap-3">
-          <div className="flex items-center gap-1 text-slate-400 font-bold text-[10px] uppercase">
+
+          <div className="flex items-center gap-1 text-slate-400 font-semibold text-xs uppercase">
             <FaUsers size={14} />
             <span>4 Members</span>
           </div>
-          <span className="bg-slate-100 px-2 py-0.5 rounded text-[10px] font-black text-slate-900 uppercase">
+
+          <span className="bg-slate-100 px-2 py-0.5 rounded text-xs font-semibold text-slate-700 uppercase">
             Admin
           </span>
+
         </div>
+
       </div>
 
       <div className="flex items-end justify-between">
+
         <div className="flex flex-col">
-          <p className="text-[10px] font-bold text-slate-400 italic mb-1">
-            500
+
+          <p className="text-xs font-semibold text-slate-400 mb-1">
+            Monthly Contribution
           </p>
-          <div className="flex items-baseline gap-1">
-            <h2 className="text-4xl font-bold text-slate-900">
-              R{balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-            </h2>
-          </div>
+
+          <h2 className="text-3xl font-semibold text-slate-900">
+            R{balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+          </h2>
+
         </div>
-        
-        <Link to={id + ""} className="text-red-500 text-xs font-bold underline underline-offset-4">
+
+        <Link
+          to={`${path}${id}`}
+          className="text-slate-700 text-xs font-semibold hover:text-black"
+        >
           View Details
         </Link>
+
       </div>
+
     </div>
   );
 }
