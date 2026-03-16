@@ -14,6 +14,7 @@ import Deposit from './pages/Deposit';
 import Withdraw from './pages/Withdraw';
 import JointAccounts from './pages/JointAccounts';
 import ViewJointAccount from './pages/ViewJointAccount';
+import CreateJointAccount from './pages/CreateJointAccount';
 
 function App() {
 
@@ -95,7 +96,7 @@ function App() {
         
         {
           path: "joint-account/create",
-          element: <CreatePersonalAccount />
+          element: <CreateJointAccount />
         },
         
         {
