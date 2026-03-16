@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { AppDispatch } from "../store/store";
-import { FetchJointAccountsAsync, JointAccountDepositAsync, type JointAccountDeposit } from "../../api/JointAccountApi";
+import { CreateJointAccountsAsync, FetchJointAccountsAsync, JointAccountDepositAsync, type JointAccountDeposit } from "../../api/JointAccountApi";
 
 interface JointAccount {
     id: number;
@@ -30,6 +30,10 @@ const jointAccountSlicer = createSlice({
             state.jointAccounts = action.payload;
         },
 
+        setNewJointAccount: (state, action:PayloadAction<JointAccount>) => {
+            state.jointAccounts?.push(action.payload);
+        },
+
         setLoading: (state, action: PayloadAction<boolean>) => {
             state.loading = action.payload;
         },
@@ -44,11 +48,33 @@ const jointAccountSlicer = createSlice({
 
 export const {
     setJointAccounts,
+    setNewJointAccount,
     setLoading,
     setError
 } = jointAccountSlicer.actions;
 
 export default jointAccountSlicer.reducer;
+
+export const CreateJointAccounts = (title: string) => 
+    async (dispatch: AppDispatch): Promise<number> => {
+        let id = 0;
+        dispatch(setLoading(true));
+        try{
+            const response = await CreateJointAccountsAsync(title)
+
+            if (!response) throw new Error("Failed to create a joint account");
+
+            id = response.data.id;
+
+            dispatch(setNewJointAccount(response.data));
+        } catch {
+            console.log("Failed to create a joint account");
+            return id;
+        }finally{        
+            dispatch(setLoading(false));
+            return id;
+        }
+    }
 
 export const FetchJointAccounts = () => 
     async (dispatch: AppDispatch): Promise<JointAccount[]> => {

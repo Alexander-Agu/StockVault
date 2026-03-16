@@ -27,6 +27,22 @@ export interface JointAccount {
 }
 
 // Fetches all joint accounts the user is involved in
+export const CreateJointAccountsAsync = async (title: string) => {
+    const token = getToken();
+    try{
+        const response = await api.post("", {title: title}, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        return response.data;
+    } catch{
+        return false;
+    }
+}
+
+// Fetches all joint accounts the user is involved in
 export const FetchJointAccountsAsync = async () => {
     const token = getToken();
     try{

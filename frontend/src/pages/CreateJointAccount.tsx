@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { FaUsersBetweenLines, FaCalendarCheck, FaCoins, FaArrowRight } from "react-icons/fa6";
 import NavigateBackButton from "../UI/NavigateBackButton";
+import { useDispatch } from "react-redux";
+import { type AppDispatch } from "../state/store/store";
+import { CreateJointAccounts } from "../state/JointAccount/JointAccountSlicer";
+import { useNavigate } from "react-router-dom";
+import { CreateSchedule } from "../state/ContributionSchedule/ContributionScheduleSlicer";
 
 export default function CreateJointAccount() {
+    const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     title: "",
     amount: "",
@@ -10,9 +18,25 @@ export default function CreateJointAccount() {
     startDate: ""
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Creating Joint Account:", formData);
+
+    try{
+        const id = await dispatch(CreateJointAccounts(formData.title))
+
+        if (id > 0){
+
+            const response = await dispatch(CreateSchedule({
+                amountCents: Number(formData.amount) * 100,
+                frequency: formData.frequency,
+                startDate: formData.startDate
+            }, id));
+        }
+    } catch{
+        console.log("Failed to create joint account");
+
+    }
+    
   };
 
   return (
