@@ -15,6 +15,7 @@ namespace Backend.Repository.Data
         public DbSet<PersonalAccount> PersonalAccounts => Set<PersonalAccount>();
         public DbSet<JointAccount> JointAccounts => Set<JointAccount>();
         public DbSet<JointAccountMembers> JointAccountMembers => Set<JointAccountMembers>();
+        public DbSet<ContributionSchedule> ContributionSchedules => Set<ContributionSchedule>();
         public DbSet<AccountLocks> AccountLocks => Set<AccountLocks>();
         public DbSet<Transection> Transections => Set<Transection>();
 
@@ -58,6 +59,13 @@ namespace Backend.Repository.Data
             modelBuilder.Entity<JointAccountMembers>()
                 .HasIndex(m => new { m.JointAccountId, m.UserId })
                 .IsUnique();
+
+            // ContributionSchedule relationships
+            modelBuilder.Entity<ContributionSchedule>()
+                .HasOne(c => c.JointAccount)
+                .WithMany()
+                .HasForeignKey(c => c.JointAccountId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
