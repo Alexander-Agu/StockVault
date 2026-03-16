@@ -1,4 +1,3 @@
-
 import { FaLock, FaUnlock, FaArrowUp, FaArrowDown, FaArrowLeft, FaTrashCan, FaPenToSquare } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../state/store/store";
@@ -6,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import NavigateBackButton from "../UI/NavigateBackButton";
 import { formatCurrency } from "../tools/UserTools";
 import Transactions from "../components/Transaction/Transaction";
-import { FetchPersonalAccountTransactions } from "../state/Transaction/TransactionSlicer";
+import { FetchAccountTransactions } from "../state/Transaction/TransactionSlicer";
 import { useState, useEffect } from "react";
 
 export default function ViewPersonalAccount() {
@@ -15,18 +14,25 @@ export default function ViewPersonalAccount() {
   const account = personalAccount.personalAccounts?.find(x => x.id === Number(accountId));
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
-  if (account == null) return;
-
-  const { id, title, balance, createdAt, lockedUntil, isActive } = account;
-
-  const isLocked = isActive;
+  const transactions = useSelector((state: RootState) => state.transactions.transactions);
 
   useEffect(() => {
     if (accountId) {
-      dispatch(FetchPersonalAccountTransactions(accountId));
+      dispatch(FetchAccountTransactions(accountId, "PERSONAL"));
     }
-  }, [accountId, dispatch]);
+  }, [accountId]);
+
+  if (account == null) return null;
+
+  const { 
+    id, 
+    title, 
+    balance, 
+    createdAt, 
+    lockedUntil, 
+    isActive } = account;
+  
+  const isLocked = isActive;
 
   return (
   <div className="w-full min-h-screen bg-[#F8EEED] p-4 flex flex-col gap-8">

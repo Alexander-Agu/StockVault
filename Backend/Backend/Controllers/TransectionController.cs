@@ -40,10 +40,10 @@ namespace Backend.Controllers
 
 
         // Gets all account transections
-        [HttpGet("{userId}/{accountId}")]
-        public async Task<ActionResult> GetAccountTransections(int userId, int accountId)
+        [HttpGet("{userId}/{accountId}/{accountType}")]
+        public async Task<ActionResult> GetAccountTransections(int userId, int accountId, string accountType)
         {
-            ApiResponse<List<TransectionDto>> response = await transectionService.GetAllAccountTransectionAsync(userId, accountId);
+            ApiResponse<List<TransectionDto>> response = await transectionService.GetAllAccountTransectionAsync(userId, accountId, accountType);
 
             return HandleResponse(response);
         }

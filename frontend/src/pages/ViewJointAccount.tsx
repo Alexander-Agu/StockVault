@@ -8,8 +8,10 @@ import Transactions from "../components/Transaction/Transaction";
 import NavigateBackButton from "../UI/NavigateBackButton";
 import MemberItem from "../components/MemberItem/MemberItem";
 import { Link, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import type { RootState } from "../state/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { type AppDispatch, type RootState } from "../state/store/store";
+import Members from "../components/Members/Members";
+import { FetchAccountTransactions } from "../state/Transaction/TransactionSlicer";
 
 interface JointAccount {
   id: number;
@@ -22,21 +24,33 @@ interface JointAccount {
 
 export default function ViewJointAccount() {
   const jointAccount = useSelector((state: RootState) => state.jointAccount);
-  const { accountId } = useParams();
-  const account = jointAccount.jointAccounts?.find(x => x.id === Number(accountId));
+  const transections = useSelector((state: RootState) => state.transactions);
+  const { jointAccountId } = useParams();
+  const account = jointAccount.jointAccounts?.find(x => x.id === Number(jointAccountId));
+  const dispatch = useDispatch<AppDispatch>();
+  const [balance, setBalance] = useState(0);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  useEffect(() => {
+    if (jointAccountId) {
+      dispatch(FetchAccountTransactions(jointAccountId, "JOINT"));
+    }
 
-  // Mock data for members
-  const admins = [
-    { name: "Alexander Agu", paid: true },
-    { name: "Joseph", paid: false },
-  ];
-  const members = [
-    { name: "Daniel", paid: true },
-    { name: "Tshepo", paid: true },
-  ];
+    // Get Total balance of account
+    if (transections != null){
+      let getSum = 0;
+      transections.transactions?.map(x => {
+        getSum += x.amountCents
+        console.log(getSum)
+      })
+
+    }
+  }, [jointAccountId]);
+
+
+  if (account == null) return null;
+
 
   return (
     <div className="w-full min-h-screen bg-[#F8EEED] flex overflow-hidden">
@@ -49,7 +63,7 @@ export default function ViewJointAccount() {
             {/* Mobile Toggle Button */}
             <button 
               onClick={() => setIsSidebarOpen(true)}
-              className="lg:hidden flex items-center gap-2 bg-white/60 px-4 py-2 rounded-xl border border-white font-bold text-slate-700 shadow-sm"
+              className="xl:hidden flex items-center gap-2 bg-white/60 px-4 py-2 rounded-xl border border-white font-bold text-slate-700 shadow-sm"
             >
               <FaUsers /> Members
             </button>
@@ -77,7 +91,7 @@ export default function ViewJointAccount() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
               <div className="p-6 bg-white/60 rounded-3xl border border-white">
                 <p className="text-xs font-bold text-slate-400 uppercase mb-1">Current Balance</p>
-                <p className="text-3xl font-black text-slate-900">R 7,000.00</p>
+                <p className="text-3xl font-black text-slate-900">R {balance}</p>
               </div>
               <div className="p-6 bg-white/60 rounded-3xl border border-white">
                 <p className="text-xs font-bold text-slate-400 uppercase mb-1">Expected Balance</p>
@@ -105,52 +119,7 @@ export default function ViewJointAccount() {
         />
       )}
 
-      <aside className={`
-        fixed inset-y-0 right-0 w-80 bg-white/80 border-l border-white/60 z-50
-        transition-transform duration-300 transform p-8 shadow-2xl
-        lg:translate-x-0 lg:static lg:block lg:shadow-none
-        ${isSidebarOpen ? "translate-x-0" : "translate-x-full"}
-      `}>
-        <div className="flex justify-between items-center">
-          <h2 className="text-xl font-black text-slate-900 flex items-center gap-2">
-            <FaUsers className="text-red-500" /> Members
-          </h2>
-          <button onClick={() => setIsSidebarOpen(false)} className="lg:hidden text-slate-400">
-            <FaXmark size={24} />
-          </button>
-        </div>
-
-        <div className="flex flex-col gap-8">
-          {/* Admins Group */}
-          <section>
-            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">Account Admins</h3>
-            <div className="flex flex-col gap-3">
-              {admins.map((admin, index) => (
-                <MemberItem key={index} name={admin.name} paid={admin.paid} />
-              ))}
-            </div>
-          </section>
-
-          {/* Members Group */}
-          <section>
-            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">General Members</h3>
-            <div className="flex flex-col gap-3">
-              {members.map((member, index) => (
-                <MemberItem key={index} name={member.name} paid={member.paid} />
-              ))}
-            </div>
-          </section>
-        </div>
-
-        <Link to={"deposit"} className="mt-5 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-colors">
-            Make Payment
-        </Link>
-        
-        {/* This will soon be visible only by the admin */}
-        <button className="mt-5 w-full py-4 bg-slate-900 text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-black transition-colors">
-            Add Member
-        </button>
-      </aside>
+      <Members setIsSidebarOpen={setIsSidebarOpen} isSidebarOpen={isSidebarOpen} />
     </div>
   );
 }

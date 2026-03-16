@@ -1,9 +1,6 @@
-import React, { useEffect } from 'react'
 import { formatCurrency } from '../../tools/UserTools';
 import { useDispatch, useSelector } from 'react-redux';
 import { type AppDispatch, type RootState } from '../../state/store/store';
-import { useParams } from 'react-router-dom';
-import { FetchPersonalAccountTransactions } from '../../state/Transaction/TransactionSlicer';
 
 export default function Transactions() {
     const dispatch = useDispatch<AppDispatch>();

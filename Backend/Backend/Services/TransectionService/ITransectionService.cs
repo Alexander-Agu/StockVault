@@ -25,7 +25,7 @@ namespace Backend.Services.TransectionService
         /*
          * TODO: Returns all transactions for an account.
          */
-        public Task<ApiResponse<List<TransectionDto>>> GetAllAccountTransectionAsync(int userId, int accountId);
+        public Task<ApiResponse<List<TransectionDto>>> GetAllAccountTransectionAsync(int userId, int accountId, string accountType);
 
 
         /*

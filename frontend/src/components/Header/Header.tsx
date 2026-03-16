@@ -1,69 +1,113 @@
 import { CgMenuRight } from "react-icons/cg";
 import { RiCloseLargeFill } from "react-icons/ri";
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 export default function Header() {
-    const [menuOpen, setMenuOpen] = useState(false);
-    const [isScrolled, setIsScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // Optional: add scroll shadow for header
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
-        <header 
-            className={`${isScrolled? "scrolled" : 'bg-mainBackground'}
-                h-[70px] w-full  p-4
-                flex items-center justify-between
-                 z-[100] bg-[#F8EEED]
-            `}
+    <header
+      className={`
+        sticky top-0 w-full z-50 transition
+        ${isScrolled ? "shadow-md" : ""}
+        bg-[#F8EEED]
+      `}
+    >
+      <div className="max-w-7xl mx-auto flex justify-between items-center px-6 h-[70px]">
+
+        {/* LOGO */}
+        <Link to="/" className="flex items-center gap-2">
+          <div
+            className="
+              bg-[url('/src/assets/logo.png')]
+              w-[40px] h-[40px]
+              bg-cover
+            "
+          />
+          <span className="font-bold text-lg text-[#212121]">StokVault</span>
+        </Link>
+
+        {/* DESKTOP NAV */}
+        <nav className="hidden md:flex items-center gap-8">
+          <Link to="/" className="text-[#444] hover:text-red-500 transition">
+            Home
+          </Link>
+          <Link to="/sign-in" className="text-[#444] hover:text-red-500 transition">
+            Sign In
+          </Link>
+          <Link
+            to="/sign-up"
+            className="bg-red-500 text-white px-5 py-2 rounded-lg hover:bg-red-600 transition"
+          >
+            Get Started
+          </Link>
+        </nav>
+
+        {/* MOBILE MENU BUTTON */}
+        <button
+          onClick={() => setMenuOpen(true)}
+          className="md:hidden text-red-500 text-3xl"
         >
+          <CgMenuRight />
+        </button>
+      </div>
 
-            <Link to="/" 
-                className='
-                    flex items-center 
-                '
+      {/* MOBILE MENU */}
+      {menuOpen && (
+        <div className="fixed inset-0 z-50 flex">
+
+          {/* Overlay */}
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setMenuOpen(false)}
+          ></div>
+
+          {/* Side Menu */}
+          <div className="relative ml-auto w-[260px] bg-[#F8EEED] h-full shadow-xl flex flex-col p-6 gap-6 transition-transform transform translate-x-0">
+            <button
+              onClick={() => setMenuOpen(false)}
+              className="self-end text-2xl text-[#dc2626]"
             >
-                <div className="bg-[url('/src/assets/logo.png')] w-[50px] h-[50px]
-                    bg-cover
-                "></div>
-                <h2 className='inter text-[1.2rem] font-bold'>StokVault</h2>
+              <RiCloseLargeFill />
+            </button>
+
+            <Link
+              to="/"
+              onClick={() => setMenuOpen(false)}
+              className="text-[#212121] font-medium hover:text-red-500 transition"
+            >
+              Home
             </Link>
-            
 
-            <nav
-                className='
-                flex items-center justify-center
-                '
+            <Link
+              to="/sign-in"
+              onClick={() => setMenuOpen(false)}
+              className="text-[#212121] font-medium hover:text-red-500 transition"
             >
+              Sign In
+            </Link>
 
-                <div className='md:hidden' onClick={()=> setMenuOpen(true)}>
-                    <CgMenuRight className="text-red-500 text-3xl" />
-                </div>
-
-                <ul
-                    className={` inter ${isScrolled? "scrolled" : 'bg-[#ECECEC]'}
-                    fixed top-0 right-0 h-[100vh] w-[250px] bg-[rgb(31,31,33)] text-white p-4 flex flex-col gap-4
-                    transform transition-transform duration-300 ease-in-out
-                    ${menuOpen ? "translate-x-0" : "translate-x-full"}
-
-                    md:static md:translate-x-0 md:h-auto md:w-auto md:bg-transparent md:text-black md:flex-row md:gap-6 z-1
-                    `}
-                >
-                    <li>
-                        <div className='md:hidden'
-                         onClick={()=> setMenuOpen(false)}>
-                            <RiCloseLargeFill className="text-mainBackground text-2xl" />
-                        </div>
-                    </li>
-                    <li>
-                        <Link to='/'> Home </Link>
-                    </li>
-                    <li>
-                        <Link to='sign-in'> Sign In </Link>
-                    </li>
-                    <li>
-                        <Link to='sign-up'> Sign Up </Link>
-                    </li>
-                </ul>
-            </nav>
-
-        </header>
-  )
+            <Link
+              to="/sign-up"
+              onClick={() => setMenuOpen(false)}
+              className="bg-red-500 text-white text-center py-2 rounded-lg hover:bg-red-600 transition"
+            >
+              Get Started
+            </Link>
+          </div>
+        </div>
+      )}
+    </header>
+  );
 }

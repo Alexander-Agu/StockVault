@@ -86,7 +86,8 @@ export default function Dashboard() {
                 jointAccount.map(account => {
                   const { id, title, createdBy, balance, createdAt } = account;
 
-                  return <JointAccountCard key={id}  
+                  return <JointAccountCard key={id}
+                    path="joint-account/" 
                     id={id}
                     title={title}
                     createdAt={createdAt}
