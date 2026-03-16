@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../state/store/store";
 import { DepositIntoPersonalAccount } from "../state/PersonalAccount/PersonalAccountSlicer";
 import { useParams } from "react-router-dom";
+import { DepositIntoJointAccount } from "../state/JointAccount/JointAccountSlicer";
 
 const stripeElementOptions = {
   style: {
@@ -28,7 +29,7 @@ const stripeElementOptions = {
 export default function Deposit() {
   const personalAccount = useSelector((state: RootState) => state.personalAccount);
   const dispatch = useDispatch<AppDispatch>();
-  const { accountId } = useParams();
+  const { accountId, jointAccountId } = useParams();
 
   const stripe = useStripe();
   const elements = useElements();
@@ -57,10 +58,21 @@ export default function Deposit() {
 
     try{
       setButtonClicked(true);
-      await dispatch(DepositIntoPersonalAccount({
+
+      // Run if depositing into personal account
+      if(accountId) await dispatch(DepositIntoPersonalAccount({
         amount: amount,
         paymentMethodId: paymentMethod.id
       }, accountId + ""))
+
+      // Run if depositing into joint account
+      if (jointAccountId) await dispatch(DepositIntoJointAccount({
+        amount: amount,
+        paymentMethodId: paymentMethod.id
+      }, jointAccountId + ""))
+
+      else console.log("Did not work")
+
 
       alert("Deposit successful!");
       setLoading(false);

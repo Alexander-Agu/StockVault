@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { AppDispatch } from "../store/store";
-import { FetchJointAccountsAsync } from "../../api/JointAccountApi";
+import { FetchJointAccountsAsync, JointAccountDepositAsync, type JointAccountDeposit } from "../../api/JointAccountApi";
 
 interface JointAccount {
     id: number;
@@ -70,3 +70,26 @@ export const FetchJointAccounts = () =>
             return accounts;
         }
     }
+
+// Deposit money into personal account   
+export const DepositIntoJointAccount = (body: JointAccountDeposit, accountId: string) => 
+    async (dispatch: AppDispatch): Promise<boolean> => {
+        let success = false;
+        try{
+            dispatch(setLoading(true));
+
+            const response =  await JointAccountDepositAsync(body, accountId);
+
+            if (!response) throw new Error("Failed to Deposit to joint account");
+
+            else{
+                success = true;
+            }            
+        } catch {
+            console.log("Failed to deposit");
+            return success;
+        }finally{        
+            await dispatch(setLoading(false));
+            return success;
+        }
+}

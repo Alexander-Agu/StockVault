@@ -5,7 +5,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import NavigateBackButton from "../UI/NavigateBackButton";
 import { formatCurrency } from "../tools/UserTools";
 import Transactions from "../components/Transaction/Transaction";
-import { FetchPersonalAccountTransactions } from "../state/Transaction/TransactionSlicer";
+import { FetchAccountTransactions } from "../state/Transaction/TransactionSlicer";
 import { useState, useEffect } from "react";
 
 export default function ViewPersonalAccount() {
@@ -18,7 +18,7 @@ export default function ViewPersonalAccount() {
 
   useEffect(() => {
     if (accountId) {
-      dispatch(FetchPersonalAccountTransactions(accountId));
+      dispatch(FetchAccountTransactions(accountId, "PERSONAL"));
     }
   }, [accountId]);
 

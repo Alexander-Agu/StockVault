@@ -113,31 +113,5 @@ export const PersonalAccountWithdrawAsync = async (body: PersonalAccountWithdraw
 }
 
 
-export interface PersonalAccountTransactions {
-    transectionId: number;
-    accountId: number;
-    accountType: string;
-    userName: string;
-    amountCents: number;
-    transectionType: string;
-    createdAt: Date
-}
-// Get transactions
-export const FetchPersonalAccountTransactionAsync = async (accountId: string) => {
-    const token = getToken();
-    const id = getId();
 
-    try{
-        const response = await axios.get(`${apiUrl}/Transection/${id}/` + accountId,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            }
-        );
 
-        return response.data.data;
-    } catch{
-        return false;
-    }
-}

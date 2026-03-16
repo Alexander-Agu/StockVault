@@ -8,9 +8,10 @@ import Transactions from "../components/Transaction/Transaction";
 import NavigateBackButton from "../UI/NavigateBackButton";
 import MemberItem from "../components/MemberItem/MemberItem";
 import { Link, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import type { RootState } from "../state/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { type AppDispatch, type RootState } from "../state/store/store";
 import Members from "../components/Members/Members";
+import { FetchAccountTransactions } from "../state/Transaction/TransactionSlicer";
 
 interface JointAccount {
   id: number;
@@ -25,11 +26,19 @@ export default function ViewJointAccount() {
   const jointAccount = useSelector((state: RootState) => state.jointAccount);
   const { jointAccountId } = useParams();
   const account = jointAccount.jointAccounts?.find(x => x.id === Number(jointAccountId));
+  const dispatch = useDispatch<AppDispatch>();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
 
-  // Mock data for members
+  useEffect(() => {
+    if (jointAccountId) {
+      dispatch(FetchAccountTransactions(jointAccountId, "JOINT"));
+    }
+  }, [jointAccountId]);
+
+
+  if (account == null) return null;
 
 
   return (
