@@ -72,7 +72,7 @@ namespace Backend.Services.JointAccountMembersService
         }
 
 
-        // Allows users to deposit money into their account
+        // Allows users to deposit money into the joint account account
         public async Task<ApiResponse<JointAccountDto>> DepositAsync(int userId, int accountId, DepositDto amount)
         {
             ApiResponse<JointAccountDto> response = new ApiResponse<JointAccountDto>()

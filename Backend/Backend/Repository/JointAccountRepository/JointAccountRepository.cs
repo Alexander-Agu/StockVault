@@ -1,4 +1,4 @@
-using Backend.Dtos.JointAccountDtos;
+﻿using Backend.Dtos.JointAccountDtos;
 using Backend.Dtos.PersonalAccountDtos;
 using Backend.Entities;
 using Backend.Repository.Data;
@@ -28,6 +28,8 @@ namespace Backend.Repository.JointAccountRepository
                     Title = a.Title,
                     CreatedBy = a.UserId,
                     CreatedAt = a.CreatedAt,
+                    Balance = context.Transections.Where(x => x.Id == a.Id)
+                    .Sum(y => y.AmountCents) / 100
                 })
                 .ToListAsync();
         }
@@ -42,6 +44,7 @@ namespace Backend.Repository.JointAccountRepository
         public async Task<JointAccountDto> GetJointTableAccountByIdAsync(int userId, int accountId)
         {
             return await context.JointAccounts
+                .Include(u => u.User)
                 .Where(a => a.UserId == userId && a.Id == accountId)
                 .Select(a => new JointAccountDto
                 {
@@ -49,6 +52,8 @@ namespace Backend.Repository.JointAccountRepository
                     Title = a.Title,
                     CreatedBy = a.UserId,
                     CreatedAt = a.CreatedAt,
+                    Balance = context.Transections.Where(x => x.Id == a.Id)
+                    .Sum(y => y.AmountCents) / 100
                 })
                 .FirstOrDefaultAsync();
         }
@@ -56,14 +61,15 @@ namespace Backend.Repository.JointAccountRepository
         public async Task<JointAccount> GetJointAccountByIdAsync(int userId, int accountId)
         {
             return await context.JointAccounts
-                .Where(a => a.UserId == userId && a.Id == accountId)
+                .Include(a => a.User)
+                .Where(a => a.Id == accountId)
                 .FirstOrDefaultAsync();
         }
 
         public async Task<PersonalAccount> GetPersonalAccountByIdAsync(int userId, int accountId)
         {
             return await context.PersonalAccounts
-                .Where(a => a.UserId == userId && a.Id == accountId)
+                .Where(a => a.Id == accountId)
                 .FirstOrDefaultAsync();
         }
 

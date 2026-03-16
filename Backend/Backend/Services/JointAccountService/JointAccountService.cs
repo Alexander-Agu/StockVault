@@ -93,14 +93,19 @@ namespace Backend.Services.JointAccountService
             }
 
             // Simulating stripe transection
-            var options = new PaymentIntentCreateOptions
+var options = new PaymentIntentCreateOptions
             {
                 Amount = (long?)(amount.Amount * 100),
                 Currency = "zar",
                 Customer = account.User.StripeCustomerId,
                 PaymentMethod = amount.PaymentMethodId,
-                Confirm = true
-            };
+                Confirm = true,
+                AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions
+                {
+                    Enabled = true,
+                    AllowRedirects = "never"
+                }
+};
 
             var intent = await paymentService.CreateAsync(options);
 

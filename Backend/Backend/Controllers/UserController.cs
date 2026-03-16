@@ -20,7 +20,7 @@ namespace Backend.Controllers
             return HandleResponse(response);
         }
 
-        
+
         // Verifies user's email
         [HttpPut("verify-email")]
         public async Task<ActionResult> VerifyUserEmailAsync([FromQuery] string email, [FromQuery] string otp)
@@ -50,7 +50,7 @@ namespace Backend.Controllers
             return HandleResponse(response);
         }
 
-        
+
         // Log's user out of their account
         [HttpPut("logout/{userId}")]
         [Authorize]
@@ -61,7 +61,7 @@ namespace Backend.Controllers
             return HandleResponse(response);
         }
 
-        
+
         // Lets user's update their profile
         [HttpPut("profile/{userId}")]
         [Authorize]
@@ -72,7 +72,7 @@ namespace Backend.Controllers
             return HandleResponse(response);
         }
 
-        
+
         // Fetches the user's profile
         [HttpGet("profile/{userId}")]
         [Authorize]
@@ -83,7 +83,7 @@ namespace Backend.Controllers
             return HandleResponse(response);
         }
 
-        
+
         // Send's an email to the user to request a password change
         [HttpPost("forgot-password/")]
         public async Task<ActionResult> ForgotUserPasswordAsync([FromQuery] string email)
@@ -93,7 +93,7 @@ namespace Backend.Controllers
             return HandleResponse(response);
         }
 
-        
+
         // Allows users to reset their password
         [HttpPut("reset-password/")]
         public async Task<ActionResult> ResetUserPasswordAsync([FromQuery] string token, [FromBody] ResetPasswordDto newPassword)

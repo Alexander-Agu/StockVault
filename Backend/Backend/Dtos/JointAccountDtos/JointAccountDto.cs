@@ -5,6 +5,7 @@ namespace Backend.Dtos.JointAccountDtos
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public int CreatedBy { get; set; }
+        public decimal Balance { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

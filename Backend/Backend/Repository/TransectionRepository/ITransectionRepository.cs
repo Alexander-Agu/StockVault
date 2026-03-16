@@ -22,7 +22,7 @@ namespace Backend.Repository.TransectionRepository
         /*
          * TODO: Feches all account transections
          */
-        public Task<List<TransectionDto>> GetAllAccountTransectionsAsync(int userId, int accountId);
+        public Task<List<TransectionDto>> GetAllAccountTransectionsAsync(int userId, int accountId, string accountType);
 
 
         /*

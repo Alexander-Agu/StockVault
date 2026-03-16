@@ -5,6 +5,7 @@ using Backend.Mapping;
 using Backend.Repository.TransectionRepository;
 using Backend.Repository.UserRepository;
 using Backend.Services.UserService;
+using Stripe;
 
 namespace Backend.Services.TransectionService
 {
@@ -14,7 +15,7 @@ namespace Backend.Services.TransectionService
         ) : ITransectionService
     {
         // Returns all transactions for an account.
-        public async Task<ApiResponse<List<TransectionDto>>> GetAllAccountTransectionAsync(int userId, int accountId)
+        public async Task<ApiResponse<List<TransectionDto>>> GetAllAccountTransectionAsync(int userId, int accountId, string accountType)
         {
             ApiResponse<List<TransectionDto>> response = new()
             {
@@ -32,7 +33,7 @@ namespace Backend.Services.TransectionService
                 return response;
             }
 
-            response.Data = await transectionRep.GetAllAccountTransectionsAsync(userId, accountId);
+            response.Data = await transectionRep.GetAllAccountTransectionsAsync(userId, accountId, accountType);
 
             return response;
         }
