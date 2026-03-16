@@ -2,81 +2,168 @@ import { Link } from "react-router-dom";
 import { aboutData, iconsData } from "./AboutTools";
 
 export default function About() {
-    let numberOfItems = aboutData.length;
+
+  const numberOfItems = aboutData.length;
 
   return (
-    <section className="bg-[#F8EEED] pt-5 flex flex-col items-center justify-center">
-        <div className="w-full flex items-center justify-center flex-col text-center p-2">
-            <h2 className="text-2xl font-bold text-red-500">
-                Why StokVault?
-            </h2>
+    <section className="bg-[#F8EEED] py-16 flex flex-col items-center">
 
-            <p className="font-normal pt-5 text-[#737373] md:w-[640px]">
-                StokVault: modern digital stokvels. Save together with automated rules, transparency, and security.StokVault: modern digital stokvels. Save together with automated rules, transparency, and security.
-            </p>
-        </div>
+      {/* HEADER */}
+      <div className="w-full flex items-center justify-center flex-col text-center px-6">
+        <h2 className="text-3xl font-bold text-red-500">
+          Why StokVault?
+        </h2>
 
-        <div className="flex flex-wrap w-full items-center justify-center flex-col p-3 gap-6 sm:flex-row">
-            {
-                aboutData.map((about, index) => {
-                    const { title, content } = about;
+        <p className="font-normal pt-5 text-[#737373] max-w-[640px]">
+          StokVault is a modern digital platform for managing stokvels.
+          Save together with automated rules, transparent tracking,
+          and secure group finances.
+        </p>
+      </div>
 
-                    return <div className="flex flex-col items-center justify-center text-center w-[300px]" key={index}>
-                        <div className="relative w-[110px] h-[90px] flex items-center justify-center">
-                            <h2 className="font-medium text-4xl text-red-500">0{index + 1}</h2>
-                            <h2 className="absolute top-0 right-0 font-medium text-2xl text-[#212121]">/0{numberOfItems}</h2>
-                        </div>
 
-                        <div>
-                            <h2 className="text-2xl font-bold text-[#212121]">
-                                {title}
-                            </h2>
+      {/* NUMBERED FEATURES */}
+      <div className="flex flex-wrap w-full items-center justify-center gap-10 px-6 mt-14">
 
-                            <p className="text-[#737373]">
-                                {content}
-                            </p>
-                        </div>
-                    </div>
-                })
-            }
-        </div>
+        {aboutData.map((about, index) => {
 
-        <div className="bg-[url('/src/assets/LandingPage/AboutBackground.png')] bg-no-repeat bg-center bg-cover
-            w-full h-[30dvh] p-2 flex flex-col items-center justify-center gap-2
-        ">
-            <h2 className="text-[#F8EEED] text-center sm:w-[640px] md:text-2xl md:w-full">
-                Create an account, start saving, and experience a smarter way to manage personal and group finances.
-            </h2>
+          const { title, content } = about;
 
-            <Link to="sign-up" className="w-[150px] h-12 bg-[#F8EEED] rounded-3xl flex items-center justify-center text-[#dc2626] font-medium">
-                Get Started Today
-            </Link>
-        </div>
+          return (
+            <div
+              key={index}
+              className="
+              flex flex-col items-center text-center
+              w-[280px]
+              bg-white
+              p-6
+              rounded-2xl
+              shadow-sm
+              hover:shadow-lg hover:-translate-y-1
+              transition
+              "
+            >
 
-        <div className="flex flex-wrap items-center justify-center p-5 gap-3">
-            {
-                iconsData.map((data, index) => {
-                    const { image, title, content } = data;
+              {/* Number */}
+              <div className="relative w-[120px] h-[90px] flex items-center justify-center mb-4">
 
-                    return <div key={index} className="flex flex-col w-[300px] items-center justify-center gap-2">
-                        <div className="w-[30%]">
-                            <img src={image} alt={title} className="" />
-                        </div>
-                        
+                <h2 className="font-bold text-5xl text-red-500">
+                  0{index + 1}
+                </h2>
 
-                        <div className="w-full flex flex-col items-center justify-center">
-                            <h2 className="text-center font-medium text-2xl">
-                                {title}
-                            </h2>
+                <span className="absolute top-1 right-2 text-sm font-medium text-[#444]">
+                  /0{numberOfItems}
+                </span>
 
-                            <p className="text-center text-[#686666]">
-                                {content}
-                            </p>
-                        </div>
-                    </div>
-                })
-            }
-        </div>
+              </div>
+
+              {/* Divider */}
+              <div className="w-12 h-[2px] bg-red-500 mb-4"></div>
+
+              {/* Title */}
+              <h3 className="text-xl font-semibold text-[#212121]">
+                {title}
+              </h3>
+
+              {/* Content */}
+              <p className="text-[#737373] text-sm mt-2 leading-relaxed">
+                {content}
+              </p>
+
+            </div>
+          )
+        })}
+
+      </div>
+
+
+      {/* CTA SECTION */}
+      <div
+        className="
+        bg-[url('/src/assets/LandingPage/AboutBackground.png')]
+        bg-no-repeat bg-center bg-cover
+        w-full
+        mt-20
+        py-20
+        px-6
+        flex flex-col items-center justify-center gap-4
+        text-center
+        "
+      >
+
+        <h2 className="text-[#F8EEED] text-xl md:text-2xl max-w-[700px]">
+          Create an account, start saving, and experience a smarter
+          way to manage personal and group finances.
+        </h2>
+
+        <Link
+          to="/sign-up"
+          className="
+          w-[180px]
+          h-12
+          bg-[#F8EEED]
+          rounded-3xl
+          flex items-center justify-center
+          text-red-500
+          font-medium
+          hover:scale-105
+          transition
+          "
+        >
+          Get Started Today
+        </Link>
+
+      </div>
+
+
+      {/* ICON FEATURES */}
+      <div className="flex flex-wrap items-center justify-center px-6 py-16 gap-8 max-w-[1200px]">
+
+        {iconsData.map((data, index) => {
+
+          const { image, title, content } = data;
+
+          return (
+            <div
+              key={index}
+              className="
+              flex flex-col
+              w-[260px]
+              items-center
+              text-center
+              gap-3
+              bg-white
+              p-6
+              rounded-2xl
+              shadow-sm
+              hover:shadow-lg
+              transition
+              "
+            >
+
+              <div className="w-[60px]">
+                <img
+                  src={image}
+                  alt={title}
+                  className="w-full object-contain"
+                />
+              </div>
+
+              <h3 className="font-semibold text-lg text-[#212121]">
+                {title}
+              </h3>
+
+              <p className="text-[#686666] text-sm">
+                {content}
+              </p>
+
+            </div>
+          )
+
+        })}
+
+      </div>
+
     </section>
   )
 }
