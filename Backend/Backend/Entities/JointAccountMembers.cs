@@ -3,15 +3,13 @@ namespace Backend.Entities
     public class JointAccountMembers
     {
         public int Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public int Balance { get; set; }
-        public DateTime CreatedAt { get; set; }
-
+        public int JointAccountId { get; set; }
+        public int UserId { get; set; }
+        public string Role { get; set; } = "MEMBER";
+        public DateTime JoinedAt { get; set; }
 
         // Relationships
-        public int UserId { get; set; } // One personal account belongs to one user
+        public JointAccount? JointAccount { get; set; }
         public User? User { get; set; }
-
-        public AccountLocks? AccountLock { get; set; }
     }
 }

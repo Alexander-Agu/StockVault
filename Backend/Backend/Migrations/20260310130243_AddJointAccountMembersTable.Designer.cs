@@ -3,6 +3,7 @@ using System;
 using Backend.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(StockVaultContext))]
-    partial class StockVaultContextModelSnapshot : ModelSnapshot
+    [Migration("20260310130243_AddJointAccountMembersTable")]
+    partial class AddJointAccountMembersTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -38,38 +41,6 @@ namespace Backend.Migrations
                         .IsUnique();
 
                     b.ToTable("AccountLocks");
-                });
-
-            modelBuilder.Entity("Backend.Entities.ContributionSchedule", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AmountCents")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("Frequency")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("JointAccountId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateOnly>("StartDate")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("JointAccountId");
-
-                    b.ToTable("ContributionSchedules");
                 });
 
             modelBuilder.Entity("Backend.Entities.JointAccount", b =>
@@ -261,17 +232,6 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Navigation("PersonalAccount");
-                });
-
-            modelBuilder.Entity("Backend.Entities.ContributionSchedule", b =>
-                {
-                    b.HasOne("Backend.Entities.JointAccount", "JointAccount")
-                        .WithMany()
-                        .HasForeignKey("JointAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("JointAccount");
                 });
 
             modelBuilder.Entity("Backend.Entities.JointAccount", b =>
