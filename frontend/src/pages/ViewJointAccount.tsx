@@ -24,16 +24,27 @@ interface JointAccount {
 
 export default function ViewJointAccount() {
   const jointAccount = useSelector((state: RootState) => state.jointAccount);
+  const transections = useSelector((state: RootState) => state.transactions);
   const { jointAccountId } = useParams();
   const account = jointAccount.jointAccounts?.find(x => x.id === Number(jointAccountId));
   const dispatch = useDispatch<AppDispatch>();
+  const [balance, setBalance] = useState(0);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
 
   useEffect(() => {
     if (jointAccountId) {
       dispatch(FetchAccountTransactions(jointAccountId, "JOINT"));
+    }
+
+    // Get Total balance of account
+    if (transections != null){
+      let getSum = 0;
+      transections.transactions?.map(x => {
+        getSum += x.amountCents
+        console.log(getSum)
+      })
+
     }
   }, [jointAccountId]);
 
@@ -80,7 +91,7 @@ export default function ViewJointAccount() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-10">
               <div className="p-6 bg-white/60 rounded-3xl border border-white">
                 <p className="text-xs font-bold text-slate-400 uppercase mb-1">Current Balance</p>
-                <p className="text-3xl font-black text-slate-900">R 7,000.00</p>
+                <p className="text-3xl font-black text-slate-900">R {balance}</p>
               </div>
               <div className="p-6 bg-white/60 rounded-3xl border border-white">
                 <p className="text-xs font-bold text-slate-400 uppercase mb-1">Expected Balance</p>

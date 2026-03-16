@@ -66,7 +66,7 @@ namespace Backend.Services.JointAccountMembersService
             await accountRep.SaveChangesAsync();
 
             // After saving new acccount return it
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
 
             return response;
         }
@@ -116,7 +116,7 @@ namespace Backend.Services.JointAccountMembersService
 
             await accountRep.SaveChangesAsync();
 
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
 
             return response;
         }
@@ -169,7 +169,7 @@ namespace Backend.Services.JointAccountMembersService
             };
 
             // Check if user is the creator
-            JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId);
+            JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId, "JOINT");
             if (account == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
@@ -203,7 +203,7 @@ namespace Backend.Services.JointAccountMembersService
             };
 
             // Check if account exists
-            JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId);
+            JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId, "JOINT");
             if (account == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
@@ -262,7 +262,7 @@ namespace Backend.Services.JointAccountMembersService
             await lockRep.AddAccountLockAsync(accountLocks);
             await lockRep.SaveChangesAsync();
 
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
 
             return response;
         }
@@ -310,7 +310,7 @@ namespace Backend.Services.JointAccountMembersService
                 return response;
             }
 
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT"  );
 
             return response;
         }

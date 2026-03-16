@@ -93,3 +93,4 @@ export const DepositIntoJointAccount = (body: JointAccountDeposit, accountId: st
             return success;
         }
 }
+

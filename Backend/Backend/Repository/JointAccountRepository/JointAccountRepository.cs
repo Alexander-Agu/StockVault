@@ -41,7 +41,7 @@ namespace Backend.Repository.JointAccountRepository
                 .ToListAsync();
         }
 
-        public async Task<JointAccountDto> GetJointTableAccountByIdAsync(int userId, int accountId)
+        public async Task<JointAccountDto> GetJointTableAccountByIdAsync(int userId, int accountId, string accountType)
         {
             return await context.JointAccounts
                 .Include(u => u.User)
@@ -52,7 +52,7 @@ namespace Backend.Repository.JointAccountRepository
                     Title = a.Title,
                     CreatedBy = a.UserId,
                     CreatedAt = a.CreatedAt,
-                    Balance = context.Transections.Where(x => x.Id == a.Id)
+                    Balance = context.Transections.Where(x => x.Id == a.Id && x.AccountType == accountType)
                     .Sum(y => y.AmountCents) / 100
                 })
                 .FirstOrDefaultAsync();
