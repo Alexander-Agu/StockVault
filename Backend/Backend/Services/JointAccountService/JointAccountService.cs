@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Backend.Dtos.AccountDtos;
 using Backend.Dtos.AccountLockDtos;
 using Backend.Dtos.JointAccountDtos;
+using Backend.Dtos.JointAccountMembersDtos;
 using Backend.Dtos.PersonalAccountDtos;
 using Backend.Dtos.ResponseDto;
 using Backend.Dtos.TransectionDto;
@@ -11,6 +12,7 @@ using Backend.Repository.AccountLocksRepository;
 using Backend.Repository.JointAccountRepository;
 using Backend.Repository.PersonalAccountRespository;
 using Backend.Repository.UserRepository;
+using Backend.Services.JointAccountMembersService;
 using Backend.Services.TransectionService;
 using Stripe;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -22,6 +24,7 @@ namespace Backend.Services.JointAccountService
         IUserRepository userRep, 
         IAccountRepositoryLocks lockRep,
         ITransectionService transectionService,
+        IJointAccountMembersService membersService,
         PaymentIntentService paymentService) : IJointAccountService
     {
         // Allows user's to create a personal account
@@ -67,7 +70,11 @@ namespace Backend.Services.JointAccountService
 
             // After saving new acccount return it
             response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
+            
 
+            // Make Creator an admin after creating the account
+            AddMemberDto newMember = new() { email = user.Email, Role = "ADMIN" }; 
+            await membersService.CreateAdminAsync(userId, account.Id, newMember);            
             return response;
         }
 

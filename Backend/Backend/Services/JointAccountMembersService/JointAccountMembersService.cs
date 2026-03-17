@@ -28,7 +28,7 @@ namespace Backend.Services.JointAccountMembersService
             }
 
             // Check if target user exists
-            var targetUser = await userRepo.GetUserByIdAsync(addMember.UserId);
+            var targetUser = await userRepo.GetUserByEmailAsync(addMember.email);
             if (targetUser == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
@@ -37,7 +37,7 @@ namespace Backend.Services.JointAccountMembersService
             }
 
             // Check if user is already a member
-            if (await membersRepo.IsUserMemberAsync(jointAccountId, addMember.UserId))
+            if (await membersRepo.IsUserMemberAsync(jointAccountId, targetUser.Id))
             {
                 response.ResponseCode = ResponseCode.BadRequest;
                 response.Message = "User is already a member";
@@ -48,7 +48,48 @@ namespace Backend.Services.JointAccountMembersService
             var member = new JointAccountMembers
             {
                 JointAccountId = jointAccountId,
-                UserId = addMember.UserId,
+                UserId = targetUser.Id,
+                Role = addMember.Role,
+                JoinedAt = DateTime.UtcNow
+            };
+
+            await membersRepo.AddMemberAsync(member);
+            await membersRepo.SaveChangesAsync();
+
+            return response;
+        }
+
+        public async Task<ApiResponse<string>> CreateAdminAsync(int userId, int jointAccountId, AddMemberDto addMember)
+        {
+            var response = new ApiResponse<string>
+            {
+                ResponseCode = ResponseCode.Created,
+                Message = "Member added successfully",
+                Data = null
+            };
+
+            // Check if target user exists
+            var targetUser = await userRepo.GetUserByEmailAsync(addMember.email);
+            if (targetUser == null)
+            {
+                response.ResponseCode = ResponseCode.NotFound;
+                response.Message = "User not found";
+                return response;
+            }
+
+            // Check if user is already a member
+            if (await membersRepo.IsUserMemberAsync(jointAccountId, targetUser.Id))
+            {
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "User is already a member";
+                return response;
+            }
+
+            // Add member
+            var member = new JointAccountMembers
+            {
+                JointAccountId = jointAccountId,
+                UserId = targetUser.Id,
                 Role = addMember.Role,
                 JoinedAt = DateTime.UtcNow
             };

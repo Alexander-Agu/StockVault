@@ -9,5 +9,6 @@ namespace Backend.Services.JointAccountMembersService
         Task<ApiResponse<string>> RemoveMemberAsync(int userId, int jointAccountId, int targetUserId);
         Task<ApiResponse<string>> ChangeRoleAsync(int userId, int jointAccountId, int targetUserId, ChangeRoleDto changeRole);
         Task<ApiResponse<List<MemberDto>>> GetMembersAsync(int userId, int jointAccountId);
+        Task<ApiResponse<string>> CreateAdminAsync(int userId, int jointAccountId, AddMemberDto addMember);
     }
 }

@@ -15,7 +15,7 @@ namespace Backend.Controllers
         [HttpPost("joint-accounts/{jointAccountId}/contribution-schedules")]
         public async Task<ActionResult> CreateSchedule(int jointAccountId, [FromBody] CreateScheduleDto createSchedule)
         {
-            int userId = GetUserIdFromClaims();
+            int userId = 4;
             var response = await scheduleService.CreateScheduleAsync(userId, jointAccountId, createSchedule);
             return HandleResponse(response);
         }

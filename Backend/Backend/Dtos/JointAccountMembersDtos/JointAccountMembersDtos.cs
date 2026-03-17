@@ -2,7 +2,7 @@ namespace Backend.Dtos.JointAccountMembersDtos
 {
     public class AddMemberDto
     {
-        public int UserId { get; set; }
+        public string email { get; set; } = string.Empty;
         public string Role { get; set; } = "MEMBER";
     }
 
