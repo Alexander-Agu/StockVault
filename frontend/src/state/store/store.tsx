@@ -13,7 +13,7 @@ export const store = configureStore({
         personalAccount: personalAccountReducer,
         transactions: transactionReducer,
         jointAccount: jointAccountReducer,
-        schedule: contributionScheduleSlicer
+        contributionScheduleSlicer: contributionScheduleSlicer
     }
 });
 

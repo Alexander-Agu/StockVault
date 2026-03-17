@@ -24,11 +24,16 @@ interface JointAccount {
 
 export default function ViewJointAccount() {
   const jointAccount = useSelector((state: RootState) => state.jointAccount);
+  const contributionSchedule = useSelector((state: RootState) => state.contributionScheduleSlicer);
   const transections = useSelector((state: RootState) => state.transactions);
   const { jointAccountId } = useParams();
-  const account = jointAccount.jointAccounts?.find(x => x.id === Number(jointAccountId));
+  
   const dispatch = useDispatch<AppDispatch>();
   const [balance, setBalance] = useState(0);
+
+
+  const account = jointAccount.jointAccounts?.find(x => x.id === Number(jointAccountId));
+  const schedule = contributionSchedule.schedule;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -45,6 +50,7 @@ export default function ViewJointAccount() {
         console.log(getSum)
       })
 
+      setBalance(getSum);
     }
   }, [jointAccountId]);
 
@@ -83,7 +89,7 @@ export default function ViewJointAccount() {
 
               <div className="bg-red-500/10 border border-red-200 p-4 rounded-2xl flex flex-col justify-center items-end">
                 <p className="text-xs font-bold text-red-600 uppercase">Contribution</p>
-                <p className="text-2xl font-black text-slate-900">R 500.00 <span className="text-sm font-medium text-slate-400">/ Monthly</span></p>
+                <p className="text-2xl font-black text-slate-900">R {schedule?.amountCents} <span className="text-sm font-medium text-slate-400">/ {schedule?.frequency}</span></p>
               </div>
             </div>
 
