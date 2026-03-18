@@ -1,5 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FaUsers, FaXmark } from "react-icons/fa6";
+import { useDispatch } from "react-redux";
+import { type AppDispatch } from "../../state/store/store";
+import { AddMembers } from "../../state/Members/MemberSlicer";
+import { useParams } from "react-router-dom";
 
 interface AddMemberProps {
   openPage: boolean;
@@ -7,9 +11,26 @@ interface AddMemberProps {
 }
 
 export default function AddMember({openPage, setOpenPage}: AddMemberProps) {
+  const dispatch = useDispatch<AppDispatch>();
+  const { jointAccountId } = useParams(); 
+
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("");
+
   useEffect(()=>{
     if (!openPage && window.innerWidth < 1024) setOpenPage(false);
   }, [openPage])
+
+  const HandleSubmit = async () => {
+
+    if (email != null && role.toLowerCase() === "admin" || role.toLocaleLowerCase() === "member"){
+      try{
+        dispatch(AddMembers(Number(jointAccountId), {email: email, role: role.toUpperCase().trim()}))
+      } catch{
+        console.log("Failed to add member")
+      }
+    }
+  }
   return (
     <>
       <aside
@@ -48,14 +69,28 @@ export default function AddMember({openPage, setOpenPage}: AddMemberProps) {
             You can only add members that have already joined the platform.
           </p>
 
-          <form className="flex flex-col gap-4">
+          <form className="flex flex-col gap-4" action={HandleSubmit}>
 
             <div className="flex flex-col gap-1">
               <label className="text-xs font-semibold text-slate-500 uppercase tracking-widest">
-                New Member
+                New Member Email
               </label>
 
               <input
+              onChange={e => setEmail(e.target.value)}
+                type="text"
+                placeholder="Enter member email or username"
+                className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-slate-400"
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-slate-500 uppercase tracking-widest">
+                Role
+              </label>
+
+              <input
+                onChange={e => setRole(e.target.value)}
                 type="text"
                 placeholder="Enter member email or username"
                 className="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:border-slate-400"

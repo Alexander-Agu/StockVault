@@ -13,6 +13,7 @@ import { type AppDispatch, type RootState } from "../state/store/store";
 import Members from "../components/Members/Members";
 import { FetchAccountTransactions } from "../state/Transaction/TransactionSlicer";
 import { FetchMembers } from "../state/Members/MemberSlicer";
+import { FetchSchedule } from "../state/ContributionSchedule/ContributionScheduleSlicer";
 
 interface JointAccount {
   id: number;
@@ -46,7 +47,8 @@ export default function ViewJointAccount() {
     const id = Number(jointAccountId);
     if (id) {
       dispatch(FetchAccountTransactions(String(id), "JOINT"));
-      dispatch(FetchMembers(Number(jointAccountId)));
+      dispatch(FetchSchedule(id));
+      dispatch(FetchMembers(id));
     }
   }, [jointAccountId]);
 

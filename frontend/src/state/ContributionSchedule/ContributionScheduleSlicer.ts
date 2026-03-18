@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { AppDispatch } from "../store/store";
 import { CreateJointAccountsAsync, FetchJointAccountsAsync, JointAccountDepositAsync, type JointAccountDeposit } from "../../api/JointAccountApi";
-import { CreateContributionScheduleAsync, type CreateContributionSchedule } from "../../api/ContributionSchedule";
+import { CreateContributionScheduleAsync, FetchContributionScheduleAsync, type CreateContributionSchedule } from "../../api/ContributionSchedule";
 
 interface ContributionSchedule {
     id: number;
@@ -58,13 +58,35 @@ export const CreateSchedule = (body: CreateContributionSchedule ,id: number) =>
         try{
             const response = await CreateContributionScheduleAsync(body, id);
 
-            if (!response) throw new Error("Failed to create a joint account");
+            if (!response) throw new Error("Failed to create a contribution schedule");
 
             schedule = response.data ;
 
             dispatch(setContributionSchedule(response.data));
         } catch {
-            console.log("Failed to create a joint account");
+            console.log("Failed to create a contribution schedule");
+            return schedule;
+        }finally{        
+            dispatch(setLoading(false));
+            return schedule;
+        }
+    }
+
+
+export const FetchSchedule = (id: number) => 
+    async (dispatch: AppDispatch): Promise<ContributionSchedule> => {
+        let schedule;
+        dispatch(setLoading(true));
+        try{
+            const response = await FetchContributionScheduleAsync(id);
+
+            if (!response) throw new Error("Failed to fetch contribution schedule");
+
+            schedule = response.data ;
+
+            dispatch(setContributionSchedule(response.data));
+        } catch {
+            console.log("Failed to fetch contribution schedule");
             return schedule;
         }finally{        
             dispatch(setLoading(false));

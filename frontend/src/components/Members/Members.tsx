@@ -32,7 +32,7 @@ export default function Members({isSidebarOpen, setIsSidebarOpen}: MemberProps) 
     const isAdmin = members?.find(x => x.userId === Number(userId) && x.role.toLowerCase() === "admin");
 
     const admins = members?.filter(m => m.role.toLocaleLowerCase() === "admin");
-    const generalMembers = members?.filter(m => m.role !== "admin");
+    const generalMembers = members?.filter(m => m.role.toLocaleLowerCase() !== "admin");
 
     // Display add member bar
     if (openPage){
@@ -85,7 +85,7 @@ export default function Members({isSidebarOpen, setIsSidebarOpen}: MemberProps) 
                     <div className="flex flex-col gap-3">
                     {admins?.map(member => (
                         <MemberItem
-                        key={userId}
+                        key={member.userId}
                         name={member.name}
                         paid={false}
                         />
@@ -105,7 +105,7 @@ export default function Members({isSidebarOpen, setIsSidebarOpen}: MemberProps) 
                     <div className="flex flex-col gap-3">
                     {generalMembers?.map(member => (
                         <MemberItem
-                        key={member.name}
+                        key={member.userId}
                         name={member.name}
                         paid={false}
                         />

@@ -26,11 +26,12 @@ export default function CreateJointAccount() {
 
         if (id > 0){
 
-            const response = await dispatch(CreateSchedule({
-                amountCents: Number(formData.amount) * 100,
-                frequency: formData.frequency,
-                startDate: formData.startDate
-            }, id));
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Small delay
+          const response = await dispatch(CreateSchedule({
+              amountCents: Number(formData.amount) * 100,
+              frequency: formData.frequency,
+              startDate: formData.startDate
+          }, id));
         }
     } catch{
         console.log("Failed to create joint account");

@@ -24,11 +24,27 @@ export interface CreateContributionSchedule {
     startDate: string;
 }
 
-// Fetches all joint accounts the user is involved in
+// Creates a contribution schedule
 export const CreateContributionScheduleAsync = async (body: CreateContributionSchedule, id: number) => {
     const token = getToken();
     try{
         const response = await api.post(`joint-accounts/${id}/contribution-schedules`, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        return response.data;
+    } catch{
+        return false;
+    }
+}
+
+// Fetches a contibution schedule for an account
+export const FetchContributionScheduleAsync = async (id: number) => {
+    const token = getToken();
+    try{
+        const response = await api.get(`joint-accounts/${id}/contribution-schedules/active`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
