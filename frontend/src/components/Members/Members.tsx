@@ -6,6 +6,9 @@ import {
 } from "react-icons/fa6";
 import { useState } from "react";
 import AddMember from "../AddMember/AddMember";
+import type { RootState } from "../../state/store/store";
+import { useSelector } from "react-redux";
+
 
 interface MemberProps {
   isSidebarOpen: boolean;
@@ -13,20 +16,23 @@ interface MemberProps {
 }
 
 export default function Members({isSidebarOpen, setIsSidebarOpen}: MemberProps) {
+    const member = useSelector((state: RootState) => state.member);
+    const members = member.members;
+    
     const [openPage, setOpenPage] = useState(false);
     const { userId } = useParams();
 
-    const members = [
-        { id: 1, name: "Alexander Agu", paid: true, admin: true },
-        { id: 2, name: "Joseph", paid: false, admin: false },
-        { id: 3, name: "Daniel", paid: true, admin: false },
-        { id: 3, name: "Tshepo", paid: true, admin: false },
-    ];
+    // const members = [
+    //     { userId: 1, name: "Alexander Agu", paid: true, role: "ADMIN"},
+    //     { userId: 2, name: "Joseph", paid: false, role: "MEMBERS" },
+    //     { userId: 3, name: "Daniel", paid: true, role: "MEMBERS" },
+    //     { userId: 3, name: "Tshepo", paid: true, role: "MEMBERS" },
+    // ];
 
-    const isAdmin = members.find(x => x.id == Number(userId) && x.admin);
+    const isAdmin = members?.find(x => x.userId === Number(userId) && x.role.toLowerCase() === "admin");
 
-    const admins = members.filter(m => m.admin);
-    const generalMembers = members.filter(m => !m.admin);
+    const admins = members?.filter(m => m.role.toLocaleLowerCase() === "admin");
+    const generalMembers = members?.filter(m => m.role !== "admin");
 
     // Display add member bar
     if (openPage){
@@ -77,11 +83,11 @@ export default function Members({isSidebarOpen, setIsSidebarOpen}: MemberProps) 
                     </h3>
 
                     <div className="flex flex-col gap-3">
-                    {admins.map(member => (
+                    {admins?.map(member => (
                         <MemberItem
-                        key={member.name}
+                        key={userId}
                         name={member.name}
-                        paid={member.paid}
+                        paid={false}
                         />
                     ))}
                     </div>
@@ -97,11 +103,11 @@ export default function Members({isSidebarOpen, setIsSidebarOpen}: MemberProps) 
                     </h3>
 
                     <div className="flex flex-col gap-3">
-                    {generalMembers.map(member => (
+                    {generalMembers?.map(member => (
                         <MemberItem
                         key={member.name}
                         name={member.name}
-                        paid={member.paid}
+                        paid={false}
                         />
                     ))}
                     </div>

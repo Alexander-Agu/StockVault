@@ -25,54 +25,28 @@ export default function About() {
       {/* NUMBERED FEATURES */}
       <div className="flex flex-wrap w-full items-center justify-center gap-10 px-6 mt-14">
 
-        {aboutData.map((about, index) => {
+            {
+                aboutData.map((about, index) => {
+                    const { title, content } = about;
 
-          const { title, content } = about;
+                    return <div className="flex flex-col items-center justify-center text-center w-[300px]" key={index}>
+                        <div className="relative w-[110px] h-[90px] flex items-center justify-center">
+                            <h2 className="font-medium text-4xl text-red-500">0{index + 1}</h2>
+                            <h2 className="absolute top-0 right-0 font-medium text-2xl text-[#212121]">/0{numberOfItems}</h2>
+                        </div>
 
-          return (
-            <div
-              key={index}
-              className="
-              flex flex-col items-center text-center
-              w-[280px]
-              bg-white
-              p-6
-              rounded-2xl
-              shadow-sm
-              hover:shadow-lg hover:-translate-y-1
-              transition
-              "
-            >
+                        <div>
+                            <h2 className="text-2xl font-bold text-[#212121]">
+                                {title}
+                            </h2>
 
-              {/* Number */}
-              <div className="relative w-[120px] h-[90px] flex items-center justify-center mb-4">
-
-                <h2 className="font-bold text-5xl text-red-500">
-                  0{index + 1}
-                </h2>
-
-                <span className="absolute top-1 right-2 text-sm font-medium text-[#444]">
-                  /0{numberOfItems}
-                </span>
-
-              </div>
-
-              {/* Divider */}
-              <div className="w-12 h-[2px] bg-red-500 mb-4"></div>
-
-              {/* Title */}
-              <h3 className="text-xl font-semibold text-[#212121]">
-                {title}
-              </h3>
-
-              {/* Content */}
-              <p className="text-[#737373] text-sm mt-2 leading-relaxed">
-                {content}
-              </p>
-
-            </div>
-          )
-        })}
+                            <p className="text-[#737373]">
+                                {content}
+                            </p>
+                        </div>
+                    </div>
+                })
+            }
 
       </div>
 

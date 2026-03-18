@@ -5,6 +5,7 @@ import personalAccountReducer from "../PersonalAccount/PersonalAccountSlicer"
 import transactionReducer from "../Transaction/TransactionSlicer"
 import jointAccountReducer from "../JointAccount/JointAccountSlicer"
 import contributionScheduleSlicer from "../ContributionSchedule/ContributionScheduleSlicer"
+import memberSlicer from "../Members/MemberSlicer"
 
 export const store = configureStore({
     reducer: {
@@ -13,7 +14,8 @@ export const store = configureStore({
         personalAccount: personalAccountReducer,
         transactions: transactionReducer,
         jointAccount: jointAccountReducer,
-        contributionScheduleSlicer: contributionScheduleSlicer
+        contributionSchedule: contributionScheduleSlicer,
+        member: memberSlicer
     }
 });
 

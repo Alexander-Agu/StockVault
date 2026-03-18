@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../state/store/store";
 import Members from "../components/Members/Members";
 import { FetchAccountTransactions } from "../state/Transaction/TransactionSlicer";
+import { FetchMembers } from "../state/Members/MemberSlicer";
 
 interface JointAccount {
   id: number;
@@ -24,8 +25,9 @@ interface JointAccount {
 
 export default function ViewJointAccount() {
   const jointAccount = useSelector((state: RootState) => state.jointAccount);
-  const contributionSchedule = useSelector((state: RootState) => state.contributionScheduleSlicer);
+  const contributionSchedule = useSelector((state: RootState) => state.contributionSchedule);
   const transections = useSelector((state: RootState) => state.transactions);
+  const member = useSelector((state: RootState) => state.member);
   const { jointAccountId } = useParams();
   
   const dispatch = useDispatch<AppDispatch>();
@@ -34,28 +36,34 @@ export default function ViewJointAccount() {
 
   const account = jointAccount.jointAccounts?.find(x => x.id === Number(jointAccountId));
   const schedule = contributionSchedule.schedule;
+  const members = member.members;
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+      
+  // Fetching data
   useEffect(() => {
-    if (jointAccountId) {
-      dispatch(FetchAccountTransactions(jointAccountId, "JOINT"));
-    }
-
-    // Get Total balance of account
-    if (transections != null){
-      let getSum = 0;
-      transections.transactions?.map(x => {
-        getSum += x.amountCents
-        console.log(getSum)
-      })
-
-      setBalance(getSum);
+    const id = Number(jointAccountId);
+    if (id) {
+      dispatch(FetchAccountTransactions(String(id), "JOINT"));
+      dispatch(FetchMembers(Number(jointAccountId)));
     }
   }, [jointAccountId]);
 
+  // Updating the state of the total amount
+  useEffect(() => {
+    if (!transections?.transactions) return;
 
-  if (account == null) return null;
+    const total = transections.transactions.reduce(
+      (sum, x) => sum + x.amountCents,
+      0
+    );
+
+    setBalance(total);
+  }, [transections.transactions]);
+
+
+  if (account == null || members == null) return null;
 
 
   return (
