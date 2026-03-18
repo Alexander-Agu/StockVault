@@ -1,126 +1,124 @@
-import { FaLock, FaUnlock, FaArrowUp, FaArrowDown, FaArrowLeft, FaTrashCan, FaPenToSquare } from "react-icons/fa6";
+import { FaLock, FaArrowUp, FaArrowDown, FaPenToSquare, FaTrashCan } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../state/store/store";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import NavigateBackButton from "../UI/NavigateBackButton";
 import { formatCurrency } from "../tools/UserTools";
 import Transactions from "../components/Transaction/Transaction";
 import { FetchAccountTransactions } from "../state/Transaction/TransactionSlicer";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 export default function ViewPersonalAccount() {
   const personalAccount = useSelector((state: RootState) => state.personalAccount);
   const { accountId } = useParams();
   const account = personalAccount.personalAccounts?.find(x => x.id === Number(accountId));
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
   const transactions = useSelector((state: RootState) => state.transactions.transactions);
 
   useEffect(() => {
     if (accountId) {
       dispatch(FetchAccountTransactions(accountId, "PERSONAL"));
     }
-  }, [accountId]);
+  }, [accountId, dispatch]);
 
   if (account == null) return null;
 
-  const { 
-    id, 
-    title, 
-    balance, 
-    createdAt, 
-    lockedUntil, 
-    isActive } = account;
+  const { id, title, balance, createdAt, lockedUntil, isActive } = account;
   
-  const isLocked = isActive;
+  // Logic helpers
+  const isSavings = title.toLowerCase().includes("savings");
+  const isLocked = !isSavings && isActive; // Only standard accounts can be "locked" in this context
 
   return (
-  <div className="w-full min-h-screen bg-[#F8EEED] p-4 flex flex-col gap-8">
-    <NavigateBackButton title="Go Back" />
+    <div className="w-full min-h-screen bg-[#fcfcfc] p-6 flex flex-col gap-8 text-slate-900">
+      <NavigateBackButton title="back" />
 
-      
-    <div className="w-full bg-white/40 backdrop-blur-md rounded-[2rem] p-6 border border-white/60 shadow-xl shadow-red-900/5">
-      {/* Basic account data */}
-      <div className="flex flex-col gap-5 justify-center center lg:flex-row lg:justify-between">
-
-        <div className="flex flex-col gap-1">
-          <div className="flex flex-col items-start gap-3 text-right">
-            <div className="flex gap-4 items-center">
-              <h2 className="text-2xl font-bold text-slate-800">{title}</h2>
-
-              <div  className="flex gap-4 items-center">
-                <button className="text-green-400 hover:text-green-700">
-                  <FaPenToSquare />
-                </button>
-
-                <button className="text-red-400 hover:text-red-700">
-                  <FaTrashCan />
-                </button>
+      {/* Main Account Card - Sharp Edges & Minimalist */}
+      <div className="w-full bg-white border border-slate-200 rounded-none p-8 shadow-sm">
+        <div className="flex flex-col lg:flex-row justify-between gap-12">
+          
+          {/* Left: Account Info */}
+          <div className="flex flex-col gap-6">
+            <div className="space-y-1">
+              <div className="flex items-center gap-3">
+                <h2 className="text-3xl font-light tracking-tight lowercase">{title}</h2>
+                <div className="flex gap-3 ml-2">
+                  <button className="text-slate-400 hover:text-slate-600 transition-colors">
+                    <FaPenToSquare size={14} />
+                  </button>
+                  <button className="text-slate-300 hover:text-red-500 transition-colors">
+                    <FaTrashCan size={14} />
+                  </button>
+                </div>
               </div>
+              <p className="text-slate-400 text-xs font-mono tracking-tighter">id: {id}</p>
             </div>
-            
-            <p className="text-slate-400 text-sm font-medium">Account ID: #{id}</p>       
-            </div>
-              <span className="text-slate-500 font-bold uppercase tracking-widest text-xs">Total Balance</span>
-              <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
+
+            <div className="space-y-1">
+              <span className="text-slate-400 lowercase text-xs tracking-widest">total balance</span>
+              <h1 className="text-5xl font-medium tracking-tighter">
                 {formatCurrency(balance)}
               </h1>
-              <div className="flex items-center gap-4 mt-4">
-                <Link to={"deposit"}
-                  className="flex items-center gap-2 
-                  bg-red-500 text-white px-6 py-2 rounded-xl 
-                  font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
-                  <FaArrowDown /> Deposit
+            </div>
+
+            <div className="flex items-center gap-2 mt-4">
+              <Link to="deposit"
+                className="flex items-center gap-2 bg-slate-900 text-white px-8 py-3 rounded-none text-sm font-medium hover:bg-slate-800 transition-all uppercase tracking-widest">
+                <FaArrowDown size={12} /> deposit
+              </Link>
+
+              {(!isLocked || isSavings) && (
+                <Link to="withdraw"
+                  className="flex items-center gap-2 bg-white text-slate-900 px-8 py-3 rounded-none text-sm font-medium border border-slate-900 hover:bg-slate-50 transition-all uppercase tracking-widest">
+                  <FaArrowUp size={12} /> withdraw
                 </Link>
-                <Link to={"withdraw"}
-                  className="flex items-center gap-2 
-                    bg-white text-slate-700 px-6 py-2 rounded-xl font-bold border 
-                    border-slate-200 hover:bg-slate-50 transition-all">
-                  <FaArrowUp /> Withdraw
-                </Link>
+              )}
+            </div>
           </div>
+
+          {/* Right: Security/Lock Logic (Hidden for Savings) */}
+          {!isSavings && (
+            <div className="flex flex-col justify-end min-w-[280px]">
+              <div className="border-l border-slate-100 pl-8 space-y-6">
+                <div>
+                  <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-4">security</h3>
+                  
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center border-b border-slate-50 pb-2">
+                      <span className="text-xs lowercase text-slate-400">opened on</span>
+                      <span className="text-sm font-medium text-slate-700">{new Date(createdAt).toLocaleDateString()}</span>
+                    </div>
+
+                    {/* Show lock details only if locked */}
+                    {isLocked && (
+                      <div className="flex justify-between items-center border-b border-slate-50 pb-2">
+                        <span className="text-xs lowercase text-slate-400">locked until</span>
+                        <span className="text-sm font-medium text-red-500">{lockedUntil?.toString()}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Show Lock Button only if NOT locked */}
+                {!isLocked ? (
+                  <Link to="lock-account" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-900 hover:text-red-500 transition-colors">
+                    <FaLock size={10} /> lock this account
+                  </Link>
+                ) : (
+                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-red-500/50">
+                    <FaLock size={10} /> account restricted
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
+      </div>
 
-        {/* Checking if account is locked */}
-        <div className="">
-          <div>
-              <h2 className="text-2xl font-bold text-slate-800">Account Lock</h2>
-          </div>
-
-
-          <div>
-            <div className="flex gap-1 items-center pt-4 pb-5 border-b border-slate-300">
-              <h2 className="text-slate-500 font-bold tracking-widest text-xs">
-                Created At:
-              </h2>
-              <p className="text-x5 font-bold text-slate-900 tracking-tight">
-                25 Nov 2025
-              </p>
-            </div>
-
-            <div className="flex gap-1 items-center pt-4 pb-5 border-b border-slate-300">
-              <h2 className="text-slate-500 font-bold tracking-widest text-xs">
-                Locked Until:
-              </h2>
-              <p className="text-x5 font-bold text-slate-900 tracking-tight">
-                {
-                    !isLocked? "Account not locked" : lockedUntil.toString()
-                }
-              </p>
-            </div>
-          </div>
-
-          {
-            !isLocked?<Link to={"lock-account"} className="mt-2 flex items-center gap-2 bg-red-500 text-white px-6 py-2 rounded-xl   font-bold hover:bg-red-600 transition-all shadow-lg shadow-red-200">
-            <FaLock /> Lock Account
-          </Link> : ""
-          }
-        </div>               
+      {/* Transaction List */}
+      <div className="rounded-none border border-slate-200 bg-white p-2">
+        <Transactions />
       </div>
     </div>
-
-    {/* SECTION 2: TRANSACTION LEDGER */}
-    <Transactions />
-  </div>
   );
 }
