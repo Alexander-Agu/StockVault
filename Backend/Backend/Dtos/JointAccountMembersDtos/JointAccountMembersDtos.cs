@@ -14,6 +14,7 @@ namespace Backend.Dtos.JointAccountMembersDtos
     public class MemberDto
     {
         public int UserId { get; set; }
+        public string Name { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public DateTime JoinedAt { get; set; }
     }

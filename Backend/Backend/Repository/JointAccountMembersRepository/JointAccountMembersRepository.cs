@@ -19,6 +19,7 @@ namespace Backend.Repository.JointAccountMembersRepository
                 .Select(m => new MemberDto
                 {
                     UserId = m.UserId,
+                    Name = m.User.Name,
                     Role = m.Role,
                     JoinedAt = m.JoinedAt
                 })
@@ -41,9 +42,10 @@ namespace Backend.Repository.JointAccountMembersRepository
         public async Task<bool> IsUserAdminAsync(int jointAccountId, int userId)
         {
             return await context.JointAccountMembers
+                .AsNoTracking()
                 .AnyAsync(m => m.JointAccountId == jointAccountId && m.UserId == userId && m.Role == "ADMIN");
         }
-
+                      
         public async Task<bool> IsUserMemberAsync(int jointAccountId, int userId)
         {
             return await context.JointAccountMembers

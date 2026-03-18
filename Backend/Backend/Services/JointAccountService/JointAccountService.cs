@@ -25,6 +25,7 @@ namespace Backend.Services.JointAccountService
         IAccountRepositoryLocks lockRep,
         ITransectionService transectionService,
         IJointAccountMembersService membersService,
+
         PaymentIntentService paymentService) : IJointAccountService
     {
         // Allows user's to create a personal account
@@ -74,7 +75,7 @@ namespace Backend.Services.JointAccountService
 
             // Make Creator an admin after creating the account
             AddMemberDto newMember = new() { email = user.Email, Role = "ADMIN" }; 
-            await membersService.CreateAdminAsync(userId, account.Id, newMember);            
+            await membersService.CreateAdminAsync(userId, account.Id, newMember);
             return response;
         }
 

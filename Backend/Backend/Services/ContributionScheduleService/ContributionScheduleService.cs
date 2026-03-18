@@ -19,13 +19,15 @@ namespace Backend.Services.ContributionScheduleService
                 Data = null
             };
 
-            // Check if user is admin
-            if (!await membersRepo.IsUserAdminAsync(jointAccountId, userId))
-            {
-                response.ResponseCode = ResponseCode.Forbidden;
-                response.Message = "Only admins can create schedules";
-                return response;
-            }
+            bool isAdmin = await membersRepo.IsUserAdminAsync(jointAccountId, userId);
+
+            //Check if user is admin
+            if (!isAdmin)
+                {
+                    response.ResponseCode = ResponseCode.Forbidden;
+                    response.Message = "Only admins can create schedules";
+                    return response;
+                }
 
             // Check if active schedule exists
             if (await scheduleRepo.HasActiveScheduleAsync(jointAccountId))
@@ -41,7 +43,7 @@ namespace Backend.Services.ContributionScheduleService
                 AmountCents = createSchedule.AmountCents,
                 Frequency = createSchedule.Frequency,
                 StartDate = createSchedule.StartDate,
-                IsActive = false,
+                IsActive = true,
                 CreatedAt = DateTime.UtcNow
             };
 
