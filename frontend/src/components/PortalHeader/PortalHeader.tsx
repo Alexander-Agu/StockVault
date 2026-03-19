@@ -94,10 +94,10 @@ export default function PortalHeader({ title, name, message}: ProfileHeaderProps
             </li>
 
             <li className="w-full">
-            <a className="flex items-center gap-3 p-2 rounded-lg hover:bg-black/5 transition">
+            <Link to={"profile"} className="flex items-center gap-3 p-2 rounded-lg hover:bg-black/5 transition">
                 <IoPersonSharp className="text-xl text-red-500" />
                 <p className="text-sm font-medium">Profile</p>
-            </a>
+            </Link>
             </li>
 
             <li className="w-full">

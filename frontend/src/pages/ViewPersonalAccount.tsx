@@ -30,7 +30,7 @@ export default function ViewPersonalAccount() {
   const isLocked = !isSavings && isActive; // Only standard accounts can be "locked" in this context
 
   return (
-    <div className="w-full min-h-screen bg-[#fcfcfc] p-6 flex flex-col gap-8 text-slate-900">
+    <div className="w-full min-h-screen bg-[#F8EEED] p-6 flex flex-col gap-8 text-slate-900">
       <NavigateBackButton title="back" />
 
       {/* Main Account Card - Sharp Edges & Minimalist */}

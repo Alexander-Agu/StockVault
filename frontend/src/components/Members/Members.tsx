@@ -22,13 +22,6 @@ export default function Members({isSidebarOpen, setIsSidebarOpen}: MemberProps) 
     const [openPage, setOpenPage] = useState(false);
     const { userId } = useParams();
 
-    // const members = [
-    //     { userId: 1, name: "Alexander Agu", paid: true, role: "ADMIN"},
-    //     { userId: 2, name: "Joseph", paid: false, role: "MEMBERS" },
-    //     { userId: 3, name: "Daniel", paid: true, role: "MEMBERS" },
-    //     { userId: 3, name: "Tshepo", paid: true, role: "MEMBERS" },
-    // ];
-
     const isAdmin = members?.find(x => x.userId === Number(userId) && x.role.toLowerCase() === "admin");
 
     const admins = members?.filter(m => m.role.toLocaleLowerCase() === "admin");

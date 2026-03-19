@@ -15,6 +15,7 @@ import Withdraw from './pages/Withdraw';
 import JointAccounts from './pages/JointAccounts';
 import ViewJointAccount from './pages/ViewJointAccount';
 import CreateJointAccount from './pages/CreateJointAccount';
+import Profile from './pages/Profile';
 
 function App() {
 
@@ -42,6 +43,11 @@ function App() {
         {
           index: true,
           element: <Dashboard />
+        },
+
+        {
+          path: "profile",
+          element: <Profile />,
         },
 
         {

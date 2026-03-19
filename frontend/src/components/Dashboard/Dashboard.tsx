@@ -19,13 +19,15 @@ interface StatItem {
 export default function Dashboard() {
   const user = useSelector((state:RootState) => state.user);
   const personalAccount = useSelector((state: RootState) => state.personalAccount);
-  const jointAccount = useSelector((state: RootState) => state.jointAccount).jointAccounts?.slice(0, 2) ?? [];
+  const jointAccounts = useSelector((state: RootState) => state.jointAccount);
+  const jointAccount = jointAccounts.jointAccounts?.slice(0, 2) ?? [];
+  const savingsAccount = personalAccount.personalAccounts?.find(x => x.title.toLocaleLowerCase() === "savings account");
 
 
   const stats: StatItem[] = [
-    { title: "Savings accounts", count: 3100, resultName: "Rands", icon: FaWallet, linkText: "View Savings", path:"" },
+    { title: "Savings accounts", count: savingsAccount?.balance || 0, resultName: "Rands", icon: FaWallet, linkText: "View Savings", path:`personal-account/${savingsAccount?.id}` },
     { title: "Personal accounts", count: personalAccount.personalAccounts?.length || 0,  resultName: "Total", icon: FaWallet, linkText: "View Personal Accounts", path: "personal-account" },
-    { title: "Joint accounts", count: 8240,  resultName: "Total", icon: GiWallet, linkText: "View Joint Accounts", path: "" },
+    { title: "Joint accounts", count: jointAccounts.jointAccounts?.length || 0,  resultName: "Total", icon: GiWallet, linkText: "View Joint Accounts", path: "" },
   ];
 
   const twoPersonalAccounts = personalAccount.personalAccounts?.slice(0, 2) ?? [];

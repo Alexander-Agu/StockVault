@@ -49,14 +49,10 @@ export default function JointAccounts() {
                   balance={balance}
                 />
               )
-
             })
           }
-
         </div>
-
       </div>
-
     </section>
   )
 }
