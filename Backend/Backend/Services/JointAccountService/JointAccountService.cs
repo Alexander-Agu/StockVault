@@ -117,15 +117,24 @@ var options = new PaymentIntentCreateOptions
 
             var intent = await paymentService.CreateAsync(options);
 
-            if (intent.Status == "succeeded") account.Balance += ToCents(amount.Amount);
+            if (intent.Status == "succeeded")
+            {
+                account.Balance += ToCents(amount.Amount);
 
-            // Save transection
-            await transectionService.RecordTransectionAsync(userId, CreateTransectionForJoint(
-                    userId,
-                    ToCents(amount.Amount),
-                    account,
-                    "DEPOSIT"
-                ));
+                // Save transection only if payment succeeded
+                await transectionService.RecordTransectionAsync(userId, CreateTransectionForJoint(
+                        userId,
+                        ToCents(amount.Amount),
+                        account,
+                        "DEPOSIT"
+                    ));
+            }
+            else
+            {
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "Payment failed";
+                return response;
+            }
 
             await accountRep.SaveChangesAsync();
 
@@ -251,7 +260,7 @@ var options = new PaymentIntentCreateOptions
             };
 
             // Check if account exists
-            PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
+            JointAccount account = await accountRep.GetJointAccountByIdAsync(userId, accountId);
             if (account == null)
             {
                 response.ResponseCode = ResponseCode.BadRequest;
@@ -292,7 +301,7 @@ var options = new PaymentIntentCreateOptions
             };
 
             // Checks if account exists
-            PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
+            JointAccount account = await accountRep.GetJointAccountByIdAsync(userId, accountId);
             if (account == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
@@ -301,12 +310,18 @@ var options = new PaymentIntentCreateOptions
                 return response;
             }
 
-            if (account.Balance - ToCents(amount.Amount) >= 0) // only widthdraw if user has enough funs
+            if (amount.Amount <= 0)
             {
-                account.Balance -= ToCents(amount.Amount); // widthdrawing
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "Withdrawal amount must be greater than zero";
+                return response;
+            }
 
-                // Save transection
-                await transectionService.RecordTransectionAsync(userId, CreateTransection(
+            if (account.Balance - ToCents(amount.Amount) >= 0)
+            {
+                account.Balance -= ToCents(amount.Amount);
+
+                await transectionService.RecordTransectionAsync(userId, CreateTransectionForJoint(
                         userId,
                         -ToCents(amount.Amount),
                         account,

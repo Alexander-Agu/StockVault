@@ -23,7 +23,8 @@ namespace Backend.Services.PersonalAccountService
         IAccountRepositoryLocks lockRep,
         ITransectionService transectionService,
         PaymentIntentService paymentService,
-        IEmailService emailService) : IPersonalAccountService
+        IEmailService emailService,
+        IConfiguration configuration) : IPersonalAccountService
     {
         // Allows user's to create a personal account
         public async Task<ApiResponse<PersonalAccountDto>> CreatePersonalAccountAsync(int userId, CreateAccountDto newAccount)
@@ -101,20 +102,29 @@ namespace Backend.Services.PersonalAccountService
                 Customer = user.StripeCustomerId,
                 PaymentMethod = amount.PaymentMethodId,
                 Confirm = true,
-                ReturnUrl = "http://localhost:5173/payment-success"
+                ReturnUrl = configuration.GetValue<string>("AppSettings:PaymentReturnUrl")
             };
 
             var intent = await paymentService.CreateAsync(options);
 
-            if (intent.Status == "succeeded") account.Balance += ToCents(amount.Amount);
+            if (intent.Status == "succeeded")
+            {
+                account.Balance += ToCents(amount.Amount);
 
-            // Save transection
-            await transectionService.RecordTransectionAsync(userId, CreateTransection(
-                    userId,
-                    ToCents(amount.Amount),
-                    account,
-                    "DEPOSIT"
-                ));
+                // Save transection only if payment succeeded
+                await transectionService.RecordTransectionAsync(userId, CreateTransection(
+                        userId,
+                        ToCents(amount.Amount),
+                        account,
+                        "DEPOSIT"
+                    ));
+            }
+            else
+            {
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "Payment failed";
+                return response;
+            }
 
             await accountRep.SaveChangesAsync();
 
@@ -244,6 +254,13 @@ namespace Backend.Services.PersonalAccountService
                 response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "Account not found";
 
+                return response;
+            }
+
+            if (amount.Amount <= 0)
+            {
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "Withdrawal amount must be greater than zero";
                 return response;
             }
 
