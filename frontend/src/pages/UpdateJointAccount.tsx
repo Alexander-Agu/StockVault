@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaUsersBetweenLines, FaCalendarCheck, FaCoins, FaArrowRight } from "react-icons/fa6";
+import { FaUsersBetweenLines, FaCalendarCheck, FaCoins, FaArrowRight, FaCircleInfo } from "react-icons/fa6";
 import NavigateBackButton from "../UI/NavigateBackButton";
 import { useDispatch, useSelector } from "react-redux";
 import { type AppDispatch, type RootState } from "../state/store/store";
@@ -70,29 +70,30 @@ export default function UpdateJointAccount() {
       <div className="relative z-10 w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 2.5rem] shadow-2xl shadow-red-900/5 overflow-hidden">
         
         {/* Left Sid */}
-        <div className="p-10 lg:p-14 bg-gradient-to-br from-red-600 to-rose-700 text-white flex flex-col justify-center gap-6">
-          <div className="w-16 h-16 bg-white/20 backdrop-blur-md xl flex items-center justify-center text-3xl mb-4">
-            <FaUsersBetweenLines />
-          </div>
-          <h2 className="text-4xl font-black tracking-tight leading-tight">
-            Update your <br /> Joint Account
-          </h2>
-          <p className="text-red-100 font-medium leading-relaxed">
-            Create a transparent space for your Stokvel or savings group. 
-            Our automated ledger ensures fair rotational payments, tracking every cent so you can focus on building wealth together.
-          </p>
-          
-          <div className="mt-8 flex flex-col gap-4">
-             <div className="flex items-center gap-3 text-sm font-bold">
-                <div className="w-6 h-6 ull bg-white/20 flex items-center justify-center text-[10px]">1</div>
-                Transparent member tracking
-             </div>
-             <div className="flex items-center gap-3 text-sm font-bold">
-                <div className="w-6 h-6 ull bg-white/20 flex items-center justify-center text-[10px]">2</div>
-                Automated payment reminders
-             </div>
-          </div>
-        </div>
+                <div className="p-10 lg:p-14 bg-slate-900 text-white flex flex-col justify-center gap-8">
+                    <div className="w-16 h-16 bg-red-600 rounded-none flex items-center justify-center text-3xl shadow-lg shadow-red-500/20">
+                        <FaUsersBetweenLines />
+                    </div>
+                    
+                    <div className="space-y-4">
+                        <h2 className="text-4xl font-black tracking-tighter leading-tight">
+                            Update Joint Account
+                        </h2>
+                        <p className="text-slate-400 font-medium leading-relaxed">
+                            Maintain your group's financial health. Adjust your Stokvel's identity or prepare for the next rotation cycle.
+                        </p>
+                    </div>
+                    
+                    {/* Restriction Banner */}
+                    <div className="bg-red-500/10 border-l-4 border-red-500 p-6 space-y-2">
+                        <div className="flex items-center gap-2 text-red-500 font-bold uppercase tracking-widest text-[10px]">
+                            <FaCircleInfo /> Important Notice
+                        </div>
+                        <p className="text-xs text-slate-300 leading-relaxed italic">
+                            You can only update the contribution schedule once the current payment rotation has fully finished. Members must complete their cycles before changes take effect.
+                        </p>
+                    </div>
+                </div>
 
         {/* Right Side - The Form */}
         <form onSubmit={handleSubmit} className="p-10 lg:p-14 flex flex-col gap-6 bg-[#F8EEED]">

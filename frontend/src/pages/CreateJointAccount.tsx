@@ -47,7 +47,7 @@ export default function CreateJointAccount() {
       </div>
 
       {/* Main Container */}
-      <div className="relative z-10 w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 rounded-[2.5rem] shadow-2xl shadow-red-900/5 overflow-hidden">
+      <div className="relative z-10 w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 shadow-2xl shadow-red-900/5 overflow-hidden">
         
         {/* Left Sid */}
         <div className="p-10 lg:p-14 bg-gradient-to-br from-red-600 to-rose-700 text-white flex flex-col justify-center gap-6">

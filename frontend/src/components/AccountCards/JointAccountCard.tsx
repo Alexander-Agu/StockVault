@@ -52,7 +52,7 @@ export default function JointAccountCard({
         <div className="flex items-end justify-between">
           <div className="flex flex-col space-y-1">
             <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
-              Monthly Contribution
+              Current Balance
             </p>
             <h2 className="text-3xl font-black text-slate-900 tracking-tighter">
               R{balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}

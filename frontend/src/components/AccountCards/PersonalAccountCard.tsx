@@ -55,6 +55,7 @@ export default function PersonalAccountCard({ title, amount, locked, url, accoun
           const forbiddenForSavings = ["update", "delete", "lock"];
           if (isSavings && forbiddenForSavings.some(f => name.toLowerCase().includes(f))) return null;
 
+          if (!locked || name.toLowerCase() === "view")
           return (
             <Link
               to={path}
