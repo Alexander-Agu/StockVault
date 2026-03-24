@@ -13,5 +13,6 @@ namespace Backend.Entities
         public User? User { get; set; }
 
         public AccountLocks? AccountLock { get; set; }
+        public ICollection<JointAccountMembers> Members { get; set; } = new List<JointAccountMembers>();
     }
 }
