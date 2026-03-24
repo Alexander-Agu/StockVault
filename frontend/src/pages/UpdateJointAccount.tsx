@@ -1,44 +1,64 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaUsersBetweenLines, FaCalendarCheck, FaCoins, FaArrowRight } from "react-icons/fa6";
 import NavigateBackButton from "../UI/NavigateBackButton";
-import { useDispatch } from "react-redux";
-import { type AppDispatch } from "../state/store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { type AppDispatch, type RootState } from "../state/store/store";
 import { CreateJointAccounts } from "../state/JointAccount/JointAccountSlicer";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { CreateSchedule } from "../state/ContributionSchedule/ContributionScheduleSlicer";
 
-export default function CreateJointAccount() {
+export default function UpdateJointAccount() {
+    const { jointAccountId } = useParams();
+
+    const jointAccount = useSelector((state: RootState) => state.jointAccount)
+        .jointAccounts?.find(j => j.id == Number(jointAccountId));
+    const schedule = useSelector((state: RootState) => state.contributionSchedule)
+        .schedule;
+
     const dispatch = useDispatch<AppDispatch>();
     const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    title: "",
-    amount: 0,
-    frequency: "MONTHLY",
-    startDate: ""
-  });
+    const [formData, setFormData] = useState({
+        title: "",
+        amount: 0,
+        frequency: "MONTHLY",
+        startDate: ""
+    });
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    try{
-        const id = await dispatch(CreateJointAccounts(formData.title))
-
-        if (id > 0){
-
-          await new Promise(resolve => setTimeout(resolve, 1000)); // Small delay
-          const response = await dispatch(CreateSchedule({
-              amountCents: Number(formData.amount) * 100,
-              frequency: formData.frequency,
-              startDate: formData.startDate
-          }, id));
+    useEffect(()=>{
+        if (jointAccount != null){
+            setFormData({ ...formData, title: jointAccount.title })
         }
-    } catch{
-        console.log("Failed to create joint account");
 
-    }
-    
-  };
+        if (schedule != null){
+            setFormData({ ...formData, amount: schedule.amountCents })
+            setFormData({ ...formData, frequency: schedule.frequency })
+            setFormData({ ...formData, startDate: schedule.startDate.toDateString() })
+        }
+    },[Number(jointAccountId)]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        try{
+            const id = await dispatch(CreateJointAccounts(formData.title))
+
+            if (id > 0){
+                // Check if user is trying to update the joint accounts name
+                if (jointAccount?.title !== formData.title && formData.title.trim() !== ""){
+
+                }
+
+                // Check if user is trying to update the joint account frequency
+                if (schedule?.frequency !== formData.frequency && formData.frequency.trim() !== ""){
+
+                }
+            }
+        } catch{
+            console.log("Failed to update joint account");
+        }
+        
+    };
 
   return (
     <div className="relative z-3 sm:z-0 w-full min-h-full bg-[#F8EEED] flex flex-col items-center justify-center p-6 overflow-hidden">
@@ -47,15 +67,15 @@ export default function CreateJointAccount() {
       </div>
 
       {/* Main Container */}
-      <div className="relative z-10 w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 rounded-[2.5rem] shadow-2xl shadow-red-900/5 overflow-hidden">
+      <div className="relative z-10 w-full max-w-4xl grid grid-cols-1 lg:grid-cols-2 2.5rem] shadow-2xl shadow-red-900/5 overflow-hidden">
         
         {/* Left Sid */}
         <div className="p-10 lg:p-14 bg-gradient-to-br from-red-600 to-rose-700 text-white flex flex-col justify-center gap-6">
-          <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-3xl mb-4">
+          <div className="w-16 h-16 bg-white/20 backdrop-blur-md xl flex items-center justify-center text-3xl mb-4">
             <FaUsersBetweenLines />
           </div>
           <h2 className="text-4xl font-black tracking-tight leading-tight">
-            Start Your <br /> Joint Venture
+            Update your <br /> Joint Account
           </h2>
           <p className="text-red-100 font-medium leading-relaxed">
             Create a transparent space for your Stokvel or savings group. 
@@ -64,11 +84,11 @@ export default function CreateJointAccount() {
           
           <div className="mt-8 flex flex-col gap-4">
              <div className="flex items-center gap-3 text-sm font-bold">
-                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-[10px]">1</div>
+                <div className="w-6 h-6 ull bg-white/20 flex items-center justify-center text-[10px]">1</div>
                 Transparent member tracking
              </div>
              <div className="flex items-center gap-3 text-sm font-bold">
-                <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center text-[10px]">2</div>
+                <div className="w-6 h-6 ull bg-white/20 flex items-center justify-center text-[10px]">2</div>
                 Automated payment reminders
              </div>
           </div>
@@ -84,9 +104,10 @@ export default function CreateJointAccount() {
             </label>
             <div className="relative">
               <input
+                value={formData.title}
                 type="text"
                 placeholder="e.g. Fortune Stokvel"
-                className="w-full pl-6 pr-6 py-4 bg-white/80 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-slate-900"
+                className="w-full pl-6 pr-6 py-4 bg-white/80 border border-slate-200 xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-slate-900"
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                 required
               />
@@ -101,9 +122,10 @@ export default function CreateJointAccount() {
             <div className="relative">
               <FaCoins className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" />
               <input
+                value={formData.amount}
                 type="number"
                 placeholder="500.00"
-                className="w-full pl-14 pr-6 py-4 bg-white/80 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-slate-900"
+                className="w-full pl-14 pr-6 py-4 bg-white/80 border border-slate-200 xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-slate-900"
                 onChange={(e) => setFormData({ ...formData, amount: Number(e.target.value) })}
                 required
               />
@@ -116,7 +138,7 @@ export default function CreateJointAccount() {
               Payment Frequency
             </label>
             <select
-              className="w-full px-6 py-4 bg-white/80 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-slate-900 appearance-none cursor-pointer"
+              className="w-full px-6 py-4 bg-white/80 border border-slate-200 xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-slate-900 appearance-none cursor-pointer"
               value={formData.frequency}
               onChange={(e) => setFormData({ ...formData, frequency: e.target.value })}
             >
@@ -133,8 +155,9 @@ export default function CreateJointAccount() {
             <div className="relative">
               <FaCalendarCheck className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-300" />
               <input
+                value={formData.startDate}
                 type="date"
-                className="w-full pl-14 pr-6 py-4 bg-white/80 border border-slate-200 rounded-2xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-slate-900"
+                className="w-full pl-14 pr-6 py-4 bg-white/80 border border-slate-200 xl focus:ring-4 focus:ring-red-500/10 focus:border-red-500 outline-none transition-all font-bold text-slate-900"
                 onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
                 required
               />
@@ -144,9 +167,9 @@ export default function CreateJointAccount() {
           {/* Submit Button */}
           <button
             type="submit"
-            className="group mt-4 w-full py-5 bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-red-500/20 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
+            className="group mt-4 w-full py-5 bg-red-600 hover:bg-red-700 text-white font-black uppercase tracking-widest xl shadow-xl shadow-red-500/20 transition-all flex items-center justify-center gap-3 active:scale-[0.98]"
           >
-            Finalize & Create <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
+            Update Account <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
           </button>
         </form>
 

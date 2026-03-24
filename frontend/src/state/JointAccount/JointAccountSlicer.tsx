@@ -4,6 +4,8 @@ import { CreateJointAccountsAsync, FetchJointAccountsAsync, JointAccountDepositA
 
 interface JointAccount {
     id: number;
+    isAdmin: boolean;
+    members: number;
     title: string;
     createdBy: number;
     balance: number;
@@ -86,6 +88,7 @@ export const FetchJointAccounts = () =>
             if (!response) throw new Error("Failed to fetch");
 
             accounts = response.data;
+            console.log(response.data);
 
             dispatch(setJointAccounts(accounts));
         } catch {

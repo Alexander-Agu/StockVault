@@ -14,6 +14,7 @@ export default function ViewPersonalAccount() {
   const account = personalAccount.personalAccounts?.find(x => x.id === Number(accountId));
   const dispatch = useDispatch<AppDispatch>();
   const transactions = useSelector((state: RootState) => state.transactions.transactions);
+  
 
   useEffect(() => {
     if (accountId) {
@@ -25,87 +26,85 @@ export default function ViewPersonalAccount() {
 
   const { id, title, balance, createdAt, lockedUntil, isActive } = account;
   
-  // Logic helpers
+  // Savings is special: No lock UI, withdrawal always allowed
   const isSavings = title.toLowerCase().includes("savings");
-  const isLocked = !isSavings && isActive; // Only standard accounts can be "locked" in this context
+  const isLocked = !isSavings && isActive;
 
   return (
-    <div className="w-full min-h-screen bg-[#F8EEED] p-6 flex flex-col gap-8 text-slate-900">
+    <div className="w-full min-h-screen bg-[#F8EEED] p-6 flex flex-col gap-8 text-slate-900 font-sans">
       <NavigateBackButton title="back" />
 
-      {/* Main Account Card - Sharp Edges & Minimalist */}
-      <div className="w-full bg-white border border-slate-200 rounded-none p-8 shadow-sm">
+      {/* Main Account Card */}
+      <div className="w-full bg-white/40 border border-white rounded-none p-8 shadow-xl shadow-red-900/5">
         <div className="flex flex-col lg:flex-row justify-between gap-12">
           
           {/* Left: Account Info */}
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-8">
             <div className="space-y-1">
-              <div className="flex items-center gap-3">
-                <h2 className="text-3xl font-light tracking-tight lowercase">{title}</h2>
-                <div className="flex gap-3 ml-2">
+              <div className="flex items-center gap-4">
+                <h2 className="text-4xl font-black tracking-tighter  text-slate-900">{title}</h2>
+                <div className="flex gap-4">
                   <button className="text-slate-400 hover:text-slate-600 transition-colors">
-                    <FaPenToSquare size={14} />
+                    <FaPenToSquare size={16} />
                   </button>
-                  <button className="text-slate-300 hover:text-red-500 transition-colors">
-                    <FaTrashCan size={14} />
+                  <button className="text-red-400 hover:text-red-600 transition-colors">
+                    <FaTrashCan size={16} />
                   </button>
                 </div>
               </div>
-              <p className="text-slate-400 text-xs font-mono tracking-tighter">id: {id}</p>
+              <p className="text-slate-500 text-xs font-mono tracking-tighter">id: {id}</p>
             </div>
 
             <div className="space-y-1">
-              <span className="text-slate-400 lowercase text-xs tracking-widest">total balance</span>
-              <h1 className="text-5xl font-medium tracking-tighter">
+              <span className="text-red-500 text-xs font-bold tracking-[0.2em]">total balance</span>
+              <h1 className="text-6xl font-black tracking-tighter text-slate-900">
                 {formatCurrency(balance)}
               </h1>
             </div>
 
-            <div className="flex items-center gap-2 mt-4">
+            <div className="flex flex-col items-start sm:flex-row sm:items-center gap-3 mt-4">
               <Link to="deposit"
-                className="flex items-center gap-2 bg-slate-900 text-white px-8 py-3 rounded-none text-sm font-medium hover:bg-slate-800 transition-all uppercase tracking-widest">
+                className="flex items-center gap-2 bg-red-600 text-white px-10 py-4 rounded-none text-xs font-bold uppercase tracking-widest hover:bg-red-700 transition-all shadow-lg shadow-red-500/20 active:scale-[0.98]">
                 <FaArrowDown size={12} /> deposit
               </Link>
 
               {(!isLocked || isSavings) && (
                 <Link to="withdraw"
-                  className="flex items-center gap-2 bg-white text-slate-900 px-8 py-3 rounded-none text-sm font-medium border border-slate-900 hover:bg-slate-50 transition-all uppercase tracking-widest">
+                  className="flex items-center gap-2 bg-white text-slate-700 px-10 py-4 rounded-none text-xs font-bold border border-red-100 hover:bg-slate-50 transition-all uppercase tracking-widest shadow-sm">
                   <FaArrowUp size={12} /> withdraw
                 </Link>
               )}
             </div>
           </div>
 
-          {/* Right: Security/Lock Logic (Hidden for Savings) */}
+          {/* Right: Lock Logic - Hidden for Saving */}
           {!isSavings && (
-            <div className="flex flex-col justify-end min-w-[280px]">
-              <div className="border-l border-slate-100 pl-8 space-y-6">
+            <div className="flex flex-col justify-end min-w-[300px]">
+              <div className="border-l-2 border-red-500 pl-8 space-y-6 bg-white/20 p-6">
                 <div>
-                  <h3 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-4">security</h3>
+                  <h3 className="text-xs font-black uppercase tracking-[0.2em] text-red-500/50 mb-4">security</h3>
                   
                   <div className="space-y-4">
-                    <div className="flex justify-between items-center border-b border-slate-50 pb-2">
-                      <span className="text-xs lowercase text-slate-400">opened on</span>
-                      <span className="text-sm font-medium text-slate-700">{new Date(createdAt).toLocaleDateString()}</span>
+                    <div className="flex justify-between items-center border-b border-red-50 pb-2">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">opened on</span>
+                      <span className="text-sm font-black text-slate-700">{new Date(createdAt).toLocaleDateString()}</span>
                     </div>
 
-                    {/* Show lock details only if locked */}
                     {isLocked && (
-                      <div className="flex justify-between items-center border-b border-slate-50 pb-2">
-                        <span className="text-xs lowercase text-slate-400">locked until</span>
-                        <span className="text-sm font-medium text-red-500">{lockedUntil?.toString()}</span>
+                      <div className="flex justify-between items-center border-b border-red-50 pb-2">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-red-500/50">locked until</span>
+                        <span className="text-sm font-black text-red-600">{lockedUntil?.toString()}</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                {/* Show Lock Button only if NOT locked */}
                 {!isLocked ? (
-                  <Link to="lock-account" className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-slate-900 hover:text-red-500 transition-colors">
+                  <Link to="lock-account" className="inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-900 hover:text-red-600 transition-colors">
                     <FaLock size={10} /> lock this account
                   </Link>
                 ) : (
-                  <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-red-500/50">
+                  <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-red-500/40 italic">
                     <FaLock size={10} /> account restricted
                   </div>
                 )}
@@ -116,7 +115,7 @@ export default function ViewPersonalAccount() {
       </div>
 
       {/* Transaction List */}
-      <div className="rounded-none border border-slate-200 bg-white p-2">
+      <div className="rounded-none border border-white bg-white/40 backdrop-blur-sm p-2 shadow-xl shadow-red-900/5">
         <Transactions />
       </div>
     </div>

@@ -9,10 +9,11 @@ import { GetFirstLetter } from "../../tools/UserTools";
 interface ProfileHeaderProps{
     name: string
     title: string,
-    message: string
+    message: string,
+    path: string
 }
 
-export default function PortalHeader({ title, name, message}: ProfileHeaderProps) {
+export default function PortalHeader({ title, name, message, path}: ProfileHeaderProps) {
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
     const HandleProfileMenuOpen = ()=> {
@@ -42,8 +43,7 @@ export default function PortalHeader({ title, name, message}: ProfileHeaderProps
 
     <div className="relative z-10 flex items-center gap-3">
 
-        <a
-        href="#"
+        <Link to={path}
         className="
             w-[42px] h-[42px]
             rounded-full
@@ -56,7 +56,7 @@ export default function PortalHeader({ title, name, message}: ProfileHeaderProps
         "
         >
         {GetFirstLetter(name)}
-        </a>
+        </Link>
 
 
         <nav>
@@ -94,7 +94,7 @@ export default function PortalHeader({ title, name, message}: ProfileHeaderProps
             </li>
 
             <li className="w-full">
-            <Link to={"profile"} className="flex items-center gap-3 p-2 rounded-lg hover:bg-black/5 transition">
+            <Link to={path} className="flex items-center gap-3 p-2 rounded-lg hover:bg-black/5 transition">
                 <IoPersonSharp className="text-xl text-red-500" />
                 <p className="text-sm font-medium">Profile</p>
             </Link>

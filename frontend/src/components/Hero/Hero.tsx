@@ -3,7 +3,8 @@ import { Link } from "react-router-dom"
 
 export default function Hero() {
   return (
-    <section className="bg-[#F8EEED]">
+    <section className="bg-[#F8EEED] bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] 
+  bg-[size:50px_50px]">
       <div className="max-w-7xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12 items-center">
 
         {/* LEFT */}
