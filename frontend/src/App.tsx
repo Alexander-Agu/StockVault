@@ -16,6 +16,7 @@ import JointAccounts from './pages/JointAccounts';
 import ViewJointAccount from './pages/ViewJointAccount';
 import CreateJointAccount from './pages/CreateJointAccount';
 import Profile from './pages/Profile';
+import UpdateJointAccount from './pages/UpdateJointAccount';
 
 function App() {
 
@@ -113,6 +114,11 @@ function App() {
         {
           path: "joint-account/:jointAccountId/deposit",
           element: <Deposit />
+        },
+        
+        {
+          path: "joint-account/:jointAccountId/update",
+          element: <UpdateJointAccount />
         },
       ]
     }

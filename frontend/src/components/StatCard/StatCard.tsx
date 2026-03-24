@@ -1,5 +1,5 @@
 import type { IconType } from "react-icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 interface StatCardProps {
   title: string;
@@ -10,31 +10,37 @@ interface StatCardProps {
   path: string;
 }
 
-export default function StatCard ({ title, count, icon: Icon, linkText, resultName, path }: StatCardProps){
-  const navigate = useNavigate();
+export default function StatCard({ title, count, icon: Icon, linkText, resultName, path }: StatCardProps) {
   return (
-    <div className="group relative flex flex-col justify-between w-full h-48 p-5 bg-white/40 backdrop-blur-sm border border-white/60 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:bg-white/60 hover:border-red-200/50">
+    <div className="group relative flex flex-col justify-between w-full h-48 p-6 bg-white border border-slate-200 rounded-none transition-all duration-300 hover:border-red-500 shadow-sm hover:shadow-xl hover:shadow-red-900/5">
       
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 flex items-center justify-center bg-white text-red-500 rounded-lg shadow-sm group-hover:bg-red-500 group-hover:text-white transition-colors duration-300">
+      {/* Header Area */}
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 flex items-center justify-center bg-slate-50 text-slate-900 rounded-none border border-slate-100 group-hover:bg-red-600 group-hover:text-white group-hover:border-red-600 transition-all duration-300">
           <Icon size={20} />
         </div>
-        <span className="text-lg font-semibold text-slate-700">{title}</span>
+        <span className="text-sm font-bold text-slate-400 uppercase tracking-widest leading-tight">
+          {title}
+        </span>
       </div>
 
+      {/* Main Content Area */}
       <div className="flex items-baseline gap-2">
-        <h2 className="text-4xl font-bold text-slate-900">
+        <h2 className="text-4xl font-black text-slate-900 tracking-tighter">
           {count.toLocaleString()}
         </h2>
-        <span className="text-sm font-medium text-slate-500 uppercase tracking-wider">{resultName}</span>
+        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+          {resultName}
+        </span>
       </div>
 
-      <div className="flex justify-end">
-        <Link to={path}
-          // onClick={()=> navigate(`../../${path}`)}
-          className="text-xs font-bold text-red-400 hover:text-red-600 transition-colors uppercase tracking-tight underline"
+      {/* Action Footer */}
+      <div className="flex justify-start border-t border-slate-50 pt-3">
+        <Link 
+          to={path}
+          className="text-[10px] font-black text-red-500 hover:text-slate-900 transition-colors uppercase tracking-[0.15em]"
         >
-          {linkText}
+          {linkText} →
         </Link>
       </div>
     </div>
