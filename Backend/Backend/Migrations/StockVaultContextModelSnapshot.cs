@@ -294,7 +294,7 @@ namespace Backend.Migrations
             modelBuilder.Entity("Backend.Entities.JointAccountMembers", b =>
                 {
                     b.HasOne("Backend.Entities.JointAccount", "JointAccount")
-                        .WithMany()
+                        .WithMany("Members")
                         .HasForeignKey("JointAccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -330,6 +330,11 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Backend.Entities.JointAccount", b =>
+                {
+                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("Backend.Entities.PersonalAccount", b =>
