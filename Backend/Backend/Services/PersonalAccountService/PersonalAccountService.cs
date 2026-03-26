@@ -204,11 +204,12 @@ namespace Backend.Services.PersonalAccountService
                 return response;
             }
 
-            AccountLocks? findAccount = await lockRep.FindAccountLockByAccountId(accountId);
-            if (findAccount != null)
+            AccountLocks? findAccountLock = await lockRep.FindAccountLockByAccountId(accountId);
+            if (findAccountLock != null)
             {
-                response.ResponseCode = ResponseCode.BadRequest;
-                response.Message = "Lock already exists";
+                findAccountLock.LockedUntil = accountLock.LockDate;
+                response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+                await lockRep.SaveChangesAsync();
 
                 return response;
             }
