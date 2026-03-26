@@ -25,10 +25,11 @@ export default function ViewPersonalAccount() {
   if (account == null) return null;
 
   const { id, title, balance, createdAt, lockedUntil, isActive } = account;
+  console.log(lockedUntil)
   
   // Savings is special: No lock UI, withdrawal always allowed
   const isSavings = title.toLowerCase().includes("savings");
-  const isLocked = !isSavings && isActive;
+  const isLocked = !isSavings && isActive && new Date(lockedUntil).getTime() > new Date().getTime();
 
   return (
     <div className="w-full min-h-screen bg-[#F8EEED] p-6 flex flex-col gap-8 text-slate-900 font-sans">

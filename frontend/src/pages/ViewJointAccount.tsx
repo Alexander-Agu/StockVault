@@ -76,7 +76,7 @@ export default function ViewJointAccount() {
                 </div>
               </div>
 
-              <div className="flex flex-row-reverse sm:flex-col items-end gap-4 w-full">
+              <div className="flex flex-col-reverse sm:flex-col items-start sm:items-end gap-4 w-full">
                 <div className="bg-white/40 border border-red-50 p-6 rounded-none flex flex-col items-end min-w-[220px]">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Contribution</p>
                   <p className="text-2xl font-black text-slate-900 tracking-tighter">
