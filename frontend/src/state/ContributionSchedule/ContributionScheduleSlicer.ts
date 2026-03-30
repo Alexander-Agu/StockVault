@@ -39,14 +39,15 @@ const contributionScheduleSlicer = createSlice({
             state.error = action.payload;
         },
 
-        resetJointAccountState: ()=> initialState
+        resetContributionSchedule: ()=> initialState
     }
 })
 
 export const {
     setContributionSchedule,
     setLoading,
-    setError
+    setError,
+    resetContributionSchedule
 } = contributionScheduleSlicer.actions;
 
 export default contributionScheduleSlicer.reducer;

@@ -108,3 +108,24 @@ export const FetchProfileAsync = async (userId: number) => {
         return false;
     }
 }
+
+
+// Update user profile
+export interface UpdateProfile{
+    name: string;
+    phone: string;
+}
+export const UpdateProfileAsync = async (userId: number, body: UpdateProfile) => {
+    const token = getToken();
+    
+    try{
+        const response = await api.put(`/User/profile/${userId}`, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data
+    } catch{
+        return false;
+    }
+}

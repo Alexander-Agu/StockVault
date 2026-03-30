@@ -47,7 +47,7 @@ const memberSlicer =  createSlice({
             state.error = action.payload;
         },
 
-        resetPersonalAccount: () => initialState
+        resetMembers: () => initialState
     }
 });
 
@@ -55,7 +55,7 @@ export const {
     setMembers,
     setAddMember,
     setLoading, setError, 
-    resetPersonalAccount,
+    resetMembers,
 } = memberSlicer.actions;
 export default memberSlicer.reducer;
 
