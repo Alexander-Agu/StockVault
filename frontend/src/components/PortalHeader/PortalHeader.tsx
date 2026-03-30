@@ -5,6 +5,8 @@ import { IoPersonSharp } from "react-icons/io5";
 import { IoExitSharp } from "react-icons/io5";
 import { useState } from "react";
 import { GetFirstLetter } from "../../tools/UserTools";
+import useResetStore from "../../state/store/ResetStore";
+
 
 interface ProfileHeaderProps{
     name: string
@@ -15,6 +17,7 @@ interface ProfileHeaderProps{
 
 export default function PortalHeader({ title, name, message, path}: ProfileHeaderProps) {
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+    const logout = useResetStore();
 
     const HandleProfileMenuOpen = ()=> {
         if (profileMenuOpen) setProfileMenuOpen(false);
@@ -101,7 +104,7 @@ export default function PortalHeader({ title, name, message, path}: ProfileHeade
             </li>
 
             <li className="w-full">
-            <button className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-black/5 transition">
+            <button onClick={()=> logout()} className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-black/5 transition">
                 <IoExitSharp className="text-xl text-red-500" />
                 <p className="text-sm font-medium">Logout</p>
             </button>

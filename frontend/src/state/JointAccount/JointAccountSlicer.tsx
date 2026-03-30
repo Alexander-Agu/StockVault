@@ -52,7 +52,8 @@ export const {
     setJointAccounts,
     setNewJointAccount,
     setLoading,
-    setError
+    setError,
+    resetJointAccountState
 } = jointAccountSlicer.actions;
 
 export default jointAccountSlicer.reducer;

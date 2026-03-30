@@ -1,6 +1,6 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 import type { AppDispatch } from "../store/store";
-import { FetchProfileAsync } from "../../api/UserApi";
+import { FetchProfileAsync, UpdateProfileAsync, type UpdateProfile } from "../../api/UserApi";
 
 interface User {
     name: string;
@@ -63,3 +63,24 @@ export const fetchUser = (id: number) =>
             return userId;
         }
     };
+
+export const UpdateUser = (id: number, body: UpdateProfile) => 
+    async (dispatch: AppDispatch): Promise<number> => {
+        let userId = 0;
+        dispatch(setLoading(true));
+        try{
+            const response = await UpdateProfileAsync(id, body);
+
+            if (!response) throw new Error("Failed to update profile");
+            await dispatch(setUser(response.data));
+
+            userId = id;
+            return userId;
+            
+        } catch{
+            dispatch(setError("Failed to update profile"))
+        } finally{
+            dispatch(setLoading(false));
+            return userId;
+        }
+};
