@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux";
 import { type AppDispatch } from "../state/store/store";
 import { CreateJointAccounts } from "../state/JointAccount/JointAccountSlicer";
 import { useNavigate } from "react-router-dom";
-import { CreateSchedule } from "../state/ContributionSchedule/ContributionScheduleSlicer";
 
 export default function CreateJointAccount() {
     const dispatch = useDispatch<AppDispatch>();
@@ -17,27 +16,31 @@ export default function CreateJointAccount() {
     frequency: "MONTHLY",
     startDate: ""
   });
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
-    try{
-        const id = await dispatch(CreateJointAccounts(formData.title))
+    try {
+      const result = await dispatch(CreateJointAccounts(
+        formData.title,
+        Number(formData.amount) * 100,
+        formData.frequency,
+        formData.startDate
+      )) as { id: number; error?: string };
 
-        if (id > 0){
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
 
-          await new Promise(resolve => setTimeout(resolve, 1000)); // Small delay
-          const response = await dispatch(CreateSchedule({
-              amountCents: Number(formData.amount) * 100,
-              frequency: formData.frequency,
-              startDate: formData.startDate
-          }, id));
-        }
-    } catch{
-        console.log("Failed to create joint account");
-
+      if (result.id > 0) {
+        navigate("/accounts");
+      }
+    } catch {
+      setError("Failed to create joint account");
     }
-    
   };
 
   return (
@@ -76,6 +79,7 @@ export default function CreateJointAccount() {
 
         {/* Right Side - The Form */}
         <form onSubmit={handleSubmit} className="p-10 lg:p-14 flex flex-col gap-6 bg-[#F8EEED]">
+          {error && <p className="text-sm font-bold text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3">{error}</p>}
           
           {/* Title Input */}
           <div className="flex flex-col gap-2">

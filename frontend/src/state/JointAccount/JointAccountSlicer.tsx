@@ -58,24 +58,20 @@ export const {
 
 export default jointAccountSlicer.reducer;
 
-export const CreateJointAccounts = (title: string) => 
-    async (dispatch: AppDispatch): Promise<number> => {
+export const CreateJointAccounts = (title: string, amountCents?: number, frequency?: string, startDate?: string) =>
+    async (dispatch: AppDispatch): Promise<{ id: number; error?: string }> => {
         let id = 0;
         dispatch(setLoading(true));
-        try{
-            const response = await CreateJointAccountsAsync(title)
-
-            if (!response) throw new Error("Failed to create a joint account");
-
+        try {
+            const response = await CreateJointAccountsAsync(title, amountCents, frequency, startDate);
             id = response.data.id;
-
             dispatch(setNewJointAccount(response.data));
-        } catch {
-            console.log("Failed to create a joint account");
-            return id;
-        }finally{        
+            return { id };
+        } catch (err: any) {
+            const message = err?.response?.data?.message ?? "Failed to create a joint account";
+            return { id, error: message };
+        } finally {
             dispatch(setLoading(false));
-            return id;
         }
     }
 
@@ -83,20 +79,15 @@ export const FetchJointAccounts = () =>
     async (dispatch: AppDispatch): Promise<JointAccount[]> => {
         let accounts: JointAccount[] = [];
         dispatch(setLoading(true));
-        try{
-            const response = await FetchJointAccountsAsync()
-
+        try {
+            const response = await FetchJointAccountsAsync();
             if (!response) throw new Error("Failed to fetch");
-
             accounts = response.data;
-            console.log(response.data);
-
             dispatch(setJointAccounts(accounts));
         } catch {
-            console.log("Again its chaai");
             return accounts;
-        }finally{        
-            await dispatch(setLoading(false));
+        } finally {
+            dispatch(setLoading(false));
             return accounts;
         }
     }

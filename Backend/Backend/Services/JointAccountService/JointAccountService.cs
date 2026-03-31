@@ -9,6 +9,7 @@ using Backend.Dtos.TransectionDto;
 using Backend.Entities;
 using Backend.Mapping;
 using Backend.Repository.AccountLocksRepository;
+using Backend.Repository.ContributionScheduleRepository;
 using Backend.Repository.JointAccountRepository;
 using Backend.Repository.PersonalAccountRespository;
 using Backend.Repository.UserRepository;
@@ -20,11 +21,12 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace Backend.Services.JointAccountService
 {
     public class JointAccountService( // Dependency Injections
-        IJointAccountRepository accountRep, 
-        IUserRepository userRep, 
+        IJointAccountRepository accountRep,
+        IUserRepository userRep,
         IAccountRepositoryLocks lockRep,
         ITransectionService transectionService,
         IJointAccountMembersService membersService,
+        IContributionScheduleRepository scheduleRep,
 
         PaymentIntentService paymentService) : IJointAccountService
     {
@@ -69,13 +71,30 @@ namespace Backend.Services.JointAccountService
             await accountRep.AddJointAccountAsync(account);
             await accountRep.SaveChangesAsync();
 
-            // After saving new acccount return it
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
-            
-
             // Make Creator an admin after creating the account
-            AddMemberDto newMember = new() { email = user.Email, Role = "ADMIN" }; 
+            AddMemberDto newMember = new() { email = user.Email, Role = "ADMIN" };
             await membersService.CreateAdminAsync(userId, account.Id, newMember);
+
+            // Create contribution schedule if schedule data is provided
+            if (newAccount.AmountCents.HasValue && newAccount.StartDate.HasValue)
+            {
+                var schedule = new ContributionSchedule
+                {
+                    JointAccountId = account.Id,
+                    AmountCents = newAccount.AmountCents.Value,
+                    Frequency = newAccount.Frequency,
+                    StartDate = newAccount.StartDate.Value,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await scheduleRep.AddScheduleAsync(schedule);
+                await scheduleRep.SaveChangesAsync();
+            }
+
+            // After saving new account with member, return it
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
+
             return response;
         }
 
@@ -196,15 +215,6 @@ var options = new PaymentIntentCreateOptions
             {
                 response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "Account not found";
-
-                return response;
-            }
-
-            // Verify user is the creator
-            if (account.CreatedBy != userId)
-            {
-                response.ResponseCode = ResponseCode.Forbidden;
-                response.Message = "You are not the creator of this account";
 
                 return response;
             }

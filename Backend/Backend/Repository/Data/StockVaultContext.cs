@@ -45,7 +45,7 @@ namespace Backend.Repository.Data
             // JointAccountMembers relationships
             modelBuilder.Entity<JointAccountMembers>()
                 .HasOne(m => m.JointAccount)
-                .WithMany()
+                .WithMany(a => a.Members)
                 .HasForeignKey(m => m.JointAccountId)
                 .OnDelete(DeleteBehavior.Cascade);
 
@@ -66,16 +66,6 @@ namespace Backend.Repository.Data
                 .WithMany()
                 .HasForeignKey(c => c.JointAccountId)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<JointAccountMembers>()
-                .HasOne(j => j.JointAccount)
-                .WithMany(a => a.Members)
-                .HasForeignKey(j => j.JointAccountId);
-
-            modelBuilder.Entity<JointAccountMembers>()
-                .HasOne(j => j.User)
-                .WithMany()
-                .HasForeignKey(j => j.UserId);
         }
     }
 }
