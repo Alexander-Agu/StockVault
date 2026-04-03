@@ -27,10 +27,16 @@ export interface JointAccount {
 }
 
 // Fetches all joint accounts the user is involved in
-export const CreateJointAccountsAsync = async (title: string) => {
+export const CreateJointAccountsAsync = async (title: string, amountCents?: number, frequency?: string, startDate?: string) => {
     const token = getToken();
     try{
-        const response = await api.post("", {title: title}, {
+        const payload: any = { title };
+
+        if (amountCents !== undefined) payload.amountCents = amountCents;
+        if (frequency !== undefined) payload.frequency = frequency;
+        if (startDate !== undefined) payload.startDate = startDate;
+
+        const response = await api.post("", payload, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

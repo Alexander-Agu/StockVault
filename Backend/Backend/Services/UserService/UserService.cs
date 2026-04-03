@@ -157,7 +157,7 @@ namespace Backend.Services.UserService
             }
 
             // Saving user's refresh tokens
-            SaveRefreshToken(user);
+            await SaveRefreshToken(user);
 
             // returning Token Response
             TokenResponseDto tokenResponse = user.ToTokenResponse();
@@ -222,7 +222,16 @@ namespace Backend.Services.UserService
             if (user.Name != newProfile.Name && newProfile.Name != "") user.Name = newProfile.Name;
 
             // Update phone number
-            if (user.Phone != newProfile.Phone && ValidatePhoneNumber(newProfile.Phone)) user.Phone = newProfile.Phone;
+            if (user.Phone != newProfile.Phone)
+            {
+                if (!ValidatePhoneNumber(newProfile.Phone))
+                {
+                    response.ResponseCode = ResponseCode.BadRequest;
+                    response.Message = "Invalid phone number";
+                    return response;
+                }
+                user.Phone = newProfile.Phone;
+            }
 
             await userRepository.SaveChanges();
 
@@ -392,7 +401,7 @@ namespace Backend.Services.UserService
         /*
          * TODO: Allows refresh token to be saved in the database
          */
-        private async void SaveRefreshToken(User user)
+        private async Task SaveRefreshToken(User user)
         {
             user.RefreshToken = GenerateRefreshToken();
             user.RefreshTokenExpiryDate = DateTime.UtcNow.AddDays(7);

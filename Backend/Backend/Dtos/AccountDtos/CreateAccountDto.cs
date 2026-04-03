@@ -7,5 +7,10 @@ namespace Backend.Dtos.AccountDtos
         [Required]
         //[StringLength(20, MinimumLength = 8, ErrorMessage = "Account name must at least have minimum of 8 characters")]
         public string Title { get; set; } = string.Empty;
+
+        // Contribution Schedule (optional)
+        public int? AmountCents { get; set; }
+        public string Frequency { get; set; } = "MONTHLY";
+        public DateOnly? StartDate { get; set; }
     }
 }

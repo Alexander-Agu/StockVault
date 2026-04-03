@@ -12,3 +12,6 @@ obj/
 *.sln.docstates
 .db
 *.db
+*.db-shm
+*.db-wal
+Backend/Backend/publish/

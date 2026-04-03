@@ -45,7 +45,7 @@ namespace Backend.Repository.Data
             // JointAccountMembers relationships
             modelBuilder.Entity<JointAccountMembers>()
                 .HasOne(m => m.JointAccount)
-                .WithMany()
+                .WithMany(a => a.Members)
                 .HasForeignKey(m => m.JointAccountId)
                 .OnDelete(DeleteBehavior.Cascade);
 
