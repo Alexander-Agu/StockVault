@@ -3,6 +3,6 @@
     public class AccountBalanceDto
     {
         public int AccountId { get; set; }
-        public float Balance { get; set; }
+        public decimal Balance { get; set; }
     }
 }

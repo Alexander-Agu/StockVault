@@ -16,7 +16,7 @@ namespace Backend.Repository.JointAccountRepository
 
         public async Task DeleteJointAccountByIdAsync(int userId, int accountId)
         {
-            await context.JointAccounts.Where(j => j.UserId == userId && j.Id == accountId).ExecuteDeleteAsync();
+            await context.JointAccounts.Where(j => j.Id == accountId && (j.UserId == userId || context.JointAccountMembers.Any(m => m.JointAccountId == accountId && m.UserId == userId))).ExecuteDeleteAsync();
         }
 
         public async Task<List<JointAccountDto>> GetAllJointTableAccountsAsync(int userId)

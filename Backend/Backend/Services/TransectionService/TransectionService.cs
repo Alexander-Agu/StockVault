@@ -60,7 +60,7 @@ namespace Backend.Services.TransectionService
 
             AccountBalanceDto accountBalance = new() { 
                 AccountId = accountId,
-                Balance = await transectionRep.GetAccountBalanceAsync(userId, accountId) / 100
+                Balance = await transectionRep.GetAccountBalanceAsync(userId, accountId) / 100m
             };
 
             response.Data = accountBalance;

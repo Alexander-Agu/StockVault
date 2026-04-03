@@ -9,6 +9,7 @@ using Backend.Dtos.TransectionDto;
 using Backend.Entities;
 using Backend.Mapping;
 using Backend.Repository.AccountLocksRepository;
+using Backend.Repository.ContributionScheduleRepository;
 using Backend.Repository.JointAccountRepository;
 using Backend.Repository.PersonalAccountRespository;
 using Backend.Repository.UserRepository;
@@ -20,11 +21,12 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 namespace Backend.Services.JointAccountService
 {
     public class JointAccountService( // Dependency Injections
-        IJointAccountRepository accountRep, 
-        IUserRepository userRep, 
+        IJointAccountRepository accountRep,
+        IUserRepository userRep,
         IAccountRepositoryLocks lockRep,
         ITransectionService transectionService,
         IJointAccountMembersService membersService,
+        IContributionScheduleRepository scheduleRep,
 
         PaymentIntentService paymentService) : IJointAccountService
     {
@@ -69,13 +71,30 @@ namespace Backend.Services.JointAccountService
             await accountRep.AddJointAccountAsync(account);
             await accountRep.SaveChangesAsync();
 
-            // After saving new acccount return it
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
-            
-
             // Make Creator an admin after creating the account
-            AddMemberDto newMember = new() { email = user.Email, Role = "ADMIN" }; 
+            AddMemberDto newMember = new() { email = user.Email, Role = "ADMIN" };
             await membersService.CreateAdminAsync(userId, account.Id, newMember);
+
+            // Create contribution schedule if schedule data is provided
+            if (newAccount.AmountCents.HasValue && newAccount.StartDate.HasValue)
+            {
+                var schedule = new ContributionSchedule
+                {
+                    JointAccountId = account.Id,
+                    AmountCents = newAccount.AmountCents.Value,
+                    Frequency = newAccount.Frequency,
+                    StartDate = newAccount.StartDate.Value,
+                    IsActive = true,
+                    CreatedAt = DateTime.UtcNow
+                };
+
+                await scheduleRep.AddScheduleAsync(schedule);
+                await scheduleRep.SaveChangesAsync();
+            }
+
+            // After saving new account with member, return it
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
+
             return response;
         }
 
@@ -117,15 +136,24 @@ var options = new PaymentIntentCreateOptions
 
             var intent = await paymentService.CreateAsync(options);
 
-            if (intent.Status == "succeeded") account.Balance += ToCents(amount.Amount);
+            if (intent.Status == "succeeded")
+            {
+                account.Balance += ToCents(amount.Amount);
 
-            // Save transection
-            await transectionService.RecordTransectionAsync(userId, CreateTransectionForJoint(
-                    userId,
-                    ToCents(amount.Amount),
-                    account,
-                    "DEPOSIT"
-                ));
+                // Save transection only if payment succeeded
+                await transectionService.RecordTransectionAsync(userId, CreateTransectionForJoint(
+                        userId,
+                        ToCents(amount.Amount),
+                        account,
+                        "DEPOSIT"
+                    ));
+            }
+            else
+            {
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "Payment failed";
+                return response;
+            }
 
             await accountRep.SaveChangesAsync();
 
@@ -191,15 +219,6 @@ var options = new PaymentIntentCreateOptions
                 return response;
             }
 
-            // Verify user is the creator
-            if (account.CreatedBy != userId)
-            {
-                response.ResponseCode = ResponseCode.Forbidden;
-                response.Message = "You are not the creator of this account";
-
-                return response;
-            }
-
             response.Data = account;
             return response;
         }
@@ -251,7 +270,7 @@ var options = new PaymentIntentCreateOptions
             };
 
             // Check if account exists
-            PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
+            JointAccount account = await accountRep.GetJointAccountByIdAsync(userId, accountId);
             if (account == null)
             {
                 response.ResponseCode = ResponseCode.BadRequest;
@@ -292,7 +311,7 @@ var options = new PaymentIntentCreateOptions
             };
 
             // Checks if account exists
-            PersonalAccount account = await accountRep.GetPersonalAccountByIdAsync(userId, accountId);
+            JointAccount account = await accountRep.GetJointAccountByIdAsync(userId, accountId);
             if (account == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
@@ -301,12 +320,18 @@ var options = new PaymentIntentCreateOptions
                 return response;
             }
 
-            if (account.Balance - ToCents(amount.Amount) >= 0) // only widthdraw if user has enough funs
+            if (amount.Amount <= 0)
             {
-                account.Balance -= ToCents(amount.Amount); // widthdrawing
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "Withdrawal amount must be greater than zero";
+                return response;
+            }
 
-                // Save transection
-                await transectionService.RecordTransectionAsync(userId, CreateTransection(
+            if (account.Balance - ToCents(amount.Amount) >= 0)
+            {
+                account.Balance -= ToCents(amount.Amount);
+
+                await transectionService.RecordTransectionAsync(userId, CreateTransectionForJoint(
                         userId,
                         -ToCents(amount.Amount),
                         account,
