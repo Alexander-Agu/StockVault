@@ -1,10 +1,21 @@
-namespace Backend.Dtos.JointAccountDtos
+namespace Backend.Dtos.JointAccountMembersDtos
 {
-    public class JointAccountMembersDto
+    public class AddMemberDto
     {
-        public int Id { get; set; }
-        public string Title { get; set; } = string.Empty;
-        public int CreatedBy { get; set; }
-        public DateTime CreatedAt { get; set; }
+        public string email { get; set; } = string.Empty;
+        public string Role { get; set; } = "MEMBER";
+    }
+
+    public class ChangeRoleDto
+    {
+        public string Role { get; set; } = string.Empty;
+    }
+
+    public class MemberDto
+    {
+        public int UserId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty;
+        public DateTime JoinedAt { get; set; }
     }
 }

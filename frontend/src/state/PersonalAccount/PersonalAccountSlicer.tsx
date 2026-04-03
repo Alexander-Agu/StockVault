@@ -3,13 +3,17 @@ import type { AppDispatch } from "../store/store";
 import { TbReceiptYen } from "react-icons/tb";
 import { CreatePersonalAccountsAsync, FetchPersonalAccountsAsync, LockAccountsAsync, PersonalAccountDepositAsync, PersonalAccountWithdrawAsync, type LockAccountDto, type PersonalAccountDeposit, type PersonalAccountWithdraw } from "../../api/PersonalAccountApi";
 
+interface LockAccount{
+    id: number;
+    lockDate: string;
+}
 
-interface PersonalAccount{
+interface PersonalAccount {
     id: number;
     title: string;
     balance: number;
-    createdAt: Date;
-    lockedUntil: Date;
+    createdAt: string;
+    lockedUntil: string;
     isActive: boolean;
 }
 
@@ -44,10 +48,13 @@ const personalAccountSlicer =  createSlice({
             state.personalAccounts?.push(action.payload);
         },
 
-        setAccountLock: (state, action:PayloadAction<number>) => {
-            const personalAccount = state.personalAccounts?.find(account => account.id == action.payload )
+        setAccountLock: (state, action:PayloadAction<LockAccount>) => {
+            const personalAccount = state.personalAccounts?.find(account => account.id == action.payload.id)
 
-            if (personalAccount) personalAccount.isActive = true;
+            if (personalAccount) {
+                personalAccount.isActive = true
+                personalAccount.lockedUntil = action.payload.lockDate;
+            };
         },
 
         setDepositBalance: (state, action:PayloadAction<UpdateBalacePayload>) => {
@@ -90,9 +97,8 @@ export default personalAccountSlicer.reducer;
 export const FetchPersonalAccounts = () => 
     async (dispatch: AppDispatch): Promise<PersonalAccount[]> => {
         let accounts: PersonalAccount[] = [];
+        dispatch(setLoading(true));
         try{
-            dispatch(setLoading(true));
-
             const response = await FetchPersonalAccountsAsync()
 
             if (!response) throw new Error("Failed to fetch");
@@ -101,7 +107,7 @@ export const FetchPersonalAccounts = () =>
 
             dispatch(setPersonalAccounts(accounts));
         } catch {
-            console.log("Again its chaai");
+            console.log("Failed to fetch");
             return accounts;
         }finally{        
             await dispatch(setLoading(false));
@@ -147,14 +153,15 @@ export const LockAccounts = (body: LockAccountDto, accountId: string) =>
 
             const response =  await LockAccountsAsync(body, accountId);
 
-            if (!response) throw new Error("Failed to fetch");
+            if (!response) throw new Error("Failed to lock account");
             // Set lock account state after creating
             else{
-                dispatch(setAccountLock(Number.parseInt(accountId)));
+                dispatch(setAccountLock({id: Number.parseInt(accountId), lockDate: response.data.lockedUntil}));
+                console.log(response.data)
                 success = true;
             }            
         } catch {
-            console.log("Again its chaai");
+            console.log("Failed to lock account");
             return success;
         }finally{        
             await dispatch(setLoading(false));
@@ -200,7 +207,7 @@ export const WithdrawFromPersonalAccount = (body: PersonalAccountWithdraw, accou
 
             const response =  await PersonalAccountWithdrawAsync(body, accountId);
 
-            if (!response) throw new Error("Failed to fetch");
+            if (!response) throw new Error("Failed to widthdraw");
 
             else{
                 success = response.data.amount;
@@ -210,7 +217,7 @@ export const WithdrawFromPersonalAccount = (body: PersonalAccountWithdraw, accou
                 }))
             }            
         } catch {
-            console.log("Failed to deposit");
+            console.log("Failed to widthdraw");
             return success;
         }finally{        
             await dispatch(setLoading(false));

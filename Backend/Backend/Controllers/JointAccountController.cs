@@ -63,6 +63,19 @@ namespace Backend.Controllers
             return userId;
         }
 
+
+        // Allows a member to deposit money into their joint account
+        [HttpPut("deposit/{accountId}")]
+        public async Task<ActionResult> DepositIntoPersonalAccountAsync(
+            int accountId,
+            [FromBody] DepositDto deposit)
+        {
+            int userId = GetUserIdFromClaims();
+            ApiResponse<JointAccountDto>? response = await accountService.DepositAsync(userId, accountId, deposit);
+
+            return HandleResponse(response);
+        }
+
         protected ActionResult HandleResponse<T>(ApiResponse<T> response)
         {
             return response.ResponseCode switch

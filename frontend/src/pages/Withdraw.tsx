@@ -32,11 +32,11 @@ export default function Withdraw() {
       setButtonClicked(true);
       setLoading(true);
 
-      await dispatch(WithdrawFromPersonalAccount({
+      const respone = await dispatch(WithdrawFromPersonalAccount({
         amount: amount
       }, accountId + ""))
 
-      alert("Withdrawal successful! Your WeeCode has been sent via Email.");
+      if (respone) alert("Withdrawal successful! Your WeeCode has been sent via Email.");
       
     }catch{
       console.log("Failed to fetch from account")

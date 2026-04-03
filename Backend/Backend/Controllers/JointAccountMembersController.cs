@@ -1,55 +1,46 @@
 using System.Security.Claims;
-using System.Security.Principal;
-using Backend.Dtos.AccountDtos;
-using Backend.Dtos.AccountLockDtos;
-using Backend.Dtos.JointAccountDtos;
-using Backend.Dtos.PersonalAccountDtos;
+using Backend.Dtos.JointAccountMembersDtos;
 using Backend.Dtos.ResponseDto;
-using Backend.Services.JointAccountService;
+using Backend.Services.JointAccountMembersService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Controllers
 {
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/joint-accounts/{jointAccountId}/members")]
     [ApiController]
     [Authorize]
-    public class JointAccountMembersController(IJointAccountService accountService) : Controller
+    public class JointAccountMembersController(IJointAccountMembersService membersService) : Controller
     {
-        // Allows user's to create a joint account
-        [HttpPost("")]
-        public async Task<ActionResult> CreateJointAccount([FromBody] CreateAccountDto newAccount)
+        [HttpPost]
+        public async Task<ActionResult> AddMember(int jointAccountId, [FromBody] AddMemberDto addMember)
         {
             int userId = GetUserIdFromClaims();
-            ApiResponse<JointAccountDto>? response = await accountService.CreateJointAccountAsync(userId, newAccount);
-
+            var response = await membersService.AddMemberAsync(userId, jointAccountId, addMember);
             return HandleResponse(response);
         }
 
-        [HttpGet("{accountId}")]
-        public async Task<ActionResult> GetJointAccountAsync(int accountId)
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult> RemoveMember(int jointAccountId, int userId)
         {
-            int userId = GetUserIdFromClaims();
-            ApiResponse<JointAccountDto>? response = await accountService.GetJointAccountAsync(userId, accountId);
-
+            int currentUserId = GetUserIdFromClaims();
+            var response = await membersService.RemoveMemberAsync(currentUserId, jointAccountId, userId);
             return HandleResponse(response);
         }
 
-        [HttpGet("")]
-        public async Task<ActionResult> GetAllJointAccountAsync()
+        [HttpPut("{userId}/role")]
+        public async Task<ActionResult> ChangeRole(int jointAccountId, int userId, [FromBody] ChangeRoleDto changeRole)
         {
-            int userId = GetUserIdFromClaims();
-            ApiResponse<List<JointAccountDto>>? response = await accountService.GetAllJointAccountsAsync(userId);
-
+            int currentUserId = GetUserIdFromClaims();
+            var response = await membersService.ChangeRoleAsync(currentUserId, jointAccountId, userId, changeRole);
             return HandleResponse(response);
         }
 
-        [HttpDelete("{accountId}")]
-        public async Task<ActionResult> DeleteJointAccountAsync(int accountId)
+        [HttpGet]
+        public async Task<ActionResult> GetMembers(int jointAccountId)
         {
             int userId = GetUserIdFromClaims();
-            ApiResponse<JointAccountDto>? response = await accountService.DeleteJointAccountAsync(userId, accountId);
-
+            var response = await membersService.GetMembersAsync(userId, jointAccountId);
             return HandleResponse(response);
         }
 

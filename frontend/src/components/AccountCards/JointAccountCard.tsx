@@ -1,61 +1,71 @@
-import { FaUsers } from "react-icons/fa";
+import { FaUsers, FaCrown } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
 interface JointAccountCardProps {
   title: string;
-  amount: number;
+  balance: number;
+  createdBy: number;
+  createdAt: Date;
+  isAdmin: boolean;
   members: number;
-  role: "Admin" | "Member";
-  progress: number;
-  contribution: string;
   id: number;
+  path: string;
 }
 
 export default function JointAccountCard({ 
   title, 
-  amount, 
-  members, 
-  role, 
-  progress, 
-  contribution,
-  id 
+  balance,
+  id,
+  path,
+  isAdmin,
+  members
 }: JointAccountCardProps) {
+
   return (
-    <div className="w-full bg-[#FFF5F5] border border-red-100 rounded-xl p-4 flex flex-col gap-2 relative shadow-sm">
+    <div className="w-full bg-white border border-slate-200 rounded-none flex flex-col transition-all hover:border-red-500 shadow-sm hover:shadow-xl hover:shadow-red-900/5 group">
+      
+      {/* Visual Indicator: Red top bar for Joint/Stokvel accounts */}
+      <div className="w-full h-1.5 bg-red-600" />
 
-      <div className="w-full flex items-center justify-between pb-3 border-b border-[#00000031]">
-
-        <h2 className="font-medium text-[1.2rem] text-slate-800">
-          {title}
-        </h2>
-
-
-        <div className="flex flex-col md:flex-row items-center gap-3">
-          <div className="flex items-center gap-1 text-slate-400 font-bold text-[10px] uppercase">
-            <FaUsers size={14} />
-            <span>{members} Members</span>
-          </div>
-          <span className="bg-slate-100 px-2 py-0.5 rounded text-[10px] font-black text-slate-900 uppercase">
-            {role}
-          </span>
-        </div>
-      </div>
-
-      <div className="flex items-end justify-between">
-        <div className="flex flex-col">
-          <p className="text-[10px] font-bold text-slate-400 italic mb-1">
-            {contribution}
-          </p>
-          <div className="flex items-baseline gap-1">
-            <h2 className="text-4xl font-bold text-slate-900">
-              R{amount.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+      <div className="p-6 flex flex-col gap-6">
+        <div className="w-full flex items-start justify-between pb-4 border-b border-slate-50">
+          <div className="space-y-1">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Joint Account</span>
+            <h2 className="text-xl font-black text-slate-900 tracking-tight">
+              {title}
             </h2>
           </div>
+
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-center gap-1.5 text-slate-400 font-bold text-[10px] uppercase tracking-widest">
+              <FaUsers size={12} className="text-red-500" />
+              <span>{members} Members</span>
+            </div>
+            
+            <div className="flex items-center gap-1 bg-slate-900 text-white px-2 py-1 rounded-none text-[9px] font-bold uppercase tracking-widest">
+              <FaCrown size={8} className="text-red-500" />
+              <span>{isAdmin? "ADMIN" : "MEMBER"}</span>
+            </div>
+          </div>
         </div>
-        
-        <Link to={id + ""} className="text-red-500 text-xs font-bold underline underline-offset-4">
-          View Details
-        </Link>
+
+        <div className="flex items-end justify-between">
+          <div className="flex flex-col space-y-1">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
+              Current Balance
+            </p>
+            <h2 className="text-3xl font-black text-slate-900 tracking-tighter">
+              R{balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+            </h2>
+          </div>
+
+          <Link
+            to={`${path}${id}`}
+            className="bg-slate-50 text-slate-900 px-4 py-2 rounded-none text-[10px] font-black uppercase tracking-widest border border-slate-200 hover:bg-red-600 hover:text-white hover:border-red-600 transition-all active:scale-[0.96]"
+          >
+            View Details
+          </Link>
+        </div>
       </div>
     </div>
   );

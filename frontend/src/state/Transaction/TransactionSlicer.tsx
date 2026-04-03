@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import { FetchPersonalAccountTransactionAsync, type PersonalAccountTransactions } from "../../api/PersonalAccountApi";
+import { FetchAccountTransactionAsync, type PersonalAccountTransactions } from "../../api/TransactionApi";
 import type { AppDispatch } from "../store/store";
 
 
@@ -17,7 +17,7 @@ const initialState: TransactionState = {
 
 
 const transactionSlicer =  createSlice({
-    name: "personalAccount",
+    name: "transactions",
     initialState,
     reducers: {
         setTransactions: (state, action: PayloadAction<PersonalAccountTransactions[]>) => {
@@ -46,13 +46,13 @@ export default transactionSlicer.reducer;
 
 
 // Fetches ALl User Personal Accounts transactions
-export const FetchPersonalAccountTransactions = (accountId: string) => 
+export const FetchAccountTransactions = (accountId: string, accountType: string) => 
     async (dispatch: AppDispatch): Promise<PersonalAccountTransactions[]> => {
         let transactions: PersonalAccountTransactions[] = [];
         try{
             dispatch(setLoading(true));
 
-            const response = await FetchPersonalAccountTransactionAsync(accountId);
+            const response = await FetchAccountTransactionAsync(accountId, accountType);
 
             if (!response) throw new Error("Failed to fetch");
 
@@ -60,10 +60,10 @@ export const FetchPersonalAccountTransactions = (accountId: string) =>
 
             dispatch(setTransactions(transactions));
         } catch {
-            console.log("Again its chaai");
+            console.log("Failed to fetch transactions");
             return transactions;
         }finally{        
             await dispatch(setLoading(false));
             return transactions;
         }
-    }
+}

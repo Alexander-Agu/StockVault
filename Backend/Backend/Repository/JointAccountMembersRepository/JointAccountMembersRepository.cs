@@ -1,80 +1,74 @@
-using Backend.Dtos.JointAccountDtos;
-using Backend.Dtos.PersonalAccountDtos;
+using Backend.Dtos.JointAccountMembersDtos;
 using Backend.Entities;
 using Backend.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Backend.Repository.JointAccountRepository
+namespace Backend.Repository.JointAccountMembersRepository
 {
-    public class JointAccountRepository(StockVaultContext context) : IJointAccountRepository
+    public class JointAccountMembersRepository(StockVaultContext context) : IJointAccountMembersRepository
     {
-        public async Task AddJointAccountAsync(JointAccount newAccount)
+        public async Task AddMemberAsync(JointAccountMembers member)
         {
-            await context.JointAccounts.AddAsync(newAccount);
+            await context.JointAccountMembers.AddAsync(member);
         }
 
-        public async Task DeleteJointAccountByIdAsync(int userId, int accountId)
+        public async Task<List<MemberDto>> GetAllMembersAsync(int jointAccountId)
         {
-            await context.JointAccounts.Where(j => j.UserId == userId && j.Id == accountId).ExecuteDeleteAsync();
-        }
-
-        public async Task<List<JointAccountDto>> GetAllJointTableAccountsAsync(int userId)
-        {
-            return await context.JointAccounts
-                .Where(a => a.UserId == userId)
-                .Select(a => new JointAccountDto
+            return await context.JointAccountMembers
+                .Where(m => m.JointAccountId == jointAccountId)
+                .Select(m => new MemberDto
                 {
-                    Id = a.Id,
-                    Title = a.Title,
-                    CreatedBy = a.UserId,
-                    CreatedAt = a.CreatedAt,
+                    UserId = m.UserId,
+                    Name = m.User.Name,
+                    Role = m.Role,
+                    JoinedAt = m.JoinedAt
                 })
                 .ToListAsync();
         }
 
-        public async Task<List<PersonalAccount>> GetAllPersonalAccountsAsync(int userId)
+        public async Task<int> GetAdminCountAsync(int jointAccountId)
         {
-            return await context.PersonalAccounts
-                .Where(a => a.UserId == userId)
-                .ToListAsync();
+            return await context.JointAccountMembers
+                .Where(m => m.JointAccountId == jointAccountId && m.Role == "ADMIN")
+                .CountAsync();
         }
 
-        public async Task<JointAccountDto> GetJointTableAccountByIdAsync(int userId, int accountId)
+        public async Task<JointAccountMembers?> GetMemberAsync(int jointAccountId, int userId)
         {
-            return await context.JointAccounts
-                .Where(a => a.UserId == userId && a.Id == accountId)
-                .Select(a => new JointAccountDto
-                {
-                    Id = a.Id,
-                    Title = a.Title,
-                    CreatedBy = a.UserId,
-                    CreatedAt = a.CreatedAt,
-                })
-                .FirstOrDefaultAsync();
+            return await context.JointAccountMembers
+                .FirstOrDefaultAsync(m => m.JointAccountId == jointAccountId && m.UserId == userId);
         }
 
-        public async Task<JointAccount> GetJointAccountByIdAsync(int userId, int accountId)
+        public async Task<bool> IsUserAdminAsync(int jointAccountId, int userId)
         {
-            return await context.JointAccounts
-                .Where(a => a.UserId == userId && a.Id == accountId)
-                .FirstOrDefaultAsync();
+            return await context.JointAccountMembers
+                .AsNoTracking()
+                .AnyAsync(m => m.JointAccountId == jointAccountId && m.UserId == userId && m.Role == "ADMIN");
+        }
+                      
+        public async Task<bool> IsUserMemberAsync(int jointAccountId, int userId)
+        {
+            return await context.JointAccountMembers
+                .AnyAsync(m => m.JointAccountId == jointAccountId && m.UserId == userId);
         }
 
-        public async Task<PersonalAccount> GetPersonalAccountByIdAsync(int userId, int accountId)
+        public async Task RemoveMemberAsync(int jointAccountId, int userId)
         {
-            return await context.PersonalAccounts
-                .Where(a => a.UserId == userId && a.Id == accountId)
-                .FirstOrDefaultAsync();
-        }
-
-        public async Task<bool> JointAccountExist(int userId, string title)
-        {
-            return await context.JointAccounts.Where(t => t.Title == title && t.UserId == userId).AnyAsync();
+            await context.JointAccountMembers
+                .Where(m => m.JointAccountId == jointAccountId && m.UserId == userId)
+                .ExecuteDeleteAsync();
         }
 
         public async Task SaveChangesAsync()
         {
             await context.SaveChangesAsync();
+        }
+
+        public async Task UpdateMemberRoleAsync(int jointAccountId, int userId, string role)
+        {
+            await context.JointAccountMembers
+                .Where(m => m.JointAccountId == jointAccountId && m.UserId == userId)
+                .ExecuteUpdateAsync(m => m.SetProperty(p => p.Role, role));
         }
     }
 }

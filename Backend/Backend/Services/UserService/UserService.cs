@@ -4,12 +4,14 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Backend.Dtos.AccountDtos;
 using Backend.Dtos.AuthenticationDto;
 using Backend.Dtos.ResponseDto;
 using Backend.Dtos.UserDtos;
 using Backend.Entities;
 using Backend.Mapping;
 using Backend.Repository.UserRepository;
+using Backend.Services.PersonalAccountService;
 using FIN.Service.EmailServices;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -20,6 +22,7 @@ namespace Backend.Services.UserService
     public class UserService(
         IUserRepository userRepository, 
         IEmailService emailService,
+        IPersonalAccountService accountService,
         IConfiguration configuration) : IUserService
     {
         // Regitser's user by saving their data in the DB
@@ -48,8 +51,14 @@ namespace Backend.Services.UserService
 
             // Once information is verified send an email to activate user's account
             await emailService.SendOtpEmailAsync(user.Email, user.Otp);
+            await userRepository.SaveChanges();
 
             userRepository.AddUserAsync(user);
+
+            // Create a savings account for the user
+            CreateAccountDto savingsAccount = new CreateAccountDto();
+            savingsAccount.Title = "Savings Account";
+            await accountService.CreatePersonalAccountAsync(user.Id, savingsAccount);
 
             return response;
         }

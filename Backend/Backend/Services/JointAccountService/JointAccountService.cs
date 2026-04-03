@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Backend.Dtos.AccountDtos;
 using Backend.Dtos.AccountLockDtos;
 using Backend.Dtos.JointAccountDtos;
+using Backend.Dtos.JointAccountMembersDtos;
 using Backend.Dtos.PersonalAccountDtos;
 using Backend.Dtos.ResponseDto;
 using Backend.Dtos.TransectionDto;
@@ -11,6 +12,7 @@ using Backend.Repository.AccountLocksRepository;
 using Backend.Repository.JointAccountRepository;
 using Backend.Repository.PersonalAccountRespository;
 using Backend.Repository.UserRepository;
+using Backend.Services.JointAccountMembersService;
 using Backend.Services.TransectionService;
 using Stripe;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -22,6 +24,8 @@ namespace Backend.Services.JointAccountService
         IUserRepository userRep, 
         IAccountRepositoryLocks lockRep,
         ITransectionService transectionService,
+        IJointAccountMembersService membersService,
+
         PaymentIntentService paymentService) : IJointAccountService
     {
         // Allows user's to create a personal account
@@ -66,8 +70,12 @@ namespace Backend.Services.JointAccountService
             await accountRep.SaveChangesAsync();
 
             // After saving new acccount return it
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
+            
 
+            // Make Creator an admin after creating the account
+            AddMemberDto newMember = new() { email = user.Email, Role = "ADMIN" }; 
+            await membersService.CreateAdminAsync(userId, account.Id, newMember);
             return response;
         }
 
@@ -93,14 +101,19 @@ namespace Backend.Services.JointAccountService
             }
 
             // Simulating stripe transection
-            var options = new PaymentIntentCreateOptions
+var options = new PaymentIntentCreateOptions
             {
                 Amount = (long?)(amount.Amount * 100),
                 Currency = "zar",
                 Customer = account.User.StripeCustomerId,
                 PaymentMethod = amount.PaymentMethodId,
-                Confirm = true
-            };
+                Confirm = true,
+                AutomaticPaymentMethods = new PaymentIntentAutomaticPaymentMethodsOptions
+                {
+                    Enabled = true,
+                    AllowRedirects = "never"
+                }
+};
 
             var intent = await paymentService.CreateAsync(options);
 
@@ -116,7 +129,7 @@ namespace Backend.Services.JointAccountService
 
             await accountRep.SaveChangesAsync();
 
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
 
             return response;
         }
@@ -169,7 +182,7 @@ namespace Backend.Services.JointAccountService
             };
 
             // Check if user is the creator
-            JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId);
+            JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId, "JOINT");
             if (account == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
@@ -203,7 +216,7 @@ namespace Backend.Services.JointAccountService
             };
 
             // Check if account exists
-            JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId);
+            JointAccountDto? account = await accountRep.GetJointTableAccountByIdAsync(userId, accountId, "JOINT");
             if (account == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
@@ -262,7 +275,7 @@ namespace Backend.Services.JointAccountService
             await lockRep.AddAccountLockAsync(accountLocks);
             await lockRep.SaveChangesAsync();
 
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
 
             return response;
         }
@@ -310,7 +323,7 @@ namespace Backend.Services.JointAccountService
                 return response;
             }
 
-            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id);
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, account.Id, "JOINT");
 
             return response;
         }

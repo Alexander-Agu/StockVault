@@ -10,12 +10,12 @@ namespace Backend.Repository.JointAccountRepository
          * TODO: Save database changes
          */
         public Task SaveChangesAsync();
-          
+
 
         /*
          * TODO: New joint account will be saved to the database
          */
-        public Task AddJointAccountAsync(JointAccount newAccount);  
+        public Task AddJointAccountAsync(JointAccount newAccount);
 
 
         /*
@@ -39,7 +39,7 @@ namespace Backend.Repository.JointAccountRepository
         /*
          * TODO: Fetches a joint account by userId and accountId
          */
-        public Task<JointAccountDto> GetJointTableAccountByIdAsync(int userId, int accountId);
+        public Task<JointAccountDto> GetJointTableAccountByIdAsync(int userId, int accountId, string accountType);
 
 
         /*

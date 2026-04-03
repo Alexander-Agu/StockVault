@@ -1,22 +1,16 @@
 import axios from "axios"
+import { getToken } from "./Api";
 
 
 const userString: string | null = sessionStorage.getItem("user");
-let token = 0;
-
 if (userString){
     const data = JSON.parse(userString);
-
-    token = data.token;
 }
 
 // Base URL
 const apiUrl = import.meta.env.VITE_BASE_URL;
 const api = axios.create({
     baseURL: apiUrl,
-    headers: {
-        Authorization: `bearer ${token}`
-    }
 });
 
 // Sends an api request to backend to register the user
@@ -26,8 +20,15 @@ export const RegisterUserAsync = async (body: {
     phone: string,
     passwordHash: string
 }) => {
+    const token = getToken();
+    console.log(token);
+
     try{
-        const response = await api.post("/User/register", body);
+        const response = await api.post("/User/register", body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data;
     } catch{
         console.log("Failed to create account");
@@ -38,8 +39,14 @@ export const RegisterUserAsync = async (body: {
 
 // Allows user to verify their account
 export const VerifyEmailAsync = async (email: string, otp: string) => {
+    const token = getToken();
+
     try{
-        const response = await api.put(`/User/verify-email?email=${email}&otp=${otp}`);
+        const response = await api.put(`/User/verify-email?email=${email}&otp=${otp}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data;
     } catch{
         return false;
@@ -49,8 +56,14 @@ export const VerifyEmailAsync = async (email: string, otp: string) => {
 
 // Allows user to resend their varification email
 export const ResendEmailAsync = async (email: string) => {
+    const token = getToken();
+
     try{
-        const response = await api.put(`/User/resend-email?email=${email}`);
+        const response = await api.put(`/User/resend-email?email=${email}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
 
         return response.data;
     } catch{
@@ -65,8 +78,14 @@ export const LoginUserAsync = async (body: {
     email: string,
     password: string
 }) => {
+    const token = getToken();
+
     try{
-        const response = await api.post("/User/login", body);
+        const response = await api.post("/User/login", body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data
     } catch{
         return false;
@@ -76,8 +95,35 @@ export const LoginUserAsync = async (body: {
 
 // Fetches user data
 export const FetchProfileAsync = async (userId: number) => {
+    const token = getToken();
+    
     try{
-        const response = await api.get(`/User/profile/${userId}`);
+        const response = await api.get(`/User/profile/${userId}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return response.data
+    } catch{
+        return false;
+    }
+}
+
+
+// Update user profile
+export interface UpdateProfile{
+    name: string;
+    phone: string;
+}
+export const UpdateProfileAsync = async (userId: number, body: UpdateProfile) => {
+    const token = getToken();
+    
+    try{
+        const response = await api.put(`/User/profile/${userId}`, body, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
         return response.data
     } catch{
         return false;

@@ -5,15 +5,19 @@ import { IoPersonSharp } from "react-icons/io5";
 import { IoExitSharp } from "react-icons/io5";
 import { useState } from "react";
 import { GetFirstLetter } from "../../tools/UserTools";
+import useResetStore from "../../state/store/ResetStore";
+
 
 interface ProfileHeaderProps{
     name: string
     title: string,
-    message: string
+    message: string,
+    path: string
 }
 
-export default function PortalHeader({ title, name, message}: ProfileHeaderProps) {
+export default function PortalHeader({ title, name, message, path}: ProfileHeaderProps) {
     const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+    const logout = useResetStore();
 
     const HandleProfileMenuOpen = ()=> {
         if (profileMenuOpen) setProfileMenuOpen(false);
@@ -42,8 +46,7 @@ export default function PortalHeader({ title, name, message}: ProfileHeaderProps
 
     <div className="relative z-10 flex items-center gap-3">
 
-        <a
-        href="#"
+        <Link to={path}
         className="
             w-[42px] h-[42px]
             rounded-full
@@ -56,7 +59,7 @@ export default function PortalHeader({ title, name, message}: ProfileHeaderProps
         "
         >
         {GetFirstLetter(name)}
-        </a>
+        </Link>
 
 
         <nav>
@@ -94,14 +97,14 @@ export default function PortalHeader({ title, name, message}: ProfileHeaderProps
             </li>
 
             <li className="w-full">
-            <a className="flex items-center gap-3 p-2 rounded-lg hover:bg-black/5 transition">
+            <Link to={path} className="flex items-center gap-3 p-2 rounded-lg hover:bg-black/5 transition">
                 <IoPersonSharp className="text-xl text-red-500" />
                 <p className="text-sm font-medium">Profile</p>
-            </a>
+            </Link>
             </li>
 
             <li className="w-full">
-            <button className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-black/5 transition">
+            <button onClick={()=> logout()} className="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-black/5 transition">
                 <IoExitSharp className="text-xl text-red-500" />
                 <p className="text-sm font-medium">Logout</p>
             </button>

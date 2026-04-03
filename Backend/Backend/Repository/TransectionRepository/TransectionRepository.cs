@@ -29,10 +29,10 @@ namespace Backend.Repository.TransectionRepository
         }
 
         // Feches all account transections
-        public async Task<List<TransectionDto>> GetAllAccountTransectionsAsync(int userId, int accountId)
+        public async Task<List<TransectionDto>> GetAllAccountTransectionsAsync(int userId, int accountId, string accountType)
         {
             return await context.Transections
-                .Where(t => t.userId == userId && t.AccountId == accountId)
+                .Where(t => t.AccountId == accountId && t.AccountType == accountType)
                 .Select(transection => new TransectionDto {
                     transectionId = transection.Id,
                     AccountId = transection.AccountId,

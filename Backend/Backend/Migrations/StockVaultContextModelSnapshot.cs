@@ -40,6 +40,38 @@ namespace Backend.Migrations
                     b.ToTable("AccountLocks");
                 });
 
+            modelBuilder.Entity("Backend.Entities.ContributionSchedule", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AmountCents")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Frequency")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("JointAccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateOnly>("StartDate")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JointAccountId");
+
+                    b.ToTable("ContributionSchedules");
+                });
+
             modelBuilder.Entity("Backend.Entities.JointAccount", b =>
                 {
                     b.Property<int>("Id")
@@ -69,6 +101,35 @@ namespace Backend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("JointAccounts");
+                });
+
+            modelBuilder.Entity("Backend.Entities.JointAccountMembers", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("JointAccountId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("JointAccountId", "UserId")
+                        .IsUnique();
+
+                    b.ToTable("JointAccountMembers");
                 });
 
             modelBuilder.Entity("Backend.Entities.PersonalAccount", b =>
@@ -202,6 +263,17 @@ namespace Backend.Migrations
                     b.Navigation("PersonalAccount");
                 });
 
+            modelBuilder.Entity("Backend.Entities.ContributionSchedule", b =>
+                {
+                    b.HasOne("Backend.Entities.JointAccount", "JointAccount")
+                        .WithMany()
+                        .HasForeignKey("JointAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("JointAccount");
+                });
+
             modelBuilder.Entity("Backend.Entities.JointAccount", b =>
                 {
                     b.HasOne("Backend.Entities.AccountLocks", "AccountLock")
@@ -215,6 +287,25 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Navigation("AccountLock");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Backend.Entities.JointAccountMembers", b =>
+                {
+                    b.HasOne("Backend.Entities.JointAccount", "JointAccount")
+                        .WithMany("Members")
+                        .HasForeignKey("JointAccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Backend.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("JointAccount");
 
                     b.Navigation("User");
                 });
@@ -239,6 +330,11 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Backend.Entities.JointAccount", b =>
+                {
+                    b.Navigation("Members");
                 });
 
             modelBuilder.Entity("Backend.Entities.PersonalAccount", b =>

@@ -25,29 +25,28 @@ export default function SignIn() {
     const auth = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch<AppDispatch>();
 
-    
-
     // Navigation Attributes
     const navigate = useNavigate();
 
-        const inputs: SignInInputs[] = [
-        {
-            required: true,
-            title: "Email",
-            placeholder: "Enter your email",
-            input: setEmail,
-            value: email
-        },
-        {
-            required: true,
-            title: "Password",
-            placeholder: "Create a password",
-            input: setPassword,
-            value: password
-        },
+    // Input objects
+    const inputs: SignInInputs[] = [
+    {
+        required: true,
+        title: "Email",
+        placeholder: "Enter your email",
+        input: setEmail,
+        value: email
+    },
+    {
+        required: true,
+        title: "Password",
+        placeholder: "Create a password",
+        input: setPassword,
+        value: password
+    },
     ];
 
-
+    // Handles sign in
     const HandleLoginAsync = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!isValidPassword(password) || buttonClicked) return;
@@ -55,12 +54,9 @@ export default function SignIn() {
         try{
             setButtonClicked(true);
             const id = await dispatch(Login({email: email, password: password}));
-            console.log("tets ", id);
-
+            await dispatch(fetchUser(id));
             if (id){
-                const userId = await dispatch(fetchUser(id));
-
-                if (userId > 0) navigate(`/portal/${userId}`)
+                navigate(`/portal/${id}`)
             }
         } catch{
             console.log("Failed to login");
@@ -68,15 +64,6 @@ export default function SignIn() {
             setButtonClicked(false);
         }
     }
-
-
-    // Clear redux and session storage state 
-    // try{
-    //     ResetStore();
-    // } catch{
-    //     console.log("Ohh no it ddint work");
-    // }
-
 
   return (
     <article className='w-full h-[100dvh]
@@ -123,7 +110,7 @@ export default function SignIn() {
 
                 <a href="#" className='noto-sans text-red-500'>Forgot your password?</a>
 
-                <input type="submit" value="Login" 
+                <input type="submit" value="Login" disabled={false}
                     className='w-full p-3 bg-red-500 rounded-[8px] text-white font-bold'
                 />
 
