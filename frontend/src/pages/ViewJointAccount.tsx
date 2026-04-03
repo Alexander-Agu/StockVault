@@ -80,7 +80,7 @@ export default function ViewJointAccount() {
                 <div className="bg-white/40 border border-red-50 p-6 rounded-none flex flex-col items-end min-w-[220px]">
                   <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Contribution</p>
                   <p className="text-2xl font-black text-slate-900 tracking-tighter">
-                    R {schedule?.amountCents}
+                    R {schedule?.amount}
                   </p>
                   <p className="text-[10px] font-medium text-slate-400">/ {schedule?.frequency}</p>
                 </div>

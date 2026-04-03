@@ -26,34 +26,30 @@ export default function UpdateJointAccount() {
     });
 
     useEffect(()=>{
-        if (jointAccount != null){
-            setFormData({ ...formData, title: jointAccount.title })
-        }
+      if (jointAccount != null){
+        setFormData({ ...formData, title: jointAccount.title })
+      }
 
-        if (schedule != null){
-            setFormData({ ...formData, amount: schedule.amountCents })
-            setFormData({ ...formData, frequency: schedule.frequency })
-            setFormData({ ...formData, startDate: schedule.startDate.toDateString() })
-        }
+      if (schedule != null){
+        setFormData({ ...formData, amount: schedule.amount })
+        setFormData({ ...formData, frequency: schedule.frequency })
+        setFormData({ ...formData, startDate: schedule.startDate })
+      }
     },[Number(jointAccountId)]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
         try{
-            const id = await dispatch(CreateJointAccounts(formData.title))
+          // Check if user is trying to update the joint accounts name
+          if (jointAccount?.title !== formData.title && formData.title.trim() !== ""){
 
-            if (id > 0){
-                // Check if user is trying to update the joint accounts name
-                if (jointAccount?.title !== formData.title && formData.title.trim() !== ""){
+          }
 
-                }
+          // Check if user is trying to update the joint account frequency
+          if (schedule?.frequency !== formData.frequency && formData.frequency.trim() !== ""){
 
-                // Check if user is trying to update the joint account frequency
-                if (schedule?.frequency !== formData.frequency && formData.frequency.trim() !== ""){
-
-                }
-            }
+          }
         } catch{
             console.log("Failed to update joint account");
         }

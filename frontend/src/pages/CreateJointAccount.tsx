@@ -36,7 +36,7 @@ export default function CreateJointAccount() {
       }
 
       if (result.id > 0) {
-        navigate("/accounts");
+        navigate(-1);
       }
     } catch {
       setError("Failed to create joint account");

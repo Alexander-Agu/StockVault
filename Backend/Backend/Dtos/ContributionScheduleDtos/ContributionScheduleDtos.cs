@@ -15,7 +15,7 @@ namespace Backend.Dtos.ContributionScheduleDtos
     public class ScheduleDto
     {
         public int Id { get; set; }
-        public int AmountCents { get; set; }
+        public float Amount { get; set; }
         public string Frequency { get; set; } = string.Empty;
         public DateOnly StartDate { get; set; }
         public bool IsActive { get; set; }

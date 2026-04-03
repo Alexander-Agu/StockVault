@@ -53,7 +53,7 @@ namespace Backend.Services.ContributionScheduleService
             response.Data = new ScheduleDto
             {
                 Id = schedule.Id,
-                AmountCents = schedule.AmountCents,
+                Amount = schedule.AmountCents / 100,
                 Frequency = schedule.Frequency,
                 StartDate = schedule.StartDate,
                 IsActive = schedule.IsActive

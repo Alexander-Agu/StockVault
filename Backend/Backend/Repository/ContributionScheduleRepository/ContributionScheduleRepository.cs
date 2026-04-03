@@ -40,7 +40,7 @@ namespace Backend.Repository.ContributionScheduleRepository
                 .Select(s => new ScheduleDto
                 {
                     Id = s.Id,
-                    AmountCents = s.AmountCents,
+                    Amount = s.AmountCents / 100,
                     Frequency = s.Frequency,
                     StartDate = s.StartDate,
                     IsActive = s.IsActive

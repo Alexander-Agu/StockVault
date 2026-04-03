@@ -5,7 +5,7 @@ import { CreateContributionScheduleAsync, FetchContributionScheduleAsync, type C
 
 interface ContributionSchedule {
     id: number;
-    amountCents: number;
+    amount: number;
     frequency: string;
     isActive: boolean;
     startDate: Date;
