@@ -1,6 +1,12 @@
-﻿namespace Backend.Mapping
+﻿using Backend.Entities;
+
+namespace Backend.Mapping
 {
-    public class PayoutCyclesMapping
+    public static class PayoutCyclesMapping
     {
+        public static PayoutCycles ToEntity()
+        {
+            return new PayoutCycles();
+        }
     }
 }

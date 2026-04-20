@@ -15,5 +15,6 @@ namespace Backend.Dtos.PayoutCycles
 
     public class CreatePayoutCycleDto
     {
+        public string Frequency { get; set; } = string.Empty;
     }
 }

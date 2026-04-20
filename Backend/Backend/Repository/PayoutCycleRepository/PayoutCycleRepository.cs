@@ -6,14 +6,16 @@ namespace Backend.Repository.PayoutCycleRepository
 {
     public class PayoutCycleRepository(StockVaultContext context) : IPayoutCycleRepository
     {
-        public async void SaveChangesAsync()
+        public async Task SaveChangesAsync()
         {
              await context.SaveChangesAsync();
         }
 
+
         public async Task AddPayoutCycleAsync(PayoutCycles payoutCycle)
         {
             await context.PayoutCycles.AddAsync(payoutCycle);
+            await SaveChangesAsync();
         }
 
         public async Task<List<PayoutCycles>> GetAllPayoutCyclesAsync(int jointAccountId)

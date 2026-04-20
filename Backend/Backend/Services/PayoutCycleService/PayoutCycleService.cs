@@ -1,21 +1,78 @@
-﻿using Backend.Dtos.ResponseDto;
+﻿using Backend.Dtos.PayoutCycles;
+using Backend.Dtos.ResponseDto;
 using Backend.Entities;
+using Backend.Repository.ContributionScheduleRepository;
+using Backend.Repository.JointAccountRepository;
 using Backend.Repository.PayoutCycleRepository;
+using Backend.Services.JointAccountService;
 
 namespace Backend.Services.PayoutCycleService
 {
     public class PayoutCycleService(
-            IPayoutCycleRepository cycleRepository
+            IPayoutCycleRepository cycleRepository,
+            IJointAccountRepository accountRepository,
+            IContributionScheduleRepository scheduleRepository,
+            IJointAccountService accountService
         ) : IPayoutCycleService
     {
-        public Task<ApiResponse<PayoutCycles>> CreatePayoutCycleAsync()
+        public async Task<ApiResponse<PayoutCycles>> CreatePayoutCycleAsync(int userId, int jointAccountId, int scheduleId)
         {
-            throw new NotImplementedException();
+            ApiResponse<PayoutCycles> response = new()
+            {
+                ResponseCode = ResponseCode.Created,
+                Message = "Payout Cycle successfully created",
+                Data = null
+            };
+
+            JointAccount jointAccount = await accountRepository.GetJointAccountByIdAsync(userId, jointAccountId);
+            if (jointAccount == null) { 
+                response.ResponseCode = ResponseCode.NotFound;
+                response.Message = "Joint account not found";
+                return response;
+            }
+
+            PayoutCycles payoutCycle = new PayoutCycles();
+            payoutCycle.CycleNumber = 1;
+            payoutCycle.TotalMembersAtStart = jointAccount.Members.Count;
+            payoutCycle.StartDate = DateOnly.FromDateTime(DateTime.Now);
+
+            ContributionSchedule schedule = await scheduleRepository.GetScheduleByIdAsync(scheduleId);
+            if (schedule == null) {
+                response.ResponseCode = ResponseCode.NotFound;
+                response.Message = "schedule not found";
+                return response;
+            }
+
+            if (schedule.Frequency == "weekly")
+            {
+                payoutCycle.EndDate = payoutCycle.StartDate.AddDays(payoutCycle.TotalMembersAtStart * 7);
+            }
+            else if (schedule.Frequency == "monthly")
+            {
+                payoutCycle.EndDate = payoutCycle.StartDate.AddMonths(payoutCycle.TotalMembersAtStart);
+            }
+
+            payoutCycle.JointAccountId = jointAccountId;
+            payoutCycle.ScheduleId = scheduleId;
+
+            await cycleRepository.AddPayoutCycleAsync(payoutCycle);
+            response.Data = payoutCycle;
+            
+            return response;
         }
 
-        public Task<ApiResponse<List<PayoutCycles>>> GetAllPayoutCycles(int jointAccountId)
+        public async Task<ApiResponse<List<PayoutCycles>>> GetAllPayoutCycles(int jointAccountId)
         {
-            throw new NotImplementedException();
+            ApiResponse<List<PayoutCycles>> response = new()
+            {
+                ResponseCode = ResponseCode.Ok,
+                Message = "Payout Cycles successfully fetched",
+                Data = null
+            };
+
+            response.Data = await cycleRepository.GetAllPayoutCyclesAsync(jointAccountId);
+
+            return response;
         }
     }
 }
