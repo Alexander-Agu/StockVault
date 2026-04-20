@@ -31,6 +31,14 @@ namespace Backend.Services.PayoutCycleService
                 return response;
             }
 
+            // Check if its an actual member trying to create the payout cycle
+            if (jointAccount.Members.Where(j => j.Id == jointAccountId).FirstOrDefault().Role.ToLower() == "member")
+            {
+                response.ResponseCode = ResponseCode.BadRequest;
+                response.Message = "Only admin can create payout cycles";
+                return response;
+            }
+
             PayoutCycles payoutCycle = new PayoutCycles();
             payoutCycle.CycleNumber = 1;
             payoutCycle.TotalMembersAtStart = jointAccount.Members.Count;
@@ -61,7 +69,7 @@ namespace Backend.Services.PayoutCycleService
             return response;
         }
 
-        public async Task<ApiResponse<List<PayoutCycles>>> GetAllPayoutCycles(int jointAccountId)
+        public async Task<ApiResponse<List<PayoutCycles>>> GetAllPayoutCyclesAsync(int jointAccountId)
         {
             ApiResponse<List<PayoutCycles>> response = new()
             {
