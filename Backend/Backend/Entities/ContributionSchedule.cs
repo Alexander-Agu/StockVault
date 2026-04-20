@@ -12,5 +12,6 @@ namespace Backend.Entities
 
         // Relationships
         public JointAccount? JointAccount { get; set; }
+        public PayoutCycles? PayoutCycle { get; set; }
     }
 }

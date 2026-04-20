@@ -18,6 +18,7 @@ namespace Backend.Repository.Data
         public DbSet<ContributionSchedule> ContributionSchedules => Set<ContributionSchedule>();
         public DbSet<AccountLocks> AccountLocks => Set<AccountLocks>();
         public DbSet<Transection> Transections => Set<Transection>();
+        public DbSet<PayoutCycles> PayoutCycles => Set<PayoutCycles>();
 
 
         // Fluent API
@@ -76,6 +77,19 @@ namespace Backend.Repository.Data
                 .HasOne(j => j.User)
                 .WithMany()
                 .HasForeignKey(j => j.UserId);
+
+            // Payout Realtionships
+            modelBuilder.Entity<PayoutCycles>()
+                .HasOne(j => j.JointAccount)
+                .WithMany(a => a.PayoutCycles)
+                .HasForeignKey(p => p.JointAccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PayoutCycles>()
+                .HasOne(j => j.Schedule)
+                .WithOne(p => p.PayoutCycle)
+                .HasForeignKey<PayoutCycles>(p => p.ScheduleId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
