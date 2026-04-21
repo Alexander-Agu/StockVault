@@ -19,6 +19,7 @@ namespace Backend.Repository.Data
         public DbSet<AccountLocks> AccountLocks => Set<AccountLocks>();
         public DbSet<Transection> Transections => Set<Transection>();
         public DbSet<PayoutCycles> PayoutCycles => Set<PayoutCycles>();
+        public DbSet<PayoutSlot> PayoutSlots => Set<PayoutSlot>();
 
 
         // Fluent API

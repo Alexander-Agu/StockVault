@@ -1,4 +1,5 @@
-﻿namespace Backend.Entities
+﻿
+namespace Backend.Entities
 {
     public class PayoutCycles
     {
@@ -14,5 +15,7 @@
         
         public int ScheduleId { get; set; }
         public ContributionSchedule Schedule { get; set; } = new();
+
+        public ICollection<PayoutSlot> PayoutSlots { get; set; } = new List<PayoutSlot>();
     }
 }

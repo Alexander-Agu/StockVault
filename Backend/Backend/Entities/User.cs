@@ -28,6 +28,6 @@
         // Relationships
         public List<PersonalAccount> PersonalAccounts { get; set; } = new();
         public List<Transection> Transections { get; set; } = new();
-        
+        public List<PayoutSlot> PayoutSlots { get; set; } = new();
     }
 }
