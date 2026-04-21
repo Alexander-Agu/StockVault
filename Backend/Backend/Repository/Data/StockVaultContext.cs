@@ -79,7 +79,7 @@ namespace Backend.Repository.Data
                 .WithMany()
                 .HasForeignKey(j => j.UserId);
 
-            // Payout Realtionships
+            // Payout Cycle Realtionships
             modelBuilder.Entity<PayoutCycles>()
                 .HasOne(j => j.JointAccount)
                 .WithMany(a => a.PayoutCycles)
@@ -90,6 +90,19 @@ namespace Backend.Repository.Data
                 .HasOne(j => j.Schedule)
                 .WithOne(p => p.PayoutCycle)
                 .HasForeignKey<PayoutCycles>(p => p.ScheduleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Payout Slots Relationships
+            modelBuilder.Entity<PayoutSlot>()
+                .HasOne(c => c.PayoutCycle)
+                .WithMany(p => p.PayoutSlots)
+                .HasForeignKey(p => p.CycleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<PayoutSlot>()
+                .HasOne(c => c.User)
+                .WithMany(p => p.PayoutSlots)
+                .HasForeignKey(p => p.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }
