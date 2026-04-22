@@ -39,17 +39,20 @@ namespace Backend.Services.PayoutCycleService
                 return response;
             }
 
-            PayoutCycles payoutCycle = new PayoutCycles();
-            payoutCycle.CycleNumber = 1;
-            payoutCycle.TotalMembersAtStart = jointAccount.Members.Count;
-            payoutCycle.StartDate = DateOnly.FromDateTime(DateTime.Now);
-
             ContributionSchedule schedule = await scheduleRepository.GetScheduleByIdAsync(scheduleId);
-            if (schedule == null) {
+            if (schedule == null)
+            {
                 response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "schedule not found";
                 return response;
             }
+
+            PayoutCycles payoutCycle = new PayoutCycles();
+            payoutCycle.CycleNumber = 1;
+            payoutCycle.TotalMembersAtStart = jointAccount.Members.Count;
+            payoutCycle.StartDate = DateOnly.FromDateTime(DateTime.Now);
+            payoutCycle.EstimatedTotalAmount = schedule.AmountCents * jointAccount.Members.Count;
+            payoutCycle.IsActive = true;
 
             if (schedule.Frequency == "weekly")
             {

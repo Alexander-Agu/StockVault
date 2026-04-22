@@ -69,7 +69,7 @@ namespace Backend.Services.PersonalAccountService
         }
 
 
-        // Allows users to deposit money into their account
+        // Allows users to deposit money into their account using stripe
         public async Task<ApiResponse<PersonalAccountDto>> DepositAsync(int userId, int accountId, DepositDto amount)
         {
             ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
@@ -133,6 +133,41 @@ namespace Backend.Services.PersonalAccountService
             return response;
         }
 
+        // Allows user to deposit money into savings account without using stripe
+        public async Task<ApiResponse<PersonalAccountDto>> InternalDepositAsync(int userId, int accountId, int amount)
+        {
+            ApiResponse<PersonalAccountDto> response = new ApiResponse<PersonalAccountDto>()
+            {
+                ResponseCode = ResponseCode.Ok,
+                Message = "Amount was successfully deposited from internal balance",
+                Data = null
+            };
+
+            // Checks if account exists
+            PersonalAccount savingsAccount = await accountRep.GetSavingsAccountByUserIdAsync(userId);
+
+            if (savingsAccount == null)
+            {
+                response.ResponseCode = ResponseCode.NotFound;
+                response.Message = "Account not found";
+                return response;
+            }
+
+            savingsAccount.Balance += amount;
+
+            await transectionService.RecordTransectionAsync(userId, CreateTransection(
+                userId,
+                amount,
+                savingsAccount.Id,
+                "INTERNAL_DEPOSIT"
+            ));
+
+            await accountRep.SaveChangesAsync();
+
+            response.Data = await accountRep.GetJointTableAccountByIdAsync(userId, savingsAccount.Id);
+
+            return response;
+        }
 
         // Allows a user to get their account lock details 
         //public async Task<Dictionary<string, object>> GetAccountLockAsync(int userId, int accountId, int lockId)
@@ -340,6 +375,23 @@ namespace Backend.Services.PersonalAccountService
         {
             return new() { 
                 AccountId = account.Id,
+                AccountType = "PERSONAL",
+                AmountCents = amount,
+                TransectionType = transectionType,
+                CreatedAt = DateOnly.FromDateTime(DateTime.Now)
+            };
+        }
+
+        private CreateTransectionDto CreateTransection(
+        int userId,
+        int amount,
+        int accountId,
+        string transectionType
+    )
+        {
+            return new()
+            {
+                AccountId = accountId,
                 AccountType = "PERSONAL",
                 AmountCents = amount,
                 TransectionType = transectionType,

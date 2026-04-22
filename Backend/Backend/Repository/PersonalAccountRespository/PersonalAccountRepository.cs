@@ -63,6 +63,13 @@ namespace Backend.Repository.PersonalAccountRespository
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<PersonalAccount> GetSavingsAccountByUserIdAsync(int userId)
+        {
+            return await context.PersonalAccounts
+                .Where(s => s.UserId == userId && s.Title.ToLower() == "savings account")
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<bool> PersonalAccountExist(int userId, string title)
         {
             return await context.PersonalAccounts.Where(t => t.Title == title && t.UserId == userId).AnyAsync();

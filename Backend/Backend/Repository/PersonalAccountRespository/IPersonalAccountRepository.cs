@@ -34,6 +34,8 @@ namespace Backend.Repository.PersonalAccountRespository
          */
         public Task<PersonalAccount> GetPersonalAccountByIdAsync(int userId, int accountId);
 
+        public Task<PersonalAccount> GetSavingsAccountByUserIdAsync(int userId);
+
 
         /*
          * TODO: Fetches a personal account by userId and personalId

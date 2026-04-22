@@ -9,6 +9,6 @@ namespace Backend.Services.PayoutSlotService
 
         Task<ApiResponse<List<PayoutSlot>>> GetAllPayoutSlotsAsync(int cycleId);
 
-        Task<ApiResponse<PayoutSlot>> ExecutePayoutSlotAsync(int cycleId, int slotId);
+        Task<ApiResponse<PayoutSlot>> ExecutePayoutSlotAsync(int userId, int cycleId, int slotId);
     }
 }

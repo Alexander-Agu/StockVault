@@ -23,5 +23,10 @@ namespace Backend.Repository.PayoutCycleRepository
             return await context.PayoutCycles.Where( p => p.JointAccountId == jointAccountId)
                 .ToListAsync();
         }
+
+        public async Task<PayoutCycles> GetPayoutCycleById(int cycleId)
+        {
+            return await context.PayoutCycles.FindAsync(cycleId);
+        }
     }
 }

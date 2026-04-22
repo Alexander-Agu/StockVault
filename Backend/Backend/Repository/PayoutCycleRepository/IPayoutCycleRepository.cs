@@ -8,5 +8,7 @@ namespace Backend.Repository.PayoutCycleRepository
         Task AddPayoutCycleAsync(PayoutCycles payoutCycle);
 
         Task<List<PayoutCycles>> GetAllPayoutCyclesAsync(int jointAccountId);
+
+        Task<PayoutCycles> GetPayoutCycleById(int cycleId);
     }
 }

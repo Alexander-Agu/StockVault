@@ -37,7 +37,7 @@ namespace Backend.Services.PersonalAccountService
          */
         public Task<ApiResponse<PersonalAccountDto>> DepositAsync(int userId, int accountId, DepositDto amount);
 
-
+        public Task<ApiResponse<PersonalAccountDto>> InternalDepositAsync(int userId, int accountId, int amount);
         /*
          * TODO: Allows user's to widthdraw funds from their account
          * 

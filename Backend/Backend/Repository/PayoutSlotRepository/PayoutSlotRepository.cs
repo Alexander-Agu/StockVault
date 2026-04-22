@@ -1,5 +1,6 @@
 ﻿using Backend.Entities;
 using Backend.Repository.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Repository.PayoutSlotRepository
 {
@@ -7,24 +8,49 @@ namespace Backend.Repository.PayoutSlotRepository
             StockVaultContext context
         ) : IPayoutSlotRepository
     {
-        public Task<PayoutSlot> AddPayoutSlotAsync(PayoutSlot payoutSlot)
+        public async Task AddPayoutSlotAsync(PayoutSlot payoutSlot)
         {
-            throw new NotImplementedException();
+            await context.PayoutSlots
+                .AddAsync(payoutSlot);
+
+            await SaveChangesAsync();
         }
 
-        public Task<List<PayoutSlot>> GetAllPayoutSlotsAsync(int cycleId)
+        public async Task AddPayoutSlotsBatchAsync(List<PayoutSlot> slots)
         {
-            throw new NotImplementedException();
+            await context.PayoutSlots.AddRangeAsync(slots);
+            await context.SaveChangesAsync();
         }
 
-        public Task<PayoutSlot> GetPayoutSlotAsync(int cycleId, int slotId)
+        public async Task<List<PayoutSlot>> GetAllPayoutSlotsAsync(int cycleId)
         {
-            throw new NotImplementedException();
+            return await context.PayoutSlots
+                .Where(p => p.CycleId == cycleId)
+                .ToListAsync();
         }
 
-        public Task SaveChangesAsync()
+        public async Task<PayoutSlot> GetPayoutSlotAsync(int cycleId, int slotId)
         {
-            throw new NotImplementedException();
+            return await context.PayoutSlots
+                .Where(p => p.CycleId == cycleId && p.Id == slotId)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<PayoutSlot> GetPayoutSlotByIdAsync(int slotId)
+        {
+            return await context.PayoutSlots.FindAsync(slotId);
+        }
+
+        public async Task<PayoutSlot> GetPayoutSlotByPositionAsync(int cycleId, int position)
+        {
+            return await context.PayoutSlots
+                .Where(p => p.CycleId == cycleId && p.Position == position)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await context.SaveChangesAsync();
         }
     }
 }
