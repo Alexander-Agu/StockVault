@@ -174,9 +174,25 @@ namespace Backend.Services.PayoutSlotService
             }
         }
 
-        public Task<ApiResponse<List<PayoutSlot>>> GetAllPayoutSlotsAsync(int cycleId)
+        public async Task<ApiResponse<List<PayoutSlot>>> GetAllPayoutSlotsAsync(int cycleId)
         {
-            throw new NotImplementedException();
+            var response = new ApiResponse<List<PayoutSlot>>()
+            {
+                ResponseCode = ResponseCode.Ok,
+                Message = "Fetched all payout slots",
+                Data = null
+            };
+
+            List<PayoutSlot> payoutSlots = await slotRepository.GetAllPayoutSlotsAsync(cycleId);
+
+            if (payoutSlots == null) {
+                response.ResponseCode = ResponseCode.NotFound;
+                response.Message = "Failed to fetched all payout slots";
+                return response;
+            }
+
+            response.Data = payoutSlots;
+            return response;
         }
 
 
