@@ -6,6 +6,8 @@ namespace Backend.Entities
         public int Id { get; set; }
         public int CycleNumber { get; set; }
         public int TotalMembersAtStart { get; set; }
+        public int EstimatedTotalAmount { get; set; }
+        public bool IsActive { get; set; }
         public DateOnly StartDate { get; set; }
         public DateOnly EndDate { get; set; }
 
