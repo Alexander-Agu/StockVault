@@ -33,7 +33,7 @@ export default function UpdateJointAccount() {
       if (schedule != null){
         setFormData({ ...formData, amount: schedule.amount })
         setFormData({ ...formData, frequency: schedule.frequency })
-        setFormData({ ...formData, startDate: schedule.startDate })
+        // setFormData({ ...formData, startDate: schedule.startDate })
       }
     },[Number(jointAccountId)]);
 
