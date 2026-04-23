@@ -120,7 +120,7 @@ namespace Backend.Services.JointAccountService
             }
 
             // Simulating stripe transection
-var options = new PaymentIntentCreateOptions
+            var options = new PaymentIntentCreateOptions
             {
                 Amount = (long?)(amount.Amount * 100),
                 Currency = "zar",

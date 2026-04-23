@@ -6,8 +6,8 @@ namespace Backend.Services.PayoutCycleService
 {
     public interface IPayoutCycleService
     {
-        Task<ApiResponse<PayoutCycles>> CreatePayoutCycleAsync(int userId, int jointAccountId, int scheduleId);
-
-        Task<ApiResponse<List<PayoutCycles>>> GetAllPayoutCyclesAsync(int jointAccountId);
+        Task<ApiResponse<PayoutCycleDto>> CreatePayoutCycleAsync(int userId, int jointAccountId, int scheduleId);
+        Task<ApiResponse<PayoutCycleDto>> GetPayoutCycleAsync(int accountId);
+        Task<ApiResponse<List<PayoutCycleDto>>> GetAllPayoutCyclesAsync(int jointAccountId);
     }
 }

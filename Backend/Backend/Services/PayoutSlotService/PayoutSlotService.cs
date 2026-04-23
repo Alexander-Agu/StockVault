@@ -1,8 +1,11 @@
 ﻿using Backend.Dtos.AccountDtos;
+using Backend.Dtos.JointAccountDtos;
 using Backend.Dtos.JointAccountMembersDtos;
+using Backend.Dtos.PayoutSlotDto;
 using Backend.Dtos.ResponseDto;
 using Backend.Dtos.TransectionDto;
 using Backend.Entities;
+using Backend.Mapping;
 using Backend.Repository.JointAccountMembersRepository;
 using Backend.Repository.JointAccountRepository;
 using Backend.Repository.PayoutCycleRepository;
@@ -22,9 +25,9 @@ namespace Backend.Services.PayoutSlotService
         IJointAccountMembersRepository membersRepository
         ) : IPayoutSlotService
     {
-        public async Task<ApiResponse<List<PayoutSlot>>> CreatePayoutSlotsAsync(int userId, int cycleId)
+        public async Task<ApiResponse<List<PayoutSlotDto>>> CreatePayoutSlotsAsync(int userId, int cycleId)
         {
-            var response = new ApiResponse<List<PayoutSlot>>()
+            var response = new ApiResponse<List<PayoutSlotDto>>()
             {
                 ResponseCode = ResponseCode.Created,
                 Message = "Payout Slots Created",
@@ -32,13 +35,23 @@ namespace Backend.Services.PayoutSlotService
             };
 
             // Validate cycle exists
-            var cycle = await cycleRepository.GetPayoutCycleById(cycleId);
+            var cycle = await cycleRepository.GetPayoutCycleByIdAsync(cycleId);
             if (cycle == null)
             {
-                response.ResponseCode = ResponseCode.NotFound;
+                response.ResponseCode = ResponseCode.Ok;
                 response.Message = "Payout Cycle not found";
                 return response;
             }
+
+            // Validate is slots already exist firt the current cycle
+            var slotsExist = await slotRepository.GetAllPayoutSlotsAsync(cycleId);
+            if (slotsExist != null || slotsExist.Count > 0)
+            {
+                response.ResponseCode = ResponseCode.Ok;
+                response.Message = "Slots already exists";
+                return response;
+            }
+
 
             // Get members
             var members = await membersRepository.GetAllMembersAsync(cycle.JointAccountId);
@@ -58,8 +71,7 @@ namespace Backend.Services.PayoutSlotService
                 response.Message = "Only admins can create payout cycles";
                 return response;
             }
-
-
+            
             var slots = Enumerable.Range(1, members.Count)
                 .Select(position => new PayoutSlot
                 {
@@ -70,16 +82,23 @@ namespace Backend.Services.PayoutSlotService
                 })
                 .ToList();
 
-            // Batch insert
             await slotRepository.AddPayoutSlotsBatchAsync(slots);
 
-            response.Data = slots;
+            // Convert to DTOs
+            response.Data = slots.Select(slot => new PayoutSlotDto
+            {
+                Id = slot.Id,
+                Position = slot.Position,
+                IsPaidOut = slot.IsPaidOut,
+                PayoutDate = default
+            }).ToList();
+
             return response;
         }
 
-        public async Task<ApiResponse<PayoutSlot>> ExecutePayoutSlotAsync(int userId, int cycleId, int slotId)
+        public async Task<ApiResponse<PayoutSlotDto>> ExecutePayoutSlotAsync(int userId, int cycleId, int slotId)
         {
-            var response = new ApiResponse<PayoutSlot>()
+            var response = new ApiResponse<PayoutSlotDto>()
             {
                 ResponseCode = ResponseCode.Ok,
                 Message = "Payout Slot Paid",
@@ -87,7 +106,7 @@ namespace Backend.Services.PayoutSlotService
             };
 
             // Validate cycle exists
-            PayoutCycles cycle = await cycleRepository.GetPayoutCycleById(cycleId);
+            PayoutCycles cycle = await cycleRepository.GetPayoutCycleByIdAsync(cycleId);
             if (cycle == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
@@ -105,8 +124,8 @@ namespace Backend.Services.PayoutSlotService
                 return response;
             }
 
-            JointAccount account = await accountRepository
-                .GetJointAccountByIdAsync(userId, cycle.JointAccountId);
+            JointAccountDto account = await accountRepository
+                .GetJointTableAccountByIdAsync(userId, cycle.JointAccountId, "JOINT");
             if (account == null)
             {
                 response.ResponseCode = ResponseCode.NotFound;
@@ -115,9 +134,7 @@ namespace Backend.Services.PayoutSlotService
             }
 
             // Validate if user is an ADMIN
-            JointAccountMembers? member = account
-                .Members.Where(m => m.UserId == userId).FirstOrDefault();
-            if (member == null || member.Role.ToLower() != "admin")
+            if (!account.isAdmin)
             {
                 response.ResponseCode = ResponseCode.NotFound;
                 response.Message = "Only admins can execute payout slots";
@@ -132,7 +149,7 @@ namespace Backend.Services.PayoutSlotService
                 return response;
             }
 
-            if (account.Balance >= cycle.EstimatedTotalAmount)
+            if (account.Balance * 100 >= cycle.EstimatedTotalAmount)
             {
                 int payoutAmount = cycle.EstimatedTotalAmount;
 
@@ -143,9 +160,9 @@ namespace Backend.Services.PayoutSlotService
                 );
 
                 // Update records
-                cycle.CycleNumber = Math.Min(cycle.CycleNumber + 1, cycle.TotalMembersAtStart);
                 slot.IsPaidOut = true;
                 account.Balance -= payoutAmount;
+
 
                 // Log the transaction correctly
                 await transectionService.RecordTransectionAsync(userId, CreateTransection(
@@ -156,14 +173,14 @@ namespace Backend.Services.PayoutSlotService
                 ));
 
                 // Close cycle if complete
-                if (cycle.CycleNumber >= cycle.TotalMembersAtStart)
+                if (cycle.CycleNumber + 1 <= cycle.TotalMembersAtStart)
                 {
-                    cycle.IsActive = false;
-                }
+                    cycle.CycleNumber = Math.Min(cycle.CycleNumber + 1, cycle.TotalMembersAtStart);
+                } else cycle.IsActive = false;
 
                 await slotRepository.SaveChangesAsync();
 
-                response.Data = slot;
+                response.Data = slot.ToDto();
                 return response;
             }
             else
@@ -174,19 +191,19 @@ namespace Backend.Services.PayoutSlotService
             }
         }
 
-        public async Task<ApiResponse<List<PayoutSlot>>> GetAllPayoutSlotsAsync(int cycleId)
+        public async Task<ApiResponse<List<PayoutSlotDto>>> GetAllPayoutSlotsAsync(int cycleId)
         {
-            var response = new ApiResponse<List<PayoutSlot>>()
+            var response = new ApiResponse<List<PayoutSlotDto>>()
             {
                 ResponseCode = ResponseCode.Ok,
                 Message = "Fetched all payout slots",
                 Data = null
             };
 
-            List<PayoutSlot> payoutSlots = await slotRepository.GetAllPayoutSlotsAsync(cycleId);
+            List<PayoutSlotDto> payoutSlots = await slotRepository.GetAllPayoutSlotsAsync(cycleId);
 
             if (payoutSlots == null) {
-                response.ResponseCode = ResponseCode.NotFound;
+                response.ResponseCode = ResponseCode.Ok;
                 response.Message = "Failed to fetched all payout slots";
                 return response;
             }
