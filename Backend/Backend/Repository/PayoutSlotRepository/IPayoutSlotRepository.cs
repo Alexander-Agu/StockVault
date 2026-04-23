@@ -1,4 +1,5 @@
-﻿using Backend.Entities;
+﻿using Backend.Dtos.PayoutSlotDto;
+using Backend.Entities;
 
 namespace Backend.Repository.PayoutSlotRepository
 {
@@ -9,7 +10,7 @@ namespace Backend.Repository.PayoutSlotRepository
 
         Task AddPayoutSlotsBatchAsync(List<PayoutSlot> slots);
 
-        Task<List<PayoutSlot>> GetAllPayoutSlotsAsync(int cycleId);
+        Task<List<PayoutSlotDto>> GetAllPayoutSlotsAsync(int cycleId);
 
         Task<PayoutSlot> GetPayoutSlotAsync(int cycleId, int slotId);
         Task<PayoutSlot> GetPayoutSlotByPositionAsync(int cycleId, int position);

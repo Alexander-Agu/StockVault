@@ -1,4 +1,5 @@
-﻿using Backend.Entities;
+﻿using Backend.Dtos.PayoutSlotDto;
+using Backend.Entities;
 using Backend.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,11 +23,23 @@ namespace Backend.Repository.PayoutSlotRepository
             await context.SaveChangesAsync();
         }
 
-        public async Task<List<PayoutSlot>> GetAllPayoutSlotsAsync(int cycleId)
+        public async Task<List<PayoutSlotDto>> GetAllPayoutSlotsAsync(int cycleId)
         {
-            return await context.PayoutSlots
-                .Where(p => p.CycleId == cycleId)
-                .ToListAsync();
+            var payoutSlots = await context.PayoutSlots
+                  .Where(p => p.CycleId == cycleId)
+                  .OrderBy(p => p.Position)
+                  .Select(p => new PayoutSlotDto
+                  {
+                      Id = p.Id,
+                      Position = p.Position,
+                      IsPaidOut = p.IsPaidOut,
+                      PayoutDate = p.PayoutDate,
+                      CycleId = cycleId,
+                      UserId = p.UserId,
+                  })
+                  .ToListAsync();
+
+            return payoutSlots;
         }
 
         public async Task<PayoutSlot> GetPayoutSlotAsync(int cycleId, int slotId)

@@ -87,9 +87,9 @@ namespace Backend.Repository.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<PayoutCycles>()
-                .HasOne(j => j.Schedule)
-                .WithOne(p => p.PayoutCycle)
-                .HasForeignKey<PayoutCycles>(p => p.ScheduleId)
+                .HasOne(p => p.Schedule)
+                .WithMany(s => s.PayoutCycles)
+                .HasForeignKey(p => p.ScheduleId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Payout Slots Relationships

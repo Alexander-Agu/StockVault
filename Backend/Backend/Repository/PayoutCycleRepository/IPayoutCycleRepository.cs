@@ -1,4 +1,5 @@
-﻿using Backend.Entities;
+﻿using Backend.Dtos.PayoutCycles;
+using Backend.Entities;
 
 namespace Backend.Repository.PayoutCycleRepository
 {
@@ -7,8 +8,9 @@ namespace Backend.Repository.PayoutCycleRepository
         Task SaveChangesAsync();
         Task AddPayoutCycleAsync(PayoutCycles payoutCycle);
 
-        Task<List<PayoutCycles>> GetAllPayoutCyclesAsync(int jointAccountId);
+        Task<List<PayoutCycleDto>> GetAllPayoutCyclesAsync(int jointAccountId);
 
-        Task<PayoutCycles> GetPayoutCycleById(int cycleId);
+        Task<PayoutCycles> GetPayoutCycleByAccountIdAsync(int accountId);
+        Task<PayoutCycles> GetPayoutCycleByIdAsync(int accountId);
     }
 }
