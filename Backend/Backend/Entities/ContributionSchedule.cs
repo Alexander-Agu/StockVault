@@ -13,5 +13,7 @@ namespace Backend.Entities
         // Relationships
         public JointAccount? JointAccount { get; set; }
         public PayoutCycles? PayoutCycle { get; set; }
+
+        public ICollection<PayoutCycles> PayoutCycles { get; set; } = new List<PayoutCycles>();
     }
 }

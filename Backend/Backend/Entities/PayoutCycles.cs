@@ -13,10 +13,10 @@ namespace Backend.Entities
 
         // Relationships
         public int JointAccountId { get; set; }
-        public JointAccount JointAccount { get; set; } = new();
+        public JointAccount JointAccount { get; set; }
         
         public int ScheduleId { get; set; }
-        public ContributionSchedule Schedule { get; set; } = new();
+        public ContributionSchedule Schedule { get; set; }
 
         public ICollection<PayoutSlot> PayoutSlots { get; set; } = new List<PayoutSlot>();
     }

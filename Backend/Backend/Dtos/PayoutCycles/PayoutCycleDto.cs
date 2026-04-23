@@ -11,6 +11,8 @@ namespace Backend.Dtos.PayoutCycles
         public DateOnly EndDate { get; set; }
         public int JointAccountId { get; set; }
         public int ScheduleId { get; set; }
+        public int EstimatedTotalAmount { get; set; }
+        public bool IsActive { get; set; }
     }
 
     public class CreatePayoutCycleDto

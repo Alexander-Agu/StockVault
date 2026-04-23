@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Backend.Dtos.AccountDtos;
 using Backend.Dtos.JointAccountDtos;
+using Backend.Dtos.PayoutCycles;
 using Backend.Dtos.ResponseDto;
 using Backend.Entities;
 using Backend.Services.PayoutCycleService;
@@ -20,16 +21,26 @@ namespace Backend.Controllers
         public async Task<ActionResult> CreatePayoutCycle(int jointAccountId, int scheduleId)
         {
             int userId = GetUserIdFromClaims();
-            ApiResponse<PayoutCycles>? response = await cycleService.CreatePayoutCycleAsync(userId, jointAccountId, scheduleId);
+            ApiResponse<PayoutCycleDto>? response = await cycleService.CreatePayoutCycleAsync(userId, jointAccountId, scheduleId);
+
+            return HandleResponse(response);
+        }
+
+        [HttpGet("all/{accountId}")]
+        public async Task<ActionResult> GetAllPayoutCycles(int accountId)
+        {
+            int userId = GetUserIdFromClaims();
+            ApiResponse<List<PayoutCycleDto>>? response = await cycleService.GetAllPayoutCyclesAsync(accountId);
 
             return HandleResponse(response);
         }
 
         [HttpGet("{accountId}")]
-        public async Task<ActionResult> GetJointAccountAsync(int accountId)
+        public async Task<ActionResult> GetPayoutCycles(int accountId)
         {
             int userId = GetUserIdFromClaims();
-            ApiResponse<List<PayoutCycles>>? response = await cycleService.GetAllPayoutCyclesAsync(accountId);
+            ApiResponse<PayoutCycleDto>? response = await cycleService.
+                GetPayoutCycleAsync(accountId);
 
             return HandleResponse(response);
         }

@@ -21,6 +21,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Scalar.AspNetCore;
 using Stripe;
+using Backend.Repository.PayoutCycleRepository;
+using Backend.Services.PayoutCycleService;
+using Backend.Repository.PayoutSlotRepository;
+using Backend.Services.PayoutSlotService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -59,14 +63,23 @@ builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<IPersonalAccountService, PersonalAccountService>();
 builder.Services.AddScoped<IPersonalAccountRepository, PersonalAccountRepository>();
+
 builder.Services.AddScoped<IJointAccountService, JointAccountService>();
 builder.Services.AddScoped<IJointAccountRepository, JointAccountRepository>();
+
 builder.Services.AddScoped<IJointAccountMembersService, JointAccountMembersService>();
 builder.Services.AddScoped<IJointAccountMembersRepository, JointAccountMembersRepository>();
+
 builder.Services.AddScoped<IContributionScheduleService, ContributionScheduleService>();
 builder.Services.AddScoped<IContributionScheduleRepository, ContributionScheduleRepository>();
 builder.Services.AddScoped<IAccountRepositoryLocks, AccountLocksRepository>();
 builder.Services.AddScoped<PaymentIntentService>();
+
+builder.Services.AddScoped<IPayoutCycleRepository, PayoutCycleRepository>();
+builder.Services.AddScoped<IPayoutCycleService, PayoutCycleService>();
+
+builder.Services.AddScoped<IPayoutSlotRepository, PayoutSlotRepository>();
+builder.Services.AddScoped<IPayoutSlotService, PayoutSlotService>();
 
 builder.Services.AddScoped<ITransectionRepository, TransectionRepository>();
 builder.Services.AddScoped<ITransectionService, TransectionService>();
@@ -78,7 +91,7 @@ builder.Services.AddCors(options =>
         policy
             .WithOrigins(
                 "http://localhost:5173",
-                "https://yourdomain.com"
+                "https://mydomain.com"
             )
 
             .WithMethods("GET", "POST", "PUT", "DELETE", "PATCH")

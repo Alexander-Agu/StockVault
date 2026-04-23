@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Backend.Dtos.PayoutSlotDto;
 using Backend.Dtos.ResponseDto;
 using Backend.Entities;
 using Backend.Services.PayoutSlotService;
@@ -18,7 +19,7 @@ namespace Backend.Controllers
         public async Task<ActionResult> CreatePayoutSlot(int cycleId)
         {
             int userId = GetUserIdFromClaims();
-            ApiResponse<List<PayoutSlot>>? response = await slotService.CreatePayoutSlotsAsync(userId, cycleId);
+            ApiResponse<List<PayoutSlotDto>>? response = await slotService.CreatePayoutSlotsAsync(userId, cycleId);
             return HandleResponse(response);
         }
 
@@ -27,16 +28,16 @@ namespace Backend.Controllers
         public async Task<ActionResult> ExecutePayoutSlot(int cycleId, int slotId)
         {
             int userId = GetUserIdFromClaims();
-            ApiResponse<PayoutSlot>? response = await slotService.ExecutePayoutSlotAsync(userId, cycleId, slotId);
+            ApiResponse<PayoutSlotDto>? response = await slotService.ExecutePayoutSlotAsync(userId, cycleId, slotId);
             return HandleResponse(response);
         }
 
         // Allows members's to create payout slots
-        [HttpPut("{cycleId}")]
+        [HttpGet("{cycleId}")]
         public async Task<ActionResult> GetAllPayoutSlot(int cycleId)
         {
             int userId = GetUserIdFromClaims();
-            ApiResponse<List<PayoutSlot>>? response = await slotService.GetAllPayoutSlotsAsync(cycleId);
+            ApiResponse<List<PayoutSlotDto>>? response = await slotService.GetAllPayoutSlotsAsync(cycleId);
             return HandleResponse(response);
         }
 

@@ -1,17 +1,12 @@
-﻿namespace Backend.Entities
+﻿namespace Backend.Dtos.PayoutSlotDto
 {
-    public class PayoutSlot
+    public class PayoutSlotDto
     {
         public int Id { get; set; }
         public int Position { get; set; }
         public bool IsPaidOut { get; set; }
         public DateOnly PayoutDate { get; set; }
-
-        // Relationships
         public int CycleId { get; set; }
-        public PayoutCycles PayoutCycle { get; set; }
-                                                        
         public int UserId { get; set; }
-        public User User { get; set; }
     }
 }
