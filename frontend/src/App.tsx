@@ -13,7 +13,7 @@ import LockAccount from './pages/LockAccount';
 import Deposit from './pages/Deposit';
 import Withdraw from './pages/Withdraw';
 import JointAccounts from './pages/JointAccounts';
-import ViewJointAccount from './pages/ViewJointAccount';
+import ViewJointAccount from './pages/ViewJointAccount/ViewJointAccount';
 import CreateJointAccount from './pages/CreateJointAccount';
 import Profile from './pages/Profile';
 import UpdateJointAccount from './pages/UpdateJointAccount';

@@ -3,7 +3,7 @@ import type { AppDispatch } from "../store/store";
 import { TbReceiptYen } from "react-icons/tb";
 import { CreatePayoutCycleAsync, GetPayoutCycleAsync } from "../../api/PayoutCycleApi";
 
-interface PayoutCycle {
+export interface PayoutCycle {
     id: number;
     cycleNumber: number;
     totalMembersAtStart: number;
@@ -80,16 +80,17 @@ export const CreatePayoutCycle = (accountId: number, scheduleId: number) =>
 }
 
 // Gets payout cycle
-export const GetPayoutCycle = (accountId: number, cycleId: number) => 
+export const GetPayoutCycle = (accountId: number) => 
     async (dispatch: AppDispatch): Promise<PayoutCycle> => {
         let cycle;
         dispatch(setLoading(true));
         try{
-            const response = await GetPayoutCycleAsync(accountId, cycleId)
+            const response = await GetPayoutCycleAsync(accountId)
 
             if (!response) throw new Error("Failed to get payout cycle");
-
+            
             cycle = response.data;
+            dispatch(setPayoutCycle(cycle));
             console.log(cycle);
         } catch {
             console.log("Failed to get payout cycle");
