@@ -3,6 +3,7 @@ using System;
 using Backend.Repository.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Backend.Migrations
 {
     [DbContext(typeof(StockVaultContext))]
-    partial class StockVaultContextModelSnapshot : ModelSnapshot
+    [Migration("20260423063654_Payout_Cycle_Slot_Table_Fix")]
+    partial class Payout_Cycle_Slot_Table_Fix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.0");
@@ -62,17 +65,12 @@ namespace Backend.Migrations
                     b.Property<int>("JointAccountId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("PayoutCycleId")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateOnly>("StartDate")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.HasIndex("JointAccountId");
-
-                    b.HasIndex("PayoutCycleId");
 
                     b.ToTable("ContributionSchedules");
                 });
@@ -171,7 +169,8 @@ namespace Backend.Migrations
 
                     b.HasIndex("JointAccountId");
 
-                    b.HasIndex("ScheduleId");
+                    b.HasIndex("ScheduleId")
+                        .IsUnique();
 
                     b.ToTable("PayoutCycles");
                 });
@@ -345,13 +344,7 @@ namespace Backend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Backend.Entities.PayoutCycles", "PayoutCycle")
-                        .WithMany()
-                        .HasForeignKey("PayoutCycleId");
-
                     b.Navigation("JointAccount");
-
-                    b.Navigation("PayoutCycle");
                 });
 
             modelBuilder.Entity("Backend.Entities.JointAccount", b =>
@@ -399,8 +392,8 @@ namespace Backend.Migrations
                         .IsRequired();
 
                     b.HasOne("Backend.Entities.ContributionSchedule", "Schedule")
-                        .WithMany("PayoutCycles")
-                        .HasForeignKey("ScheduleId")
+                        .WithOne("PayoutCycle")
+                        .HasForeignKey("Backend.Entities.PayoutCycles", "ScheduleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -452,7 +445,7 @@ namespace Backend.Migrations
 
             modelBuilder.Entity("Backend.Entities.ContributionSchedule", b =>
                 {
-                    b.Navigation("PayoutCycles");
+                    b.Navigation("PayoutCycle");
                 });
 
             modelBuilder.Entity("Backend.Entities.JointAccount", b =>
