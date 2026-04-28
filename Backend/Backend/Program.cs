@@ -25,6 +25,8 @@ using Backend.Repository.PayoutCycleRepository;
 using Backend.Services.PayoutCycleService;
 using Backend.Repository.PayoutSlotRepository;
 using Backend.Services.PayoutSlotService;
+using Backend.Repository.ContributionRespository;
+using Backend.Services.ContributionService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -80,6 +82,9 @@ builder.Services.AddScoped<IPayoutCycleService, PayoutCycleService>();
 
 builder.Services.AddScoped<IPayoutSlotRepository, PayoutSlotRepository>();
 builder.Services.AddScoped<IPayoutSlotService, PayoutSlotService>();
+
+builder.Services.AddScoped<IContributionRepository, ContributionRepository>();
+builder.Services.AddScoped<IContributionService, ContributionService>();
 
 builder.Services.AddScoped<ITransectionRepository, TransectionRepository>();
 builder.Services.AddScoped<ITransectionService, TransectionService>();

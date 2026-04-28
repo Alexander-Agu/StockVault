@@ -173,7 +173,7 @@ namespace Backend.Services.ContributionService
             return response;
         }
 
-        public async Task<ApiResponse<ContributionDtos>> ExecuteContributionIntoPersonalAccount(int userId, int accountId, int slotId, int contributionId, DepositDto deposit)
+        public async Task<ApiResponse<ContributionDtos>> ExecuteContributionIntoPersonalAccountAsync(int userId, int accountId, int slotId, int contributionId, DepositDto deposit)
         {
             ApiResponse<ContributionDtos> response = new ApiResponse<ContributionDtos>()
             {
