@@ -20,6 +20,7 @@ namespace Backend.Repository.Data
         public DbSet<Transection> Transections => Set<Transection>();
         public DbSet<PayoutCycles> PayoutCycles => Set<PayoutCycles>();
         public DbSet<PayoutSlot> PayoutSlots => Set<PayoutSlot>();
+        public DbSet<Contribution> GetContributions() => Set<Contribution>();
 
 
         // Fluent API
@@ -103,6 +104,19 @@ namespace Backend.Repository.Data
                 .HasOne(c => c.User)
                 .WithMany(p => p.PayoutSlots)
                 .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Contribution Relationships
+            modelBuilder.Entity<Contribution>()
+                .HasOne(c => c.Cycle)
+                .WithMany(c => c.Contributions)
+                .HasForeignKey(c => c.CycleId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Contribution>()
+                .HasOne(c => c.User)
+                .WithMany(c => c.Contributions)
+                .HasForeignKey(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

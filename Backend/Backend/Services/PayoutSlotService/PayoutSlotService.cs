@@ -44,13 +44,13 @@ namespace Backend.Services.PayoutSlotService
             }
 
             // Validate is slots already exist firt the current cycle
-            var slotsExist = await slotRepository.GetAllPayoutSlotsAsync(cycleId);
-            if (slotsExist != null || slotsExist.Count > 0)
-            {
-                response.ResponseCode = ResponseCode.Ok;
-                response.Message = "Slots already exists";
-                return response;
-            }
+            //var slotsExist = await slotRepository.GetAllPayoutSlotsAsync(cycleId);
+            //if (slotsExist != null || slotsExist.Count > 0)
+            //{
+            //    response.ResponseCode = ResponseCode.Ok;
+            //    response.Message = "Slots already exists";
+            //    return response;
+            //}
 
 
             // Get members

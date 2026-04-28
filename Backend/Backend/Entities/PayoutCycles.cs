@@ -19,5 +19,7 @@ namespace Backend.Entities
         public ContributionSchedule Schedule { get; set; }
 
         public ICollection<PayoutSlot> PayoutSlots { get; set; } = new List<PayoutSlot>();
+
+        public List<Contribution> Contributions { get; set; }
     }
 }
