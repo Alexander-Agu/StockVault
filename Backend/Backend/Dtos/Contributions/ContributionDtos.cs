@@ -1,18 +1,15 @@
-﻿namespace Backend.Entities
+﻿using Backend.Entities;
+
+namespace Backend.Dtos.Contributions
 {
-    public class Contribution
+    public class ContributionDtos
     {
         public int Id { get; set; }
         public int AmountCents { get; set; }
         public string Status { get; set; } = string.Empty;
         public DateOnly PaidAt { get; set; }
         public DateOnly CreatedAt { get; set; }
-
-        // Relationships
         public int SlotId { get; set; }
-        public PayoutSlot Slot { get; set; }
-
         public int UserId { get; set; }
-        public User User { get; set; }
     }
 }

@@ -13,5 +13,7 @@
                                                         
         public int UserId { get; set; }
         public User User { get; set; }
+
+        public List<Contribution> Contributions { get; set; }
     }
 }
